@@ -1,0 +1,24 @@
+#database 연동 설정
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/capstone2
+    username: host
+    password: 1234
+  thymeleaf:
+    cache: false
+
+
+  # spring data jpa 설정
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.orm.jdbc.bind: trace
+  # org.hibernate.type: trace #스프링 부트 2.x, hibernate5
+  # org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6

@@ -2,6 +2,7 @@ package com.example.sGreenTime.repository;
 
 import com.example.sGreenTime.entity.MemberEntity;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class MemberRepository {
     //entity 매니저 주입받기
-    //@PersistenceContext
+    @PersistenceContext
     private final EntityManager em;
 
     //영속성 컨텍스트에 member 넣음
