@@ -1,9 +1,7 @@
-import 'package:capstone/User.dart';
-import 'package:capstone/pages/screen_time.dart';
 import 'package:flutter/material.dart';
+import 'package:capstone/User.dart';
 import '../service.dart';
 import 'package:capstone/pages/signup.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import '../sources/mycolor.dart';
 
@@ -53,56 +51,56 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Log in to your account', style: TextStyle(color: Colors.white, fontSize: 22.0, fontWeight: FontWeight.bold),),
-            const Text('Enter your email and password', style: TextStyle(color: Colors.white, fontSize: 14.0,),),
-            const SizedBox(height: 20.0,),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'ID',
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            const Text('Log in to your account', style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.bold),),
+            const Text('Enter your email and password', style: TextStyle(color: Colors.white, fontSize: 10.0,),),
+            const SizedBox(height: 50.0,),
+            Container(
+              height: 40.0,
+              width: 330.0,
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  hintText: 'ID',
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0), //TODO: 커서 세로 위치 조정
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                ),
+                onChanged: (value){
+                  id = value;
+                },
               ),
-              onChanged: (value){
-                id = value;
-              },
             ),
             const SizedBox(height: 20.0,),
-            TextFormField(
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+            Container(
+              height: 40.0,
+              width: 330.0,
+              child: TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  hintText: 'Password',
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white70, width: 2.0),
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                ),
+                onChanged: (value){
+                  password = value;
+                },
               ),
-              onChanged: (value){
-                password = value;
-              },
             ),
             const SizedBox(height: 20.0,),
             ElevatedButton(
@@ -110,10 +108,10 @@ class _LoginFormState extends State<LoginForm> {
                     foregroundColor: Colors.white, shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                         backgroundColor: MyColor.brightOrange,
-                        minimumSize: Size(600, 40),	//width, height
+                        minimumSize: Size(330, 35),	//width, height
 
                     alignment: Alignment.center,
-                    textStyle: const TextStyle(fontSize: 16)
+                    textStyle: const TextStyle(fontSize: 12)
                 ),
                 onPressed: () async {
                   try{
@@ -132,12 +130,12 @@ class _LoginFormState extends State<LoginForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Text('If you did not register,', style: TextStyle(color: Colors.white, fontSize: 12.0),),
+                const Text('If you did not register,', style: TextStyle(color: Colors.white, fontSize: 10.0),),
                 TextButton(
                     onPressed: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
                     },
-                    child: const Text('Register your email', style: TextStyle(color: MyColor.brightOrange, fontSize: 12.0),)
+                    child: const Text('Sign up  ', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
                 ),
               ],
             )

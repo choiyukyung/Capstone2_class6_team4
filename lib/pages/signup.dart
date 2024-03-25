@@ -1,8 +1,6 @@
-import 'package:capstone/User.dart';
 import 'package:flutter/material.dart';
+import 'package:capstone/User.dart';
 import '../service.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
 import '../sources/mycolor.dart';
 
 class SignUp extends StatefulWidget {
@@ -48,48 +46,118 @@ class _SignupFormState extends State<SignupForm> {
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 100.0,),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'ID',
+          const Text('Create your account', style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.bold),),
+          const Text('Enter your information', style: TextStyle(color: Colors.white, fontSize: 10.0,),),
+          const SizedBox(height: 50.0,),
+          Container(
+            height: 40.0,
+            width: 330.0,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'ID',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              onChanged: (value){
+                id = value;
+              },
             ),
-            onChanged: (value){
-              id = value;
-            },
           ),
           const SizedBox(height: 20.0,),
-          TextFormField(
-            obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Password',
+          Container(
+            height: 40.0,
+            width: 330.0,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Password',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              onChanged: (value){
+                password = value;
+              },
             ),
-            onChanged: (value){
-              password = value;
-            },
           ),
           const SizedBox(height: 20.0,),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Name',
+          Container(
+            height: 40.0,
+            width: 330.0,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Name',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              onChanged: (value){
+                name = value;
+              },
             ),
-            onChanged: (value){
-              name = value;
-            },
           ),
           const SizedBox(height: 20.0,),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Birthdate',
+          Container(
+            height: 40.0,
+            width: 330.0,
+            child: TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Birthdate',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white70, width: 1.0),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              onChanged: (value){
+                birthdate = value;
+              },
             ),
-            onChanged: (value){
-              birthdate = value;
-            },
           ),
           const SizedBox(height: 20.0,),
           ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+                  backgroundColor: MyColor.brightOrange,
+                  minimumSize: Size(330, 35),	//width, height
+
+                  alignment: Alignment.center,
+                  textStyle: const TextStyle(fontSize: 12)
+              ),
               onPressed: () async {
                 try{
                   User user = User(
@@ -118,12 +186,12 @@ class _SignupFormState extends State<SignupForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text('If you already registered,'),
+              const Text('If you already registered,', style: TextStyle(color: Colors.white, fontSize: 10.0),),
               TextButton(
                   onPressed: (){
                     Navigator.pop(context);
                   },
-                  child: const Text('Log in with your email')
+                  child: const Text('Log in  ', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
               ),
             ],
           )
