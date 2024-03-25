@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../service.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../sources/mycolor.dart';
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -14,8 +16,10 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
+      backgroundColor: MyColor.deepGreen,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(0),
+        child: AppBar(),
       ),
 
       body: const SignupForm(),
@@ -31,94 +35,99 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-  bool _saving = false;
-  Service service = Service();
   final _formKey = GlobalKey<FormState>();
-  String email = '';
+
+  Service service = Service();
+  String id = '';
   String password = '';
-  String userName = '';
+  String name = '';
+  String birthdate = '';
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: _saving,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
-                onChanged: (value){
-                  email = value;
-                },
-              ),
-              const SizedBox(height: 20.0,),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
-                onChanged: (value){
-                  password = value;
-                },
-              ),
-              const SizedBox(height: 20.0,),
-              TextFormField(
-                //obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'User name',
-                ),
-                onChanged: (value){
-                  userName = value;
-                },
-              ),
-              const SizedBox(height: 20.0,),
-              ElevatedButton(
-                  onPressed: () async {
-                    try{
-                      setState(() {
-                        _saving = true;
-                      });
-                      User user = User(email: email, password: password);
-                      final response = await service.saveUser(user);
-                      if (response == true){
-                        _formKey.currentState!.reset();
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("회원가입에 성공했습니다."),
-                        ));
-                        //ScaffoldMessenger.of(context).clearSnackBars(); //빠르게 닫고 싶을때 사용
-                        Navigator.pop(context);
-                      }
-                      setState(() {
-                        _saving = false;
-                      });
-                    }
-                    catch (e){
-                      print(e);
-                    }
-                  },
-                  child: const Text('Enter')
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Text('If you already registered,'),
-                  TextButton(
-                      onPressed: (){
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Log in with your email')
-                  ),
-                ],
-              )
-            ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 100.0,),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'ID',
+            ),
+            onChanged: (value){
+              id = value;
+            },
           ),
-        ),
+          const SizedBox(height: 20.0,),
+          TextFormField(
+            obscureText: true,
+            decoration: const InputDecoration(
+              labelText: 'Password',
+            ),
+            onChanged: (value){
+              password = value;
+            },
+          ),
+          const SizedBox(height: 20.0,),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Name',
+            ),
+            onChanged: (value){
+              name = value;
+            },
+          ),
+          const SizedBox(height: 20.0,),
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Birthdate',
+            ),
+            onChanged: (value){
+              birthdate = value;
+            },
+          ),
+          const SizedBox(height: 20.0,),
+          ElevatedButton(
+              onPressed: () async {
+                try{
+                  User user = User(
+                      id: id,
+                      password: password,
+                      name: name,
+                      birthdate: birthdate,
+                  );
+                  final response = await service.saveUser(user);
+                  if (response == true){
+                    _formKey.currentState!.reset();
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("회원가입에 성공했습니다."),
+                    ));
+                    //ScaffoldMessenger.of(context).clearSnackBars(); //빠르게 닫고 싶을때 사용
+                    Navigator.pop(context);
+                  }
+                }
+                catch (e){
+                  print(e);
+                }
+              },
+              child: const Text('Enter')
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Text('If you already registered,'),
+              TextButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Log in with your email')
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

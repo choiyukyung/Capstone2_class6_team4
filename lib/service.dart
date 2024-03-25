@@ -4,21 +4,23 @@ import 'package:http/http.dart' as http;
 import './User.dart';
 
 class Service{
-  Future<User?> searchUser (String email) async{
+  Future<User?> searchUser (String id) async{
     try {
-      final response = await http.get(Uri.parse("http://server-uri/user/search?email=$email"));
+      final response = await http.get(Uri.parse("http://localhost:58010/member/search?id=$id"));
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         print("User Data sent successfully");
         return User(
-            email: data['email'],
-            password: data['password'],
+          id: data['id'],
+          password: data['password'],
+          name: data['name'],
+          birthdate: data['birthdate'],
         );
       } else {
         return null;
       }
     } catch (e) {
-      print("Failed to fetch post by email: $e");
+      print("Failed to fetch post by id: $e");
       return null;
     }
   }
@@ -26,7 +28,7 @@ class Service{
   Future<bool> saveUser(User user) async {
     try {
       final response = await http.post(
-        Uri.parse("http://server-uri/user/save"),
+        Uri.parse("http://localhost:58010/member/join"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
