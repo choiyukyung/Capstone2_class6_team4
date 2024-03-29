@@ -20,4 +20,15 @@ public class MemberController {
         memberService.join(memberDTO);
         return memberDTO;
     }
+
+    @PostMapping("/member/login")
+    public String login(@RequestBody MemberDTO memberDTO){
+        String loginResult = memberService.login(memberDTO);
+        if(loginResult != null){
+            return "{\"message\" : \"success\"}";
+        }
+        else {
+            return "{\"message\" : \"fail\"}";
+        }
+    }
 }

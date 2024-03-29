@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -22,4 +25,19 @@ public class MemberService {
     }
 
 
+    public String login(MemberDTO memberDTO) {
+        Optional<MemberEntity> idString = memberRepository.findByIdString(memberDTO.getId());
+        System.out.println(memberDTO);
+        if(idString.isPresent()){
+            System.out.println("present");
+            MemberEntity memberEntity = idString.get();
+            if(memberEntity.getPassword().equals(memberDTO.getPassword())){
+                return memberDTO.getId();
+            }
+            else return null;
+        }
+        else{
+            return null;
+        }
+    }
 }
