@@ -1,3 +1,4 @@
+import 'package:capstone/pages/screen_time.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone/User.dart';
 import '../service.dart';
@@ -138,7 +139,13 @@ class _LoginFormState extends State<LoginForm> {
                     child: const Text('Sign up  ', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
                 ),
               ],
-            )
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenTime()));
+                },
+                child: const Text('Go to test', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
+            ),
           ],
         ),
       ),

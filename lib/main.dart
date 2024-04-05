@@ -6,7 +6,6 @@ import './pages/calendar.dart';
 import './pages/statistics.dart';
 import './pages/challenge.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -31,7 +30,22 @@ class MyApp extends StatelessWidget {
         '/calendar': (BuildContext context) => Calendar(),
         '/statistics': (BuildContext context) => Statistics(),
         '/challenge': (BuildContext context) => Challenge(),
+        '/usage-stats': (BuildContext context) => UsageStatsTest(),
       }
     );
+  }
+}
+
+class UsageStatsTest extends StatefulWidget {
+  const UsageStatsTest({super.key});
+
+  @override
+  State<UsageStatsTest> createState() => _UsageStatsTestState();
+}
+
+class _UsageStatsTestState extends State<UsageStatsTest> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
