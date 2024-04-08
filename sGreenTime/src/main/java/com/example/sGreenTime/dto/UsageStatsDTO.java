@@ -11,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class UsageStatsDTO {
     private int usageStatsId; //pk
+    private String id;
     private String firstTimeStamp;
     private String lastTimeStamp;
     private String lastTimeUsed;

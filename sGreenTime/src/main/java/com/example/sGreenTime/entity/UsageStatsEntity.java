@@ -15,6 +15,8 @@ public class UsageStatsEntity {
     @Column(name="usage_stats_id")
     private int usageStatsId; //pk
     @Column
+    private String id;
+    @Column
     private String firstTimeStamp;
     @Column
     private String lastTimeStamp;
