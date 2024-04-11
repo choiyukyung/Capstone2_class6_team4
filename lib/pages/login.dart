@@ -120,7 +120,8 @@ class _LoginFormState extends State<LoginForm> {
                     if (user != null){
                       _formKey.currentState!.reset();
                       if (!mounted) return;
-                      Navigator.of(context).pushNamed("/screen-time");
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenTime(id)));
+                      //Navigator.of(context).pushNamed("/screen-time");
                     }
                   } catch(e){
                     print(e);
@@ -142,9 +143,21 @@ class _LoginFormState extends State<LoginForm> {
             ),
             TextButton(
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenTime()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenTime(id)));
                 },
                 child: const Text('Go to test', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/usage-charts');
+                },
+                child: const Text('Go to bar-chart', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
+            ),
+            TextButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, '/pie-charts');
+                },
+                child: const Text('Go to pie-chart', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
             ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:capstone/pages/chart_test.dart';
 import 'package:flutter/material.dart';
 import './pages/login.dart';
 import './pages/signup.dart';
@@ -26,11 +27,13 @@ class MyApp extends StatelessWidget {
         '/': (BuildContext context) => LogIn(),
         '/login': (BuildContext context) => LogIn(),
         '/signup': (BuildContext context) => SignUp(),
-        '/screen-time': (BuildContext context) => ScreenTime(),
+        '/screen-time': (BuildContext context) => ScreenTime(""),
         '/calendar': (BuildContext context) => Calendar(),
         '/statistics': (BuildContext context) => Statistics(),
         '/challenge': (BuildContext context) => Challenge(),
         '/usage-stats': (BuildContext context) => UsageStatsTest(),
+        '/usage-charts': (BuildContext context) => ChartPage(),
+        '/pie-charts': (BuildContext context) => PieChartSample3(),
       }
     );
   }

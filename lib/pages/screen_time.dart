@@ -5,7 +5,8 @@ import '../service.dart';
 
 
 class ScreenTime extends StatefulWidget {
-  const ScreenTime({super.key});
+  final String id;
+  const ScreenTime(this.id, {super.key});
 
   @override
   State<ScreenTime> createState() => _ScreenTimeState();
@@ -13,8 +14,8 @@ class ScreenTime extends StatefulWidget {
 
 class _ScreenTimeState extends State<ScreenTime> {
   Service service = Service();
-  List<UsageInfo> usageStats = [];
-  int carbon = 0;
+  List<dynamic> usageStats = [];
+  //int carbon = 0;
 
   @override
   void initState() {
@@ -29,17 +30,15 @@ class _ScreenTimeState extends State<ScreenTime> {
       DateTime endDate = DateTime.now();
       DateTime startDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0);
 
-      var queryUsageCarbon = await service.queryUsageCarbon(startDate, endDate);
-      var queryUsageStats = queryUsageCarbon?.item1;
-      var queryCarbon = queryUsageCarbon?.item2;
+      var queryUsageStats = await service.getUsageStats(startDate, endDate, widget.id);
+      if (queryUsageStats == null) print("Wrong input");
 
       setState(() {
-        usageStats = queryUsageStats!;
-        carbon = queryCarbon!;
+        usageStats = queryUsageStats;
       });
 
-    } catch (err) {
-      print(err);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -59,27 +58,27 @@ class _ScreenTimeState extends State<ScreenTime> {
             child: ListView.separated(
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(usageStats[index].packageName!),
+                  title: Text(usageStats[index]['packageName']),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       Text(
-                          "First time stamp: ${DateTime
-                              .fromMillisecondsSinceEpoch(
-                              int.parse(usageStats[index].firstTimeStamp!))
-                              .toIso8601String()}"),
+                          "Now time stamp: ${
+                              DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(usageStats[index]['nowTimeStamp']),
+                                  //isUtc:true
+                              ).toIso8601String()}"),
                       Text(
-                          "Last time stamp: ${DateTime
-                              .fromMillisecondsSinceEpoch(
-                              int.parse(usageStats[index].lastTimeStamp!))
-                              .toIso8601String()}"),
-                      Text(
-                          "Last time used: ${DateTime
-                              .fromMillisecondsSinceEpoch(
-                              int.parse(usageStats[index].lastTimeUsed!))
-                              .toIso8601String()}"),
-                      Text(
-                          "Total time used: ${(int.parse(usageStats[index].totalTimeInForeground!) / 1000 / 60).round()}"),
+                          "Now time stamp: ${
+                              DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(usageStats[index]['lastTimeUsed']),
+                                  //isUtc:true
+                              ).toIso8601String()}"),
+                          Text(
+                          "Total time used: ${(
+                              int.parse(usageStats[index]['totalTimeInForeground']) / 1000 / 60).round()
+                          .toString()}"),
                     ],
                   ),
                 );
