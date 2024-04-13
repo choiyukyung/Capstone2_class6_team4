@@ -17,24 +17,22 @@ public class UsageStatsEntity {
     @Column
     private String id;
     @Column
-    private String firstTimeStamp;
-    @Column
-    private String lastTimeStamp;
-    @Column
     private String lastTimeUsed;
     @Column
     private String packageName;
     @Column
     private String totalTimeInForeground;
+    @Column
+    private String nowTimeStamp;
 
-    public static UsageStatsEntity toUsageStatsEntity(UsageStatsDTO usageStatsDTO){
+    public static UsageStatsEntity toUsageStatsEntity(int usageStatsId, String id, String lastTimeUsed, String packageName, String totalTimeInForeground, String nowTimeStamp){
         UsageStatsEntity usageStatsEntity = new UsageStatsEntity();
-        usageStatsEntity.setUsageStatsId(usageStatsDTO.getUsageStatsId());
-        usageStatsEntity.setFirstTimeStamp(usageStatsDTO.getFirstTimeStamp());
-        usageStatsEntity.setLastTimeStamp(usageStatsDTO.getLastTimeStamp());
-        usageStatsEntity.setLastTimeUsed(usageStatsDTO.getLastTimeUsed());
-        usageStatsEntity.setPackageName(usageStatsDTO.getPackageName());
-        usageStatsEntity.setTotalTimeInForeground(usageStatsDTO.getTotalTimeInForeground());
+        usageStatsEntity.setUsageStatsId(usageStatsId);
+        usageStatsEntity.setId(id);
+        usageStatsEntity.setLastTimeUsed(lastTimeUsed);
+        usageStatsEntity.setPackageName(packageName);
+        usageStatsEntity.setTotalTimeInForeground(totalTimeInForeground);
+        usageStatsEntity.setNowTimeStamp(nowTimeStamp);
         return usageStatsEntity;
     }
 }

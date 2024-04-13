@@ -12,9 +12,8 @@ import lombok.ToString;
 public class UsageStatsDTO {
     private int usageStatsId; //pk
     private String id;
-    private String firstTimeStamp;
-    private String lastTimeStamp;
     private String lastTimeUsed;
     private String packageName;
     private String totalTimeInForeground;
+    private String nowTimeStamp;
 }
