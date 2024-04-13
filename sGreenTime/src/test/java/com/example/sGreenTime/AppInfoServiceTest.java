@@ -6,13 +6,11 @@ import com.example.sGreenTime.entity.UsageStatsEntity;
 import com.example.sGreenTime.repository.AppInfoRepository;
 import com.example.sGreenTime.service.AppInfoService;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.Optional;
 
@@ -49,7 +47,7 @@ public class AppInfoServiceTest {
 
         appInfoService.updateAppInfo(member);
 
-        Optional<AppInfoEntity> appInfoEntity1 = appInfoRepository.findByUserId(member.getId()).stream().findFirst();
+        Optional<AppInfoEntity> appInfoEntity1 = appInfoRepository.findById(member.getId()).stream().findFirst();
 
         System.out.println(appInfoEntity1);
 

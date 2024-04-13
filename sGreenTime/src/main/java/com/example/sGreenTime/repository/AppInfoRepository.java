@@ -20,7 +20,7 @@ public class AppInfoRepository {
         em.persist(appInfoEntity);
     }
 
-    public List<AppInfoEntity> findByUserId(String id){
+    public List<AppInfoEntity> findById(String id){
         //파라미터 바인딩 name으로, 조회 타입
         return em.createQuery("select m from AppInfoEntity m where m.id = :id", AppInfoEntity.class)
                 .setParameter("id", id)

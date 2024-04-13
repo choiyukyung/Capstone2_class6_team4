@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -16,9 +18,13 @@ public class UsageStatsController {
     private final UsageStatsService usageStatsService;
 
     @PostMapping("/usageStats")
-    public UsageStatsDTO save(@RequestBody UsageStatsDTO usageStatsDTO){
-        usageStatsService.save(usageStatsDTO);
-        return usageStatsDTO;
+    public List<UsageStatsDTO> save(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
+        for(UsageStatsDTO usageStatsDTO : usageStatsDTOList){
+            usageStatsService.save(usageStatsDTO);
+        }
+        return usageStatsDTOList;
     }
+
+    
 }
 
