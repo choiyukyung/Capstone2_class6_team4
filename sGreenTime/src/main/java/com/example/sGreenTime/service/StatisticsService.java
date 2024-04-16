@@ -20,6 +20,7 @@ import java.util.Optional;
 public class StatisticsService {
     private final StatisticsRepository statisticsRepository;
     private final AppInfoRepository appInfoRepository;
+    private final CarbonInObjService carbonInObjService;
 
     @Transactional
     public StatisticsEntity find(MemberDTO memberDTO){
@@ -68,6 +69,8 @@ public class StatisticsService {
         statisticsEntity.setWeekCarbonUsage(weekCarbonUsage);
         statisticsEntity.setTotalCarbonUsage(totalCarbonUsage);
         statisticsRepository.save(statisticsEntity);
+
+        carbonInObjService.save(id, yesterday);
         return statisticsEntity;
     }
 
