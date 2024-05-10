@@ -1,23 +1,48 @@
 package com.example.sGreenTime.service;
 
+import com.example.sGreenTime.dto.MemberDTO;
 import com.example.sGreenTime.entity.AppInfoEntity;
 import com.example.sGreenTime.entity.UsageStatsEntity;
 import com.example.sGreenTime.repository.AppInfoRepository;
-import com.example.sGreenTime.repository.UsageStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AppInfoService {
-    private final UsageStatsRepository usageStatsRepository;
     private final AppInfoRepository appInfoRepository;
+
+    public List<AppInfoEntity> findAppInfoOneDay(MemberDTO memberDTO, LocalDateTime day){
+
+        String id = memberDTO.getId();
+        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findByIdandStartDate(id, day);
+
+        List<AppInfoEntity> appInfoEntityYesterday = new ArrayList<>();
+        if(!appInfoEntityList.isEmpty()){
+            for(AppInfoEntity i : appInfoEntityList){
+                if(i.getEndDate().toLocalTime().isAfter(LocalTime.of(23, 50))){
+                    appInfoEntityYesterday.add(i);
+                }
+            }
+            if(appInfoEntityYesterday.isEmpty()){
+                System.out.println("사용자의 어제 appInfo 정보가 없습니다.");
+            }
+        }
+        else{
+            System.out.println("사용자의 appInfo 정보가 없습니다.");
+        }
+        return appInfoEntityYesterday;
+
+    }
 
     public AppInfoEntity updateAppInfo(UsageStatsEntity usageStatsEntity){
 
@@ -90,4 +115,5 @@ public class AppInfoService {
             return newAppInfo;
 
     }
+
 }

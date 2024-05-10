@@ -7,6 +7,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -24,6 +26,13 @@ public class AppInfoRepository {
         //파라미터 바인딩 name으로, 조회 타입
         return em.createQuery("select m from AppInfoEntity m where m.id = :id", AppInfoEntity.class)
                 .setParameter("id", id)
+                .getResultList();
+    }
+
+    public List<AppInfoEntity> findByIdandStartDate(String id, LocalDateTime startDate) {
+        return em.createQuery("select m from AppInfoEntity m where m.id = :id and m.startDate = :startDate", AppInfoEntity.class)
+                .setParameter("id", id)
+                .setParameter("startDate", startDate)
                 .getResultList();
     }
 }

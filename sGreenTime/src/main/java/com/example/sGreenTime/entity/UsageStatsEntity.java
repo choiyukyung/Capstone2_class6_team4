@@ -1,6 +1,5 @@
 package com.example.sGreenTime.entity;
 
-import com.example.sGreenTime.dto.UsageStatsDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
