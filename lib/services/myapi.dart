@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:usage_stats/usage_stats.dart';
-import './User.dart';
+import '../data/user.dart';
 
 class Service {
   static const MethodChannel _channel = MethodChannel('usage_stats');

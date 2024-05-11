@@ -1,6 +1,13 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import 'package:fl_chart/fl_chart.dart';
 import 'package:usage_stats/usage_stats.dart';
-import '../service.dart';
+
+import '../services/myapi.dart';
+import '../services/mychart.dart';
+import '../services/mycolor.dart';
 //import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 
@@ -15,8 +22,15 @@ class ScreenTime extends StatefulWidget {
 class _ScreenTimeState extends State<ScreenTime> {
   Service service = Service();
   List<dynamic> usageStats = [];
-  //int carbon = 0;
+  int pieTouchedIndex = 0;
+  int barTouchedIndex = 0;
+  double targetCarbon = 5.0;
 
+  double barWidth = 20;
+  double barShadowOpacity = 0.4;
+
+
+  //for usage_stats
   @override
   void initState() {
     super.initState();
@@ -28,20 +42,36 @@ class _ScreenTimeState extends State<ScreenTime> {
       UsageStats.grantUsagePermission();
 
       DateTime endDate = DateTime.now();
-      DateTime startDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0, 0);
+      DateTime startDate = DateTime(
+          endDate.year, endDate.month, endDate.day, 0, 0, 0);
 
-      var queryUsageStats = await service.getUsageStats(startDate, endDate, widget.id);
+      var queryUsageStats = await service.getUsageStats(
+          startDate, endDate, widget.id);
       if (queryUsageStats == null) print("Wrong input");
 
       setState(() {
         usageStats = queryUsageStats;
       });
-
     } catch (e) {
       print(e);
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Center(
+        child: Column(
+          children: [
+            Container(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+/*
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -91,4 +121,4 @@ class _ScreenTimeState extends State<ScreenTime> {
       ),
     );
   }
-}
+*/

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:capstone/User.dart';
-import '../service.dart';
-import '../sources/mycolor.dart';
+import 'package:capstone/data/user.dart';
+import '../services/myapi.dart';
+import '../services/mycolor.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -14,7 +14,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColor.deepGreen,
+      backgroundColor: MyColors.deepGreenBlue,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: AppBar(),
@@ -50,6 +50,7 @@ class _SignupFormState extends State<SignupForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Text('Create your account', style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.bold),),
+          const SizedBox(height: 5.0,),
           const Text('Enter your information', style: TextStyle(color: Colors.white, fontSize: 10.0,),),
           const SizedBox(height: 50.0,),
           Container(
@@ -152,8 +153,8 @@ class _SignupFormState extends State<SignupForm> {
               style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
-                  backgroundColor: MyColor.brightOrange,
-                  minimumSize: Size(330, 35),	//width, height
+                  backgroundColor: MyColors.brightOrange,
+                  minimumSize: Size(340, 37),	//width, height
 
                   alignment: Alignment.center,
                   textStyle: const TextStyle(fontSize: 12)
@@ -191,7 +192,7 @@ class _SignupFormState extends State<SignupForm> {
                   onPressed: (){
                     Navigator.pop(context);
                   },
-                  child: const Text('Log in  ', style: TextStyle(color: MyColor.brightOrange, fontSize: 10.0),)
+                  child: const Text('Log in  ', style: TextStyle(color: MyColors.brightOrange, fontSize: 10.0),)
               ),
             ],
           )
