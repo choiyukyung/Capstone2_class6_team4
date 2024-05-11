@@ -23,8 +23,9 @@ public class StatisticsEntity {
     private float weekCarbonUsage;
     @Column
     private float totalCarbonUsage;
-    @Getter
     @Column
     private LocalDate date;
+    @Column
+    private int cDate; // 누적일
 
 }

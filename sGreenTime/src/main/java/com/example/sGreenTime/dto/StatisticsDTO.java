@@ -19,6 +19,7 @@ public class StatisticsDTO {
     private float weekCarbonUsage;
     private float totalCarbonUsage;
     private LocalDate date;
+    private int cDate;
 
     public static StatisticsDTO toStatisticsDTO(StatisticsEntity statisticsEntity){
         StatisticsDTO statisticsDTO = new StatisticsDTO();
@@ -28,6 +29,7 @@ public class StatisticsDTO {
         statisticsDTO.setWeekCarbonUsage(statisticsEntity.getWeekCarbonUsage());
         statisticsDTO.setTotalCarbonUsage(statisticsEntity.getTotalCarbonUsage());
         statisticsDTO.setDate(statisticsEntity.getDate());
+        statisticsDTO.setCDate(statisticsDTO.getCDate());
         return statisticsDTO;
     }
 }

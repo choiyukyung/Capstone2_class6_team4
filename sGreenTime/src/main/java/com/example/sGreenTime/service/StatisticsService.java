@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +23,17 @@ public class StatisticsService {
     private final AppInfoRepository appInfoRepository;
     private final CarbonInObjService carbonInObjService;
 
+    // 해당 회원의 어제까지의 통계(어제, 일주일, 한달) 보내기
     @Transactional
-    public StatisticsEntity find(MemberDTO memberDTO){
-        LocalDate yesterday = LocalDate.now().minusDays(1);
+    public StatisticsEntity find(MemberDTO memberDTO, LocalDate day){
         String id = memberDTO.getId();
-        Optional<StatisticsEntity> statisticsEntity = statisticsRepository.findByIdAndDate(id, yesterday);
-        //해당 아이디에 어제까지의 날짜의 정보가 있는지 확인
+        Optional<StatisticsEntity> statisticsEntity = statisticsRepository.findByIdAndDate(id, day);
+        //해당 아이디에 해당 날짜까지의 정보가 있는지 확인
         if(statisticsEntity.isPresent()){
             return statisticsEntity.get();
         }
 
-        return save(id, yesterday);
+        return save(id, day);
     }
     @Transactional
     public StatisticsEntity save(String id, LocalDate yesterday){
@@ -46,6 +47,7 @@ public class StatisticsService {
 
         float weekCarbonUsage = 0;
         float totalCarbonUsage = 0;
+        LocalDate oldestStartDate = yesterday; //가장 오래된 날짜
 
         for(AppInfoEntity appInfoEntity : appInfoEntityList){
             //하루의 온전한 사용시간이 있어야 함.
@@ -62,12 +64,16 @@ public class StatisticsService {
                     System.out.println("week : " + appInfoEntity.getAppCarbon());
                 }
                 totalCarbonUsage += appInfoEntity.getAppCarbon();
+                if(oldestStartDate.isAfter(appStartDate)) {
+                    oldestStartDate = appStartDate;
+                }
             }
 
         }
 
         statisticsEntity.setWeekCarbonUsage(weekCarbonUsage);
         statisticsEntity.setTotalCarbonUsage(totalCarbonUsage);
+        statisticsEntity.setCDate(yesterday.until(oldestStartDate).getDays());
         statisticsRepository.save(statisticsEntity);
 
         carbonInObjService.save(id, yesterday);
