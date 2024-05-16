@@ -21,7 +21,7 @@ public class MapController {
 
 
     @PostMapping("/coordinates")
-    public String receiveCoordinates(@RequestBody String json, Model model) {
+    public String receiveGPS(@RequestBody String json, Model model) {
         JSONObject jsonObject = new JSONObject(json);
         String nowLatitude = jsonObject.getString("nowLatitude");
         String nowLongitude = jsonObject.getString("nowLongitude");
@@ -32,7 +32,7 @@ public class MapController {
 
     @CrossOrigin
     @PostMapping("getMapSwNe")
-    public ModelAndView receiveCoordinates1(@RequestParam("swLatLng") String swLatLng,
+    public ModelAndView mapCoordinates(@RequestParam("swLatLng") String swLatLng,
                                             @RequestParam("neLatLng") String neLatLng) {
         System.out.println("received: " + swLatLng + ", " + neLatLng);
         ModelAndView modelAndView = vworldData(swLatLng, neLatLng);
