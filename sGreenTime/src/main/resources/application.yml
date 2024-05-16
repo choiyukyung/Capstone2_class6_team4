@@ -7,6 +7,12 @@ spring:
     password: 1234
   thymeleaf:
     cache: false
+    prefix: classpath:templates/
+    suffix: .html
+    check-template-location: true
+  devtools:
+    livereload:
+      enabled: true
 
 
   # spring data jpa 설정

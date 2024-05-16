@@ -26,6 +26,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation 'mysql:mysql-connector-java:8.0.32'
+
+	//thymeleaf
+	implementation'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation group: 'org.json', name: 'json', version: '20231013'
 }
 
 tasks.named('test') {
