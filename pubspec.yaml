@@ -44,7 +44,8 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   vertical_barchart: ^2.0.0+2
   geolocator: ^11.0.0
-  flutter_inappwebview: ^6.0.0
+  webview_flutter: ^4.5.0
+  smooth_page_indicator: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,14 @@ flutter:
     - assets/icons/instagram.jpeg
     - assets/icons/gmail.jpeg
     - assets/icons/discord.jpeg
+    - assets/images/report_card_0.jpg
+    - assets/images/report_card_1.jpg
+    - assets/images/report_card_2.jpg
+    - assets/images/report_card_3.jpg
+    - assets/images/report_card_4.jpg
+    - assets/images/leaves.jpg
+    - assets/images/deer_in_forest.jpg
+    - assets/images/sunny_forest.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

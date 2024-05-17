@@ -22,13 +22,6 @@ class ScreenTime extends StatefulWidget {
 class _ScreenTimeState extends State<ScreenTime> {
   Service service = Service();
   List<dynamic> usageStats = [];
-  int pieTouchedIndex = 0;
-  int barTouchedIndex = 0;
-  double targetCarbon = 5.0;
-
-  double barWidth = 20;
-  double barShadowOpacity = 0.4;
-
 
   //for usage_stats
   @override
@@ -44,13 +37,24 @@ class _ScreenTimeState extends State<ScreenTime> {
       DateTime endDate = DateTime.now();
       DateTime startDate = DateTime(
           endDate.year, endDate.month, endDate.day, 0, 0, 0);
+  /*
+      var reponse = await service.postUsageStats
+        (
+          widget.id,
+          startDate,
+          endDate
+        );
 
-      var queryUsageStats = await service.getUsageStats(
-          startDate, endDate, widget.id);
-      if (queryUsageStats == null) print("Wrong input");
+ */
+      var reponse = await service.queryUsageStats
+        (
+          startDate,
+          endDate
+      );
+      if (reponse.isEmpty) print("Wrong input");
 
       setState(() {
-        usageStats = queryUsageStats;
+        usageStats = reponse;
       });
     } catch (e) {
       print(e);
@@ -59,66 +63,38 @@ class _ScreenTimeState extends State<ScreenTime> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Center(
-        child: Column(
-          children: [
-            Container(),
-          ],
+    return Center(
+      child: RefreshIndicator(
+        onRefresh: initUsage,
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(usageStats[index]['packageName']),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                      "Query time stamp: ${
+                          DateTime.fromMillisecondsSinceEpoch(
+                            int.parse(usageStats[index]['nowTimeStamp']),
+                            //isUtc:true
+                          ).toIso8601String()}"),
+                  Text(
+                      "Last time used: ${
+                          DateTime.fromMillisecondsSinceEpoch(
+                            int.parse(usageStats[index]['lastTimeUsed']),
+                            //isUtc:true
+                          ).toIso8601String()}"),
+                  Text(
+                      "Total time used: ${usageStats[index]['totalTimeInForeground']}"),
+                ]
+              ),
+            );
+          },
+          //separatorBuilder: (context, index) => const Divider(),
+          itemCount: usageStats.length,
         ),
       ),
     );
   }
 }
-/*
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text("Usage Stats"), actions: const [
-          IconButton(
-            onPressed: UsageStats.grantUsagePermission,
-            icon: Icon(Icons.settings),
-          )
-        ]),
-        body: Container(
-          child: RefreshIndicator(
-            onRefresh: initUsage,
-            child: ListView.separated(
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(usageStats[index]['packageName']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-
-                      Text(
-                          "Now time stamp: ${
-                              DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(usageStats[index]['nowTimeStamp']),
-                                  //isUtc:true
-                              ).toIso8601String()}"),
-                      Text(
-                          "Now time stamp: ${
-                              DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(usageStats[index]['lastTimeUsed']),
-                                  //isUtc:true
-                              ).toIso8601String()}"),
-                          Text(
-                          "Total time used: ${(
-                              int.parse(usageStats[index]['totalTimeInForeground']) / 1000 / 60).round()
-                          .toString()}"),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => const Divider(),
-              itemCount: usageStats.length,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-*/

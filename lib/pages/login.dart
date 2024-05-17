@@ -121,7 +121,7 @@ class _LoginFormState extends State<LoginForm> {
                     return;
                   }
                   try{
-                    final user = await service.searchUser(id);
+                    final user = await service.queryUserInfoId(id);
                     if (user != null){
                       _formKey.currentState!.reset();
                       if (!mounted) return;

@@ -167,7 +167,7 @@ class _SignupFormState extends State<SignupForm> {
                       name: name,
                       birthdate: birthdate,
                   );
-                  final response = await service.saveUser(user);
+                  final response = await service.postUserInfo(user);
                   if (response == true){
                     _formKey.currentState!.reset();
                     if (!mounted) return;

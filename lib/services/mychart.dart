@@ -379,7 +379,7 @@ class LineBottomTitles extends StatelessWidget {
         child: Text(
           text,
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: 9,
             color: Colors.orange,
             fontWeight: FontWeight.bold,
           ),
@@ -413,7 +413,7 @@ class LineLeftTitles extends StatelessWidget {
       return SideTitleWidget(
         axisSide: meta.axisSide,
         space: 1,
-        child: Text('Goal\n${value}m', style: style),
+        child: Text('${value}', style: style),
       );
     } else {
       return Container();

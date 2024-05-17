@@ -46,23 +46,6 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
     'Item 8 Contents',
   ];
 
-  List<VBarChartModel> appdata = [
-    VBarChartModel(
-      index: 0,
-      label: "today",
-      colors: [Colors.orange, Colors.deepOrange],
-      jumlah: 130,
-      tooltip: "130m",
-    ),
-    VBarChartModel(
-      index: 1,
-      label: "yesterday",
-      colors: [Colors.lime, Colors.green.shade600],
-      jumlah: 78,
-      tooltip: "78m",
-    ),
-  ];
-
   void cardClickEvent(BuildContext context, int index) {
     String content = itemContents[index];
     Navigator.push(
@@ -79,7 +62,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
       length: 2, // 탭의 개수
       child: Scaffold(
         backgroundColor: MyColors.deepGreenBlue,
-        appBar: TabBar(
+        appBar: const TabBar(
           labelColor: Colors.white,
           labelStyle: TextStyle(fontSize: 15.0),
           unselectedLabelColor: MyColors.brightGreenBlue,
@@ -94,50 +77,11 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 30,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 145,
-                        height: 130,
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.lime,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(color: Colors.black12,
-                              spreadRadius: 1,
-                              blurRadius: 10,
-                              offset: Offset(1, 1))
-                          ],
-
-                        ),
-                        child: Center(child: Text('you save...\n100 km')),
-                      ),
-                      Container(
-                        width: 235,
-                        height: 130,
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.lime,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(color: Colors.black12,
-                              spreadRadius: 1,
-                              blurRadius: 10,
-                              offset: Offset(1, 1))
-                          ],
-
-                        ),
-                        child: Center(child: Text('you save...\n20 trees')),
-                      ),
-                    ],
-                  ),
-                  DotLineChart(appdata),
                   Container(
                     width: double.infinity,
                     height: 1500,
-                    margin: const EdgeInsets.all(20),
-                    padding: const EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       border: Border.all(color: Colors.grey, width: 1.5,),
@@ -152,7 +96,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                           children: [
                             const Text(
                               "Daily report",
-                              style: TextStyle(fontSize: 25.0,
+                              style: TextStyle(fontSize: 20.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
@@ -160,7 +104,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                             Text(
                               "\ndate: ${DateFormat('MM.dd').format(
                                   yesterday)}\nreporter: SGreenTime",
-                              style: const TextStyle(fontSize: 12.0,
+                              style: const TextStyle(fontSize: 9.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
@@ -169,7 +113,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                         const SizedBox(height: 35.0,),
                         const Text(
                           " What's the biggest cause of digital carbon?",
-                          style: TextStyle(fontSize: 15.0,
+                          style: TextStyle(fontSize: 11.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
@@ -222,7 +166,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                           \ninstagram.
                           \nadvice: how about turn off
                           \nalarm of instagram?''',
-                              style: TextStyle(fontSize: 13.0,
+                              style: TextStyle(fontSize: 9.0,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white70),
                             ),
@@ -233,7 +177,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
 
                         const Text(
                           " How much daily digital carbon amount changes?",
-                          style: TextStyle(fontSize: 15.0,
+                          style: TextStyle(fontSize: 11.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
@@ -348,7 +292,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
 
                         const Text(
                           " How much digital carbon generated for 7 days?",
-                          style: TextStyle(fontSize: 15.0,
+                          style: TextStyle(fontSize: 11.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
@@ -461,7 +405,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                           '''     for 5 days, screen time goal was successfully achieved!
                       \n     but for 2 days, failed.
                       ''',
-                          style: TextStyle(fontSize: 13.0,
+                          style: TextStyle(fontSize: 9.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white70),
                         ),
@@ -481,7 +425,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                   Container(
                     width: 410,
                     child: Text(
-                        'Ranking',
+                        ' Ranking',
                         textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 20.0,
                             fontWeight: FontWeight.w500,
@@ -535,7 +479,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                               Text(
                                                   '${index + 1} nickname',
                                                   style: TextStyle(
-                                                      fontSize: 15.0,
+                                                      fontSize: 13.0,
                                                       fontWeight: FontWeight
                                                           .w500,
                                                       color: Colors.white)
@@ -544,7 +488,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                               Text(
                                                   '100',
                                                   style: TextStyle(
-                                                      fontSize: 25.0,
+                                                      fontSize: 20.0,
                                                       fontWeight: FontWeight
                                                           .w500,
                                                       color: Colors.white)
