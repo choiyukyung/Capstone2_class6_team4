@@ -73,6 +73,12 @@
 <input type="hidden" id="swLatLngHtml" value="값"/>
 
 <script>
+
+    var nowLat = document.getElementById("nowLatitude").getAttribute("data-value");
+    //console.log(nowLat);
+    var nowLng = document.getElementById("nowLongitude").getAttribute("data-value");
+    //console.log(nowLng);
+
     //산책로 그리기
     //산책로 page 수 가져오기
     var trailTotalPagesNum = document.getElementById("trailTotalPagesNum").getAttribute("data-value");
@@ -86,10 +92,6 @@
     //console.log(obj[0]); //geometry~ 1개(안에 properties 있음)
     //console.log(obj[0].geometry); //coordinates~
     //console.log(obj[0].geometry.coordinates[0][0]); //이게 좌표 하나임
-
-
-    var nowLat = document.getElementById("nowLatitude").getAttribute("data-value");
-    //console.log(nowLat);
 
 
     //등산로 그리기
@@ -194,6 +196,19 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
+            var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
         });
     }
 
@@ -236,6 +251,19 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
+                var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
             });
         }
     }
@@ -269,6 +297,19 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
+            var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
         });
     }
 
@@ -310,6 +351,19 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
+                var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
             });
         }
     }
@@ -349,6 +403,19 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
+            var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
         });
     }
 
@@ -396,6 +463,19 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
+                var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
             });
         }
     }
@@ -434,6 +514,19 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
+            var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
         });
     }
 
@@ -480,6 +573,19 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
+                var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
             });
         }
     }
@@ -518,6 +624,19 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
+            var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
         });
     }
 
@@ -564,6 +683,19 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
+                var polylineTrans = new kakao.maps.Polyline({
+                map: map,
+                path: [
+                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    //new kakao.maps.LatLng(nowLat, notLng)
+                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                ],
+                strokeWeight: 2,
+                strokeColor: '#FF00FF',
+                strokeOpacity: 0,
+                strokeStyle: 'dashed'
+            });
+            console.log("길이: "+ polylineTrans.getLength());
             });
         }
     }
