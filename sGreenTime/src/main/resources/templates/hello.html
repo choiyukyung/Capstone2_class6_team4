@@ -74,10 +74,28 @@
 
 <script>
 
+    //현재 사용자 위치
     var nowLat = document.getElementById("nowLatitude").getAttribute("data-value");
     //console.log(nowLat);
     var nowLng = document.getElementById("nowLongitude").getAttribute("data-value");
     //console.log(nowLng);
+
+    //방문한 산책로 리스트 가져오기
+    var xhttp2 = new XMLHttpRequest();
+    var visitedTrailList = [];
+    xhttp2.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            //573줄
+            console.log(response);
+            visitedTrailList = response;
+            console.log(visitedTrailList);
+    }
+};
+    var userId = "sample"; // 실제 사용자 아이디로 변경하기
+    var url = "/visitedTrails?id=" + userId;
+    xhttp2.open("POST", url, true);
+    xhttp2.send();
 
     //산책로 그리기
     //산책로 page 수 가져오기
@@ -165,6 +183,11 @@
 
     });
 
+    ////그리기////
+
+    var nowTrail;
+    var nowTrailLat;
+    var nowTrailLng;
 
     //산책로 page1
     //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
@@ -196,19 +219,11 @@
             var latlng = mouseEvent.latLng;
             console.log(latlng.toString());
             console.log(properties[j]);
-            var polylineTrans = new kakao.maps.Polyline({
-                map: map,
-                path: [
-                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                    //new kakao.maps.LatLng(nowLat, notLng)
-                    new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                ],
-                strokeWeight: 2,
-                strokeColor: '#FF00FF',
-                strokeOpacity: 0,
-                strokeStyle: 'dashed'
-            });
-            console.log("길이: "+ polylineTrans.getLength());
+            nowTrail = JSON.parse(properties[j]);
+            nowTrailLat = latlng.getLat();
+            nowTrailLng = latlng.getLng();
+            console.log(nowTrail);
+            checkIfVisitedTrail(nowTrail);
         });
     }
 
@@ -251,10 +266,20 @@
                 var latlng = mouseEvent.latLng;
                 console.log(latlng.toString());
                 console.log(properties[j]);
-                var polylineTrans = new kakao.maps.Polyline({
+                nowTrail = JSON.parse(properties[j]);
+                nowTrailLat = latlng.getLat();
+                nowTrailLng = latlng.getLng();
+                console.log(nowTrail);
+                checkIfVisitedTrail(nowTrail);
+            });
+        }
+    }
+    function checkIfVisitedTrail(nowTrail){
+        if(!visitedTrailList.includes(nowTrail.lnk_nam)){
+        var polylineTrans = new kakao.maps.Polyline({
                 map: map,
                 path: [
-                    new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
+                    new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
                     //new kakao.maps.LatLng(nowLat, notLng)
                     new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
                 ],
@@ -263,10 +288,30 @@
                 strokeOpacity: 0,
                 strokeStyle: 'dashed'
             });
-            console.log("길이: "+ polylineTrans.getLength());
-            });
+            var length = polylineTrans.getLength()
+            console.log("길이: "+ length);
+            if(length <= 10111111){
+                nowTrail.id = userId;
+                var xhttp3 = new XMLHttpRequest();
+                xhttp3.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        // 요청이 완료되었을 때의 동작
+                        console.log("Visited trails added successfully!");
+                    }
+                };
+
+                var url = "/addVisitedTrail";
+                xhttp3.open("POST", url, true);
+                xhttp3.setRequestHeader("Content-type", "application/json");
+
+                var data = JSON.stringify(nowTrail);
+                console.log(data);
+                xhttp3.send(data);
+            }
+
         }
     }
+
 
     //등산로 page 1
     for (let j = 0; j < hikingObj.length; j++) {

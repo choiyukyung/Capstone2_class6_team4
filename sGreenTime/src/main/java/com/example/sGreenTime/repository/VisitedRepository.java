@@ -9,6 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class VisitedRepository {
@@ -23,5 +25,10 @@ public class VisitedRepository {
     }
     public void save(VisitedHikingEntity visitedHikingEntity) { em.persist(visitedHikingEntity); }
 
+    public List<VisitedTrailEntity> findAllByIdString(String id) {
+        return em.createQuery("select v from VisitedTrailEntity v where v.id = :id", VisitedTrailEntity.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
 
 }
