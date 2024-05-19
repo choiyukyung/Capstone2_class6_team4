@@ -1,6 +1,10 @@
 package com.example.sGreenTime.service;
 
+import com.example.sGreenTime.dto.VisitedHikingDTO;
+import com.example.sGreenTime.dto.VisitedParkDTO;
 import com.example.sGreenTime.dto.VisitedTrailDTO;
+import com.example.sGreenTime.entity.VisitedHikingEntity;
+import com.example.sGreenTime.entity.VisitedParkEntity;
 import com.example.sGreenTime.entity.VisitedTrailEntity;
 import com.example.sGreenTime.repository.VisitedRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +21,7 @@ public class VisitedService {
     private final VisitedRepository visitedRepository;
 
     public List<String> getVisitedTrailLnkNam(String id){
-        List<VisitedTrailEntity> visitedTrails = visitedRepository.findAllByIdString(id);
+        List<VisitedTrailEntity> visitedTrails = visitedRepository.findTrailByIdString(id);
         List<String> lnkNamList = new ArrayList<>();
         for(VisitedTrailEntity trail : visitedTrails){
             lnkNamList.add(trail.getLnkNam());
@@ -28,5 +32,33 @@ public class VisitedService {
     public void saveTrail(VisitedTrailDTO visitedTrailDTO){
         VisitedTrailEntity newVisitedTrailEntity = VisitedTrailEntity.toVisitedTrailEntity(visitedTrailDTO);
         visitedRepository.save(newVisitedTrailEntity);
+    }
+
+    public List<String> getVisitedHikingMntnNm(String id){
+        List<VisitedHikingEntity> visitedHikings = visitedRepository.findHikingByIdString(id);
+        List<String> mntnNmList = new ArrayList<>();
+        for(VisitedHikingEntity trail : visitedHikings){
+            mntnNmList.add(trail.getMntnNm());
+        }
+        return mntnNmList;
+    }
+
+    public void saveHiking(VisitedHikingDTO visitedHikingDTO){
+        VisitedHikingEntity newVisitedHikingEntity = VisitedHikingEntity.toVisitedHikingEntity(visitedHikingDTO);
+        visitedRepository.save(newVisitedHikingEntity);
+    }
+
+    public List<String> getVisitedParkName(String id){
+        List<VisitedParkEntity> visitedParks = visitedRepository.findParkByIdString(id);
+        List<String> mntnNmList = new ArrayList<>();
+        for(VisitedParkEntity trail : visitedParks){
+            mntnNmList.add(trail.getParkName());
+        }
+        return mntnNmList;
+    }
+
+    public void savePark(VisitedParkDTO visitedParkDTO){
+        VisitedParkEntity newVisitedParkEntity = VisitedParkEntity.toVisitedParkEntity(visitedParkDTO);
+        visitedRepository.save(newVisitedParkEntity);
     }
 }

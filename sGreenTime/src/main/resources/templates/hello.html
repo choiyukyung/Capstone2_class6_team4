@@ -86,7 +86,7 @@
     var userId = "sample"; // 실제 사용자 아이디로 변경하기
     // HTTP 요청을 Promise로 감싸기
     // (visitedTrailList에 값이 들어오기 전에 사용하는 것 방지)
-    function makeRequest() {
+    function makeTrailRequest() {
         return new Promise(function (resolve, reject) {
             xhttp2.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
@@ -100,6 +100,52 @@
             var url = "/visitedTrails?id=" + userId;
             xhttp2.open("POST", url, true);
             xhttp2.send();
+        });
+    }
+
+    //방문한 등산로 리스트 가져오기
+    var xhttp4 = new XMLHttpRequest();
+    var visitedHikingList = [];
+    var userId = "sample"; // 실제 사용자 아이디로 변경하기
+    // HTTP 요청을 Promise로 감싸기
+    // (visitedHikingList에 값이 들어오기 전에 사용하는 것 방지)
+    function makeHikingRequest() {
+        return new Promise(function (resolve, reject) {
+            xhttp4.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    //promise 사용하지 않으면 이 부분이 폴리라인 그린 이후일 수 있음.
+                    var response = JSON.parse(this.responseText);
+                    visitedHikingList = response;
+                    resolve(visitedHikingList); // Promise를 이행하고 visitedHikingList 반환
+                }
+            };
+
+            var url = "/visitedHikings?id=" + userId;
+            xhttp4.open("POST", url, true);
+            xhttp4.send();
+        });
+    }
+
+    //방문한 공원 리스트 가져오기
+    var xhttp6 = new XMLHttpRequest();
+    var visitedParkList = [];
+    var userId = "sample"; // 실제 사용자 아이디로 변경하기
+    // HTTP 요청을 Promise로 감싸기
+    // (visitedParkList에 값이 들어오기 전에 사용하는 것 방지)
+    function makeParkRequest() {
+        return new Promise(function (resolve, reject) {
+            xhttp6.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    //promise 사용하지 않으면 이 부분이 폴리라인 그린 이후일 수 있음.
+                    var response = JSON.parse(this.responseText);
+                    visitedParkList = response;
+                    resolve(visitedParkList); // Promise를 이행하고 visitedParkList 반환
+                }
+            };
+
+            var url = "/visitedParks?id=" + userId;
+            xhttp6.open("POST", url, true);
+            xhttp6.send();
         });
     }
 
@@ -192,13 +238,12 @@
 
     async function fetchData() {
         try {
-            visitedTrailList = await makeRequest();
+            visitedTrailList = await makeTrailRequest();
             console.log("서버에서 받은 visitedTrailList:", visitedTrailList);
 
             var nowTrail;
             var nowTrailLat;
             var nowTrailLng;
-
 
             //산책로 page1
             //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
@@ -375,6 +420,12 @@
                 }
             }
 
+            visitedHikingList = await makeHikingRequest();
+            console.log("서버에서 받은 visitedHikingList:", visitedHikingList);
+
+            var nowHiking;
+            var nowHikingLat;
+            var nowHikingLng;
 
             //등산로 page 1
             for (let j = 0; j < hikingObj.length; j++) {
@@ -404,19 +455,11 @@
                     var latlng = mouseEvent.latLng;
                     console.log(latlng.toString());
                     console.log(properties);
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    console.log("길이: " + polylineTrans.getLength());
+                    nowHiking = JSON.parse(properties);
+                    nowHikingLat = latlng.getLat();
+                    nowHikingLng = latlng.getLng();
+                    console.log(nowHiking);
+                    checkIfVisitedHiking(nowHiking);
                 });
             }
 
@@ -457,23 +500,69 @@
                         var latlng = mouseEvent.latLng;
                         console.log(latlng.toString());
                         console.log(properties);
-                        var polylineTrans = new kakao.maps.Polyline({
-                            map: map,
-                            path: [
-                                new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                                //new kakao.maps.LatLng(nowLat, notLng)
-                                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                            ],
-                            strokeWeight: 2,
-                            strokeColor: '#FF00FF',
-                            strokeOpacity: 0,
-                            strokeStyle: 'dashed'
-                        });
-                        console.log("길이: " + polylineTrans.getLength());
+                        nowHiking = JSON.parse(properties);
+                        nowHikingLat = latlng.getLat();
+                        nowHikingLng = latlng.getLng();
+                        console.log(nowHiking);
+                        checkIfVisitedHiking(nowHiking);
                     });
                 }
             }
 
+            function checkIfVisitedHiking(nowHiking, paths) {
+                if (!visitedHikingList.includes(nowHiking.mntn_nm)) {
+                    var polylineTrans = new kakao.maps.Polyline({
+                        map: map,
+                        path: [
+                            new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
+                            //new kakao.maps.LatLng(nowLat, notLng)
+                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                        ],
+                        strokeWeight: 2,
+                        strokeColor: '#FF00FF',
+                        strokeOpacity: 0,
+                        strokeStyle: 'dashed'
+                    });
+                    var length = polylineTrans.getLength()
+                    console.log("길이: " + length);
+                    if (length <= 10111111) {
+                        nowHiking.id = userId;
+                        var xhttp5 = new XMLHttpRequest();
+                        xhttp5.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                // 요청이 완료되었을 때의 동작
+                                console.log("Visited Hikings added successfully!");
+
+                                var polyline = new kakao.maps.Polyline({
+                                    map: map,
+                                    path: paths,
+                                    strokeWeight: 5,
+                                    strokeColor: '#00FF00',
+                                    strokeOpacity: 0.8,
+                                    strokeStyle: 'solid'
+                                });
+                                polyline.setMap(map);
+                            }
+                        };
+
+                        var url = "/addVisitedHiking";
+                        xhttp5.open("POST", url, true);
+                        xhttp5.setRequestHeader("Content-type", "application/json");
+
+                        var data = JSON.stringify(nowHiking);
+                        console.log(data);
+                        xhttp5.send(data);
+                    }
+
+                }
+            }
+
+            visitedParkList = await makeParkRequest();
+            console.log("서버에서 받은 visitedParkList:", visitedParkList);
+
+            var nowPark;
+            var nowParkLat;
+            var nowParkLng;
 
             //공원1 page 1
             for (let j = 0; j < park1Obj1.length; j++) {
@@ -508,19 +597,11 @@
                     var latlng = mouseEvent.latLng;
                     console.log(latlng.toString());
                     console.log(properties);
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    console.log("길이: " + polylineTrans.getLength());
+                    nowPark = JSON.parse(properties);
+                    nowParkLat = latlng.getLat();
+                    nowParkLng = latlng.getLng();
+                    console.log(nowPark);
+                    checkIfVisitedPark(nowPark);
                 });
             }
 
@@ -567,19 +648,11 @@
                         var latlng = mouseEvent.latLng;
                         console.log(latlng.toString());
                         console.log(properties);
-                        var polylineTrans = new kakao.maps.Polyline({
-                            map: map,
-                            path: [
-                                new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                                //new kakao.maps.LatLng(nowLat, notLng)
-                                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                            ],
-                            strokeWeight: 2,
-                            strokeColor: '#FF00FF',
-                            strokeOpacity: 0,
-                            strokeStyle: 'dashed'
-                        });
-                        console.log("길이: " + polylineTrans.getLength());
+                        nowPark = JSON.parse(properties);
+                        nowParkLat = latlng.getLat();
+                        nowParkLng = latlng.getLng();
+                        console.log(nowPark);
+                        checkIfVisitedPark(nowPark);
                     });
                 }
             }
@@ -617,19 +690,11 @@
                     var latlng = mouseEvent.latLng;
                     console.log(latlng.toString());
                     console.log(properties);
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    console.log("길이: " + polylineTrans.getLength());
+                    nowPark = JSON.parse(properties);
+                    nowParkLat = latlng.getLat();
+                    nowParkLng = latlng.getLng();
+                    console.log(nowPark);
+                    checkIfVisitedPark(nowPark);
                 });
             }
 
@@ -675,20 +740,12 @@
                         var latlng = mouseEvent.latLng;
                         console.log(latlng.toString());
                         console.log(properties);
-                        var polylineTrans = new kakao.maps.Polyline({
-                            map: map,
-                            path: [
-                                new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                                //new kakao.maps.LatLng(nowLat, notLng)
-                                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                            ],
-                            strokeWeight: 2,
-                            strokeColor: '#FF00FF',
-                            strokeOpacity: 0,
-                            strokeStyle: 'dashed'
+                        nowPark = JSON.parse(properties);
+                        nowParkLat = latlng.getLat();
+                        nowParkLng = latlng.getLng();
+                        console.log(nowPark);
+                        checkIfVisitedPark(nowPark);
                         });
-                        console.log("길이: " + polylineTrans.getLength());
-                    });
                 }
             }
 
@@ -725,19 +782,11 @@
                     var latlng = mouseEvent.latLng;
                     console.log(latlng.toString());
                     console.log(properties);
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    console.log("길이: " + polylineTrans.getLength());
+                    nowPark = JSON.parse(properties);
+                    nowParkLat = latlng.getLat();
+                    nowParkLng = latlng.getLng();
+                    console.log(nowPark);
+                    checkIfVisitedPark(nowPark);
                 });
             }
 
@@ -783,20 +832,60 @@
                         var latlng = mouseEvent.latLng;
                         console.log(latlng.toString());
                         console.log(properties);
-                        var polylineTrans = new kakao.maps.Polyline({
-                            map: map,
-                            path: [
-                                new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()),
-                                //new kakao.maps.LatLng(nowLat, notLng)
-                                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                            ],
-                            strokeWeight: 2,
-                            strokeColor: '#FF00FF',
-                            strokeOpacity: 0,
-                            strokeStyle: 'dashed'
-                        });
-                        console.log("길이: " + polylineTrans.getLength());
+                        nowPark = JSON.parse(properties);
+                        nowParkLat = latlng.getLat();
+                        nowParkLng = latlng.getLng();
+                        console.log(nowPark);
+                        checkIfVisitedPark(nowPark);
                     });
+                }
+            }
+
+            function checkIfVisitedPark(nowPark, paths) {
+                if (!visitedParkList.includes(nowPark.park_name)) {
+                    var polylineTrans = new kakao.maps.Polyline({
+                        map: map,
+                        path: [
+                            new kakao.maps.LatLng(nowParkLat, nowParkLng),
+                            //new kakao.maps.LatLng(nowLat, notLng)
+                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                        ],
+                        strokeWeight: 2,
+                        strokeColor: '#FF00FF',
+                        strokeOpacity: 0,
+                        strokeStyle: 'dashed'
+                    });
+                    var length = polylineTrans.getLength()
+                    console.log("길이: " + length);
+                    if (length <= 10111111) {
+                        nowPark.id = userId;
+                        var xhttp6 = new XMLHttpRequest();
+                        xhttp6.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                // 요청이 완료되었을 때의 동작
+                                console.log("Visited Parks added successfully!");
+
+                                var polyline = new kakao.maps.Polyline({
+                                    map: map,
+                                    path: paths,
+                                    strokeWeight: 5,
+                                    strokeColor: '#00FF00',
+                                    strokeOpacity: 0.8,
+                                    strokeStyle: 'solid'
+                                });
+                                polyline.setMap(map);
+                            }
+                        };
+
+                        var url = "/addVisitedPark";
+                        xhttp6.open("POST", url, true);
+                        xhttp6.setRequestHeader("Content-type", "application/json");
+
+                        var data = JSON.stringify(nowPark);
+                        console.log(data);
+                        xhttp6.send(data);
+                    }
+
                 }
             }
 

@@ -25,8 +25,19 @@ public class VisitedRepository {
     }
     public void save(VisitedHikingEntity visitedHikingEntity) { em.persist(visitedHikingEntity); }
 
-    public List<VisitedTrailEntity> findAllByIdString(String id) {
+    public List<VisitedTrailEntity> findTrailByIdString(String id) {
         return em.createQuery("select v from VisitedTrailEntity v where v.id = :id", VisitedTrailEntity.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+    public List<VisitedHikingEntity> findHikingByIdString(String id) {
+        return em.createQuery("select v from VisitedHikingEntity v where v.id = :id", VisitedHikingEntity.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    public List<VisitedParkEntity> findParkByIdString(String id) {
+        return em.createQuery("select v from VisitedParkEntity v where v.id = :id", VisitedParkEntity.class)
                 .setParameter("id", id)
                 .getResultList();
     }
