@@ -372,7 +372,6 @@
             }
 
             function checkIfVisitedTrail(nowTrail, paths) {
-                console.log("!!!!!!!!!!!!" + visitedTrailList);
                 if (!visitedTrailList.includes(nowTrail.lnk_nam)) {
                     var polylineTrans = new kakao.maps.Polyline({
                         map: map,
@@ -459,7 +458,7 @@
                     nowHikingLat = latlng.getLat();
                     nowHikingLng = latlng.getLng();
                     console.log(nowHiking);
-                    checkIfVisitedHiking(nowHiking);
+                    checkIfVisitedHiking(nowHiking, paths2);
                 });
             }
 
@@ -504,7 +503,7 @@
                         nowHikingLat = latlng.getLat();
                         nowHikingLng = latlng.getLng();
                         console.log(nowHiking);
-                        checkIfVisitedHiking(nowHiking);
+                        checkIfVisitedHiking(nowHiking, paths2);
                     });
                 }
             }
@@ -585,7 +584,7 @@
                 var polygon = new kakao.maps.Polygon({
                     path: park1Paths1, // 그려질 다각형의 좌표 배열입니다
                     strokeWeight: 3, // 선의 두께입니다
-                    strokeColor: '#39DE2A', // 선의 색깔입니다
+                    strokeColor: '#00FFFF', // 선의 색깔입니다
                     strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'longdash', // 선의 스타일입니다
                     fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -601,7 +600,7 @@
                     nowParkLat = latlng.getLat();
                     nowParkLng = latlng.getLng();
                     console.log(nowPark);
-                    checkIfVisitedPark(nowPark);
+                    checkIfVisitedPark(nowPark, park1Paths1);
                 });
             }
 
@@ -636,7 +635,7 @@
                         map: map,
                         path: park1Paths, // 그려질 다각형의 좌표 배열입니다
                         strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#39DE2A', // 선의 색깔입니다
+                        strokeColor: '#00FFFF', // 선의 색깔입니다
                         strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                         strokeStyle: 'longdash', // 선의 스타일입니다
                         fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -652,7 +651,7 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark);
+                        checkIfVisitedPark(nowPark, park1Paths);
                     });
                 }
             }
@@ -678,7 +677,7 @@
                 var polygon2 = new kakao.maps.Polygon({
                     path: park2Paths1, // 그려질 다각형의 좌표 배열입니다
                     strokeWeight: 3, // 선의 두께입니다
-                    strokeColor: '#39DE2A', // 선의 색깔입니다
+                    strokeColor: '#00FFFF', // 선의 색깔입니다
                     strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'longdash', // 선의 스타일입니다
                     fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -694,7 +693,7 @@
                     nowParkLat = latlng.getLat();
                     nowParkLng = latlng.getLng();
                     console.log(nowPark);
-                    checkIfVisitedPark(nowPark);
+                    checkIfVisitedPark(nowPark, park2Paths1);
                 });
             }
 
@@ -728,7 +727,7 @@
                     var polygon2 = new kakao.maps.Polygon({
                         path: park2Paths, // 그려질 다각형의 좌표 배열입니다
                         strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#39DE2A', // 선의 색깔입니다
+                        strokeColor: '#00FFFF', // 선의 색깔입니다
                         strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                         strokeStyle: 'longdash', // 선의 스타일입니다
                         fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -744,8 +743,8 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark);
-                        });
+                        checkIfVisitedPark(nowPark, park2Paths);
+                    });
                 }
             }
 
@@ -770,7 +769,7 @@
                 var polygon3 = new kakao.maps.Polygon({
                     path: park3Paths1, // 그려질 다각형의 좌표 배열입니다
                     strokeWeight: 3, // 선의 두께입니다
-                    strokeColor: '#39DE2A', // 선의 색깔입니다
+                    strokeColor: '#00FFFF', // 선의 색깔입니다
                     strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                     strokeStyle: 'longdash', // 선의 스타일입니다
                     fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -786,7 +785,7 @@
                     nowParkLat = latlng.getLat();
                     nowParkLng = latlng.getLng();
                     console.log(nowPark);
-                    checkIfVisitedPark(nowPark);
+                    checkIfVisitedPark(nowPark, park3Paths1);
                 });
             }
 
@@ -820,7 +819,7 @@
                     var polygon3 = new kakao.maps.Polygon({
                         path: park3Paths, // 그려질 다각형의 좌표 배열입니다
                         strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#39DE2A', // 선의 색깔입니다
+                        strokeColor: '#00FFFF', // 선의 색깔입니다
                         strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                         strokeStyle: 'longdash', // 선의 스타일입니다
                         fillColor: '#A2FF99', // 채우기 색깔입니다
@@ -836,7 +835,7 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark);
+                        checkIfVisitedPark(nowPark, park3Paths);
                     });
                 }
             }
@@ -865,15 +864,16 @@
                                 // 요청이 완료되었을 때의 동작
                                 console.log("Visited Parks added successfully!");
 
-                                var polyline = new kakao.maps.Polyline({
-                                    map: map,
-                                    path: paths,
-                                    strokeWeight: 5,
-                                    strokeColor: '#00FF00',
-                                    strokeOpacity: 0.8,
-                                    strokeStyle: 'solid'
+                                var polygon = new kakao.maps.Polygon({
+                                    path: paths, // 그려질 다각형의 좌표 배열입니다
+                                    strokeWeight: 3, // 선의 두께입니다
+                                    strokeColor: '#00FF00', // 선의 색깔입니다
+                                    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                                    strokeStyle: 'longdash', // 선의 스타일입니다
+                                    fillColor: '#A2FF99', // 채우기 색깔입니다
+                                    fillOpacity: 0.7 // 채우기 불투명도 입니다
                                 });
-                                polyline.setMap(map);
+                                polygon.setMap(map);
                             }
                         };
 
