@@ -39,7 +39,7 @@ public class AppInfoController {
         return appInfoList;
     }
 
-    // 사용자의 id 주면 앱별 탄소 사용량 보내기(전날 하루 00시 ~ 23시 55분)
+    // 사용자의 id 주면 앱별 탄소 사용량, 앱 사용량 보내기(전날 하루 00시 ~ 23시 55분)
     @PostMapping("/appInfoYesterday")
     public List<AppInfoEntity> sendYesterday(@RequestBody MemberDTO memberDTO) {
         LocalDateTime yesterday = LocalDate.now().minusDays(1).atStartOfDay();
