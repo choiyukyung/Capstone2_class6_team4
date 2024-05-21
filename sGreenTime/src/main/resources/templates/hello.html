@@ -200,7 +200,9 @@
 
     var container = document.getElementById('map');
     var options = {
-        center: new kakao.maps.LatLng(37.467706, 126.9469),
+        //center: new kakao.maps.LatLng(37.467706, 126.9469),
+        center: new kakao.maps.LatLng(37.5031, 126.9569),
+        //37°30'11"N 126°57'25"E
         level: 6
     };
 
@@ -224,6 +226,7 @@
 
 
         // AJAX를 사용하여 좌표 값을 서버로 전송
+        /*
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -233,7 +236,7 @@
         xhttp.open("POST", "/getMapSwNe", true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("swLatLng=" + swLatLngString + "&neLatLng=" + neLatLngString);
-
+*/
     });
 
     async function fetchData() {
