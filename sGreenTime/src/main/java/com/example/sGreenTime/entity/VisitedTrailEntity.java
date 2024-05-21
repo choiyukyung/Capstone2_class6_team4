@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -34,6 +36,9 @@ public class VisitedTrailEntity {
     private String catNam;
     //{"lnk_nam":"애국의숲길","cos_nam":"관악산둘레길","cos_num":"1코스","comment":"","len_tim":"←2시간30분 6.2Km→",
     // "leng_lnk":"6729.79251047","cos_lvl":"","cat_nam":"둘레길링크"}
+    @Column
+    private LocalDateTime visitTime;
+
 
     public static VisitedTrailEntity toVisitedTrailEntity(VisitedTrailDTO visitedTrailDTO){
         VisitedTrailEntity visitedTrailEntity = new VisitedTrailEntity();

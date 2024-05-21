@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -19,6 +21,8 @@ public class VisitedParkEntity {
     @Column
     private String parkName;
     //{"park_name":"수리산"}
+    @Column
+    private LocalDateTime visitTime;
 
     public static VisitedParkEntity toVisitedParkEntity(VisitedParkDTO visitedParkDTO){
         VisitedParkEntity visitedParkEntity = new VisitedParkEntity();

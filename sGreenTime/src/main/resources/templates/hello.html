@@ -252,46 +252,39 @@
             //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
             for (let j = 0; j < obj.length; j++) {
                 let paths = [];
-                let visitedPaths = [];
 
                 //해당하는 j의 properties를 저장
                 let properties = JSON.stringify(obj[j].properties);
                 let lnkNam = JSON.parse(properties).lnk_nam;
 
-                if (visitedTrailList.includes(lnkNam)) {
-                    for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
-                        for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
-                            visitedPaths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
-                        }
-                    }
-                } else {
-                    for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
-                        for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
-                            paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
-                        }
+                for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
+                    for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
+                        paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
                     }
                 }
 
+                var polyline;
+                if (visitedTrailList.includes(lnkNam)) {
+                    polyline = new kakao.maps.Polyline({
+                        map: map,
+                        path: visitedPaths,
+                        strokeWeight: 5,
+                        strokeColor: '#00FF00',
+                        strokeOpacity: 0.8,
+                        strokeStyle: 'solid'
+                    });
+                } else {
+                    polyline = new kakao.maps.Polyline({
+                        map: map,
+                        path: paths,
+                        strokeWeight: 5,
+                        strokeColor: '#453F78',
+                        strokeOpacity: 0.8,
+                        strokeStyle: 'solid'
+                    });
+                }
 
-                var polyline = new kakao.maps.Polyline({
-                    map: map,
-                    path: paths,
-                    strokeWeight: 5,
-                    strokeColor: '#453F78',
-                    strokeOpacity: 0.8,
-                    strokeStyle: 'solid'
-                });
                 polyline.setMap(map);
-
-                var visitedPolyline = new kakao.maps.Polyline({
-                    map: map,
-                    path: visitedPaths,
-                    strokeWeight: 5,
-                    strokeColor: '#00FF00',
-                    strokeOpacity: 0.8,
-                    strokeStyle: 'solid'
-                });
-                visitedPolyline.setMap(map);
 
                 kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
                     var latlng = mouseEvent.latLng;
@@ -301,7 +294,7 @@
                     nowTrailLat = latlng.getLat();
                     nowTrailLng = latlng.getLng();
                     console.log(nowTrail);
-                    checkIfVisitedTrail(nowTrail);
+                    visitTrail(nowTrail, paths);
                 });
             }
 
@@ -320,45 +313,36 @@
                 // 산책로 그리기
                 for (let j = 0; j < obj.length; j++) {
                     let paths = [];
-                    let visitedPaths = [];
 
                     let properties = JSON.stringify(obj[j].properties);
                     let lnkNam = JSON.parse(properties).lnk_nam;
 
-                    if (visitedTrailList.includes(lnkNam)) {
-                        for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
-                                visitedPaths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
-                            }
-                        }
-                    } else {
-                        for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
-                                paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
-                            }
+                    for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
+                        for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
+                            paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
                         }
                     }
 
-
-                    var polyline = new kakao.maps.Polyline({
-                        map: map,
-                        path: paths,
-                        strokeWeight: 5,
-                        strokeColor: '453F78',
-                        strokeOpacity: 0.8,
-                        strokeStyle: 'solid'
-                    });
-                    polyline.setMap(map);
-
-                    var visitedPolyline = new kakao.maps.Polyline({
-                        map: map,
-                        path: visitedPaths,
-                        strokeWeight: 5,
-                        strokeColor: '#00FF00',
-                        strokeOpacity: 0.8,
-                        strokeStyle: 'solid'
-                    });
-                    visitedPolyline.setMap(map);
+                    var polyline;
+                    if (visitedTrailList.includes(lnkNam)) {
+                        polyline = new kakao.maps.Polyline({
+                            map: map,
+                            path: paths,
+                            strokeWeight: 5,
+                            strokeColor: '#00FF00',
+                            strokeOpacity: 0.8,
+                            strokeStyle: 'solid'
+                        });
+                    } else {
+                        polyline = new kakao.maps.Polyline({
+                            map: map,
+                            path: paths,
+                            strokeWeight: 5,
+                            strokeColor: '#453F78',
+                            strokeOpacity: 0.8,
+                            strokeStyle: 'solid'
+                        });
+                    }
 
 
                     kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
@@ -369,57 +353,55 @@
                         nowTrailLat = latlng.getLat();
                         nowTrailLng = latlng.getLng();
                         console.log(nowTrail);
-                        checkIfVisitedTrail(nowTrail, paths);
+                        visitTrail(nowTrail, paths);
                     });
                 }
             }
 
-            function checkIfVisitedTrail(nowTrail, paths) {
-                if (!visitedTrailList.includes(nowTrail.lnk_nam)) {
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    var length = polylineTrans.getLength()
-                    console.log("길이: " + length);
-                    if (length <= 10111111) {
-                        nowTrail.id = userId;
-                        var xhttp3 = new XMLHttpRequest();
-                        xhttp3.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-                                // 요청이 완료되었을 때의 동작
-                                console.log("Visited trails added successfully!");
+            function visitTrail(nowTrail, paths) {
+                var polylineTrans = new kakao.maps.Polyline({
+                    map: map,
+                    path: [
+                        new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
+                        //new kakao.maps.LatLng(nowLat, notLng)
+                        new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                    ],
+                    strokeWeight: 2,
+                    strokeColor: '#FF00FF',
+                    strokeOpacity: 0,
+                    strokeStyle: 'dashed'
+                });
+                var length = polylineTrans.getLength()
+                console.log("길이: " + length);
+                if (length <= 10111111) {
+                    nowTrail.id = userId;
+                    var xhttp3 = new XMLHttpRequest();
+                    xhttp3.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("Visited trails added successfully!");
 
-                                var polyline = new kakao.maps.Polyline({
-                                    map: map,
-                                    path: paths,
-                                    strokeWeight: 5,
-                                    strokeColor: '#00FF00',
-                                    strokeOpacity: 0.8,
-                                    strokeStyle: 'solid'
-                                });
-                                polyline.setMap(map);
-                            }
-                        };
+                            var polyline = new kakao.maps.Polyline({
+                                map: map,
+                                path: paths,
+                                strokeWeight: 5,
+                                strokeColor: '#00FF00',
+                                strokeOpacity: 0.8,
+                                strokeStyle: 'solid'
+                            });
+                            polyline.setMap(map);
+                        }
+                    };
 
-                        var url = "/addVisitedTrail";
-                        xhttp3.open("POST", url, true);
-                        xhttp3.setRequestHeader("Content-type", "application/json");
+                    var url = "/addVisitedTrail";
+                    xhttp3.open("POST", url, true);
+                    xhttp3.setRequestHeader("Content-type", "application/json");
 
-                        var data = JSON.stringify(nowTrail);
-                        console.log(data);
-                        xhttp3.send(data);
-                    }
-
+                    var data = JSON.stringify(nowTrail);
+                    console.log(data);
+                    xhttp3.send(data);
                 }
+
             }
 
             visitedHikingList = await makeHikingRequest();
@@ -701,7 +683,7 @@
                                 visitedPark1Paths.push(visitedPark1Paths_single);
                             }
                         }
-                    }else{
+                    } else {
                         for (let k = 0; k < park1Obj[j].geometry.coordinates.length; k++) {
                             for (let i = 0; i < park1Obj[j].geometry.coordinates[k].length; i++) {
                                 var park1Paths_single = [];
@@ -769,7 +751,7 @@
                             visitedPark2Paths1.push(visitedPark2Paths1_single);
                         }
                     }
-                }else {
+                } else {
                     for (let k = 0; k < park2Obj1[j].geometry.coordinates.length; k++) {
                         for (let i = 0; i < park2Obj1[j].geometry.coordinates[k].length; i++) {
                             var park2Paths1_single = [];
@@ -844,7 +826,7 @@
                                 visitedPark2Paths.push(visitedPark2Paths_single);
                             }
                         }
-                    }else{
+                    } else {
                         for (let k = 0; k < park2Obj[j].geometry.coordinates.length; k++) {
                             for (let i = 0; i < park2Obj[j].geometry.coordinates[k].length; i++) {
                                 var park2Paths_single = [];
@@ -911,7 +893,7 @@
                             visitedPark3Paths1.push(visitedPark3Paths1_single);
                         }
                     }
-                }else {
+                } else {
                     for (let k = 0; k < park3Obj1[j].geometry.coordinates.length; k++) {
                         for (let i = 0; i < park3Obj1[j].geometry.coordinates[k].length; i++) {
                             var park3Paths1_single = [];
@@ -986,7 +968,7 @@
                                 visitedPark3Paths.push(visitedPark3Paths_single);
                             }
                         }
-                    }else{
+                    } else {
                         for (let k = 0; k < park3Obj[j].geometry.coordinates.length; k++) {
                             for (let i = 0; i < park3Obj[j].geometry.coordinates[k].length; i++) {
                                 var park3Paths_single = [];

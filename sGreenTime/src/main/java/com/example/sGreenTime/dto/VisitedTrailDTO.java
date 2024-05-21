@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,4 +33,5 @@ public class VisitedTrailDTO {
     private String cosLvl;
     @JsonProperty("cat_nam")
     private String catNam;
+    private LocalDateTime visitTime;
 }

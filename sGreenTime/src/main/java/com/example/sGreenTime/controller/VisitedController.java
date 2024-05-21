@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -32,6 +33,8 @@ public class VisitedController {
     @PostMapping("/addVisitedTrail")
     public void addVisitedTrail(@RequestBody VisitedTrailDTO visitedTrailDTO){
         System.out.println(visitedTrailDTO.getCatNam());
+        System.out.println("111");
+        visitedTrailDTO.setVisitTime(LocalDateTime.now());
         visitedService.saveTrail(visitedTrailDTO);
     }
 

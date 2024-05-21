@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,4 +18,5 @@ public class VisitedParkDTO {
     private String id;
     @JsonProperty("park_name")
     private String parkName;
+    private LocalDateTime visitTime;
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,10 @@ public class VisitedService {
     }
 
     public void saveTrail(VisitedTrailDTO visitedTrailDTO){
-        VisitedTrailEntity newVisitedTrailEntity = VisitedTrailEntity.toVisitedTrailEntity(visitedTrailDTO);
-        visitedRepository.save(newVisitedTrailEntity);
+        VisitedTrailEntity visitedTrailEntity = VisitedTrailEntity.toVisitedTrailEntity(visitedTrailDTO);
+        System.out.println("111");
+        visitedTrailEntity.setVisitTime(LocalDateTime.now());
+        visitedRepository.save(visitedTrailEntity);
     }
 
     public List<String> getVisitedHikingMntnNm(String id){
