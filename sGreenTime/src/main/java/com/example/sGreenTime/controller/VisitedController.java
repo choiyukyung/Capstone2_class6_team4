@@ -33,8 +33,6 @@ public class VisitedController {
     @PostMapping("/addVisitedTrail")
     public void addVisitedTrail(@RequestBody VisitedTrailDTO visitedTrailDTO){
         System.out.println(visitedTrailDTO.getCatNam());
-        System.out.println("111");
-        visitedTrailDTO.setVisitTime(LocalDateTime.now());
         visitedService.saveTrail(visitedTrailDTO);
     }
 

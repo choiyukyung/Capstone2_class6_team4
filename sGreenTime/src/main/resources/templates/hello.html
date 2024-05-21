@@ -145,7 +145,6 @@
     }
 
 
-
     //산책로 page 수 가져오기
     var trailTotalPagesNum = document.getElementById("trailTotalPagesNum").getAttribute("data-value");
 
@@ -339,7 +338,6 @@
             var nowHikingLng;
 
 
-
             //등산로 page 1~all
             for (let k = 1; k <= hikingTotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
@@ -354,44 +352,39 @@
                 // 등산로 그리기
                 for (let j = 0; j < hikingObj.length; j++) {
                     let paths2 = [];
-                    let visitedPaths2 = [];
 
                     let properties = JSON.stringify(hikingObj[j].properties);
                     let mntnNm = JSON.parse(properties).mntn_nm;
 
-                    if (visitedHikingList.includes(mntnNm)) {
-                        for (let k = 0; k < hikingObj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < hikingObj[j].geometry.coordinates[k].length; i++) {
-                                visitedPaths2.push(new kakao.maps.LatLng(hikingObj[j].geometry.coordinates[k][i][1], hikingObj[j].geometry.coordinates[k][i][0]));
-                            }
-                        }
-                    } else {
-                        for (let k = 0; k < hikingObj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < hikingObj[j].geometry.coordinates[k].length; i++) {
-                                paths2.push(new kakao.maps.LatLng(hikingObj[j].geometry.coordinates[k][i][1], hikingObj[j].geometry.coordinates[k][i][0]));
-                            }
+                    for (let k = 0; k < hikingObj[j].geometry.coordinates.length; k++) {
+                        for (let i = 0; i < hikingObj[j].geometry.coordinates[k].length; i++) {
+                            paths2.push(new kakao.maps.LatLng(hikingObj[j].geometry.coordinates[k][i][1], hikingObj[j].geometry.coordinates[k][i][0]));
                         }
                     }
 
-                    var polyline = new kakao.maps.Polyline({
-                        map: map,
-                        path: paths2,
-                        strokeWeight: 5,
-                        strokeColor: '#453F78',
-                        strokeOpacity: 0.8,
-                        strokeStyle: 'solid'
-                    });
+                    var polyline;
+                    if (visitedHikingList.includes(mntnNm)) {
+                        polyline = new kakao.maps.Polyline({
+                            map: map,
+                            path: paths2,
+                            strokeWeight: 5,
+                            strokeColor: '#00FF00',
+                            strokeOpacity: 0.8,
+                            strokeStyle: 'solid'
+                        });
+                    } else {
+                        polyline = new kakao.maps.Polyline({
+                            map: map,
+                            path: paths2,
+                            strokeWeight: 5,
+                            strokeColor: '#453F78',
+                            strokeOpacity: 0.8,
+                            strokeStyle: 'solid'
+                        });
+                    }
+
                     polyline.setMap(map);
 
-                    var visitedPolyline = new kakao.maps.Polyline({
-                        map: map,
-                        path: visitedPaths2,
-                        strokeWeight: 5,
-                        strokeColor: '#00FF00',
-                        strokeOpacity: 0.8,
-                        strokeStyle: 'solid'
-                    });
-                    visitedPolyline.setMap(map);
 
                     kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
                         var latlng = mouseEvent.latLng;
@@ -401,57 +394,55 @@
                         nowHikingLat = latlng.getLat();
                         nowHikingLng = latlng.getLng();
                         console.log(nowHiking);
-                        checkIfVisitedHiking(nowHiking, paths2);
+                        visitHiking(nowHiking, paths2);
                     });
                 }
             }
 
-            function checkIfVisitedHiking(nowHiking, paths) {
-                if (!visitedHikingList.includes(nowHiking.mntn_nm)) {
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    var length = polylineTrans.getLength()
-                    console.log("길이: " + length);
-                    if (length <= 10111111) {
-                        nowHiking.id = userId;
-                        var xhttp5 = new XMLHttpRequest();
-                        xhttp5.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-                                // 요청이 완료되었을 때의 동작
-                                console.log("Visited Hikings added successfully!");
+            function visitHiking(nowHiking, paths) {
+                var polylineTrans = new kakao.maps.Polyline({
+                    map: map,
+                    path: [
+                        new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
+                        //new kakao.maps.LatLng(nowLat, notLng)
+                        new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                    ],
+                    strokeWeight: 2,
+                    strokeColor: '#FF00FF',
+                    strokeOpacity: 0,
+                    strokeStyle: 'dashed'
+                });
+                var length = polylineTrans.getLength()
+                console.log("길이: " + length);
+                if (length <= 10111111) {
+                    nowHiking.id = userId;
+                    var xhttp5 = new XMLHttpRequest();
+                    xhttp5.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("Visited Hikings added successfully!");
 
-                                var polyline = new kakao.maps.Polyline({
-                                    map: map,
-                                    path: paths,
-                                    strokeWeight: 5,
-                                    strokeColor: '#00FF00',
-                                    strokeOpacity: 0.8,
-                                    strokeStyle: 'solid'
-                                });
-                                polyline.setMap(map);
-                            }
-                        };
+                            var polyline = new kakao.maps.Polyline({
+                                map: map,
+                                path: paths,
+                                strokeWeight: 5,
+                                strokeColor: '#00FF00',
+                                strokeOpacity: 0.8,
+                                strokeStyle: 'solid'
+                            });
+                            polyline.setMap(map);
+                        }
+                    };
 
-                        var url = "/addVisitedHiking";
-                        xhttp5.open("POST", url, true);
-                        xhttp5.setRequestHeader("Content-type", "application/json");
+                    var url = "/addVisitedHiking";
+                    xhttp5.open("POST", url, true);
+                    xhttp5.setRequestHeader("Content-type", "application/json");
 
-                        var data = JSON.stringify(nowHiking);
-                        console.log(data);
-                        xhttp5.send(data);
-                    }
-
+                    var data = JSON.stringify(nowHiking);
+                    console.log(data);
+                    xhttp5.send(data);
                 }
+
             }
 
             visitedParkList = await makeParkRequest();
@@ -475,56 +466,47 @@
 
                 for (let j = 0; j < park1Obj.length; j++) {
                     let park1Paths = [];
-                    let visitedPark1Paths = [];
 
                     let properties = JSON.stringify(park1Obj[j].properties);
                     let parkName = JSON.parse(properties).park_name;
 
-                    if (visitedParkList.includes(parkName)) {
-                        for (let k = 0; k < park1Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park1Obj[j].geometry.coordinates[k].length; i++) {
-                                var visitedPark1Paths_single = [];
-                                for (let l = 0; l < park1Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    visitedPark1Paths_single.push(new kakao.maps.LatLng(park1Obj[j].geometry.coordinates[k][i][l][1], park1Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                visitedPark1Paths.push(visitedPark1Paths_single);
+                    for (let k = 0; k < park1Obj[j].geometry.coordinates.length; k++) {
+                        for (let i = 0; i < park1Obj[j].geometry.coordinates[k].length; i++) {
+                            var park1Paths_single = [];
+                            for (let l = 0; l < park1Obj[j].geometry.coordinates[k][i].length; l++) {
+                                park1Paths_single.push(new kakao.maps.LatLng(park1Obj[j].geometry.coordinates[k][i][l][1], park1Obj[j].geometry.coordinates[k][i][l][0]));
                             }
-                        }
-                    } else {
-                        for (let k = 0; k < park1Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park1Obj[j].geometry.coordinates[k].length; i++) {
-                                var park1Paths_single = [];
-                                for (let l = 0; l < park1Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    park1Paths_single.push(new kakao.maps.LatLng(park1Obj[j].geometry.coordinates[k][i][l][1], park1Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                park1Paths.push(park1Paths_single);
-                            }
+                            park1Paths.push(park1Paths_single);
                         }
                     }
 
-                    // 지도에 표시할 다각형을 생성합니다
-                    var polygon = new kakao.maps.Polygon({
-                        map: map,
-                        path: park1Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#453F78', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#BA704F', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
+                    var polygon;
+                    if (visitedParkList.includes(parkName)) {
+                        polygon = new kakao.maps.Polygon({
+                            map: map,
+                            path: park1Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#00FF00', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#A2FF99', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    } else {
+                        polygon = new kakao.maps.Polygon({
+                            map: map,
+                            path: park1Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#453F78', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#BA704F', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    }
+
                     polygon.setMap(map);
 
-                    var visitedPolygon = new kakao.maps.Polygon({
-                        path: visitedPark1Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#00FF00', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#A2FF99', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
-                    visitedPolygon.setMap(map);
 
                     kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
                         var latlng = mouseEvent.latLng;
@@ -534,11 +516,10 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark, park1Paths);
+                        visitPark(nowPark, park1Paths);
                     });
                 }
             }
-
 
 
             //공원2 page 1~all
@@ -554,55 +535,44 @@
 
                 for (let j = 0; j < park2Obj.length; j++) {
                     let park2Paths = [];
-                    let visitedPark2Paths = [];
 
                     let properties = JSON.stringify(park2Obj[j].properties);
                     let parkName = JSON.parse(properties).park_name;
 
-                    if (visitedParkList.includes(parkName)) {
-                        for (let k = 0; k < park2Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park2Obj[j].geometry.coordinates[k].length; i++) {
-                                var visitedPark2Paths_single = [];
-                                for (let l = 0; l < park2Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    visitedPark2Paths_single.push(new kakao.maps.LatLng(park2Obj[j].geometry.coordinates[k][i][l][1], park2Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                visitedPark2Paths.push(visitedPark2Paths_single);
+                    for (let k = 0; k < park2Obj[j].geometry.coordinates.length; k++) {
+                        for (let i = 0; i < park2Obj[j].geometry.coordinates[k].length; i++) {
+                            var park2Paths_single = [];
+                            for (let l = 0; l < park2Obj[j].geometry.coordinates[k][i].length; l++) {
+                                park2Paths_single.push(new kakao.maps.LatLng(park2Obj[j].geometry.coordinates[k][i][l][1], park2Obj[j].geometry.coordinates[k][i][l][0]));
                             }
-                        }
-                    } else {
-                        for (let k = 0; k < park2Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park2Obj[j].geometry.coordinates[k].length; i++) {
-                                var park2Paths_single = [];
-                                for (let l = 0; l < park2Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    park2Paths_single.push(new kakao.maps.LatLng(park2Obj[j].geometry.coordinates[k][i][l][1], park2Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                park2Paths.push(park2Paths_single);
-                            }
+                            park2Paths.push(park2Paths_single);
                         }
                     }
 
-                    // 지도에 표시할 다각형을 생성합니다
-                    var polygon2 = new kakao.maps.Polygon({
-                        path: park2Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#453F78', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#BA704F', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
+                    var polygon2;
+                    if (visitedParkList.includes(parkName)) {
+                        polygon2 = new kakao.maps.Polygon({
+                            path: park2Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#453F78', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#BA704F', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    } else {
+                        polygon2 = new kakao.maps.Polygon({
+                            path: park2Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#00FF00', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#A2FF99', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    }
                     polygon2.setMap(map);
 
-                    var visitedPolygon2 = new kakao.maps.Polygon({
-                        path: visitedPark2Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#00FF00', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#A2FF99', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
-                    visitedPolygon2.setMap(map);
 
                     kakao.maps.event.addListener(polygon2, 'click', function (mouseEvent) {
                         var latlng = mouseEvent.latLng;
@@ -612,7 +582,7 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark, park2Paths);
+                        visitPark(nowPark, park2Paths);
                     });
                 }
             }
@@ -631,55 +601,45 @@
 
                 for (let j = 0; j < park3Obj.length; j++) {
                     let park3Paths = [];
-                    let visitedPark3Paths = [];
 
                     let properties = JSON.stringify(park3Obj[j].properties);
                     let parkName = JSON.parse(properties).park_name;
 
-                    if (visitedParkList.includes(parkName)) {
-                        for (let k = 0; k < park3Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park3Obj[j].geometry.coordinates[k].length; i++) {
-                                var visitedPark3Paths_single = [];
-                                for (let l = 0; l < park3Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    visitedPark3Paths_single.push(new kakao.maps.LatLng(park3Obj[j].geometry.coordinates[k][i][l][1], park3Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                visitedPark3Paths.push(visitedPark3Paths_single);
+                    for (let k = 0; k < park3Obj[j].geometry.coordinates.length; k++) {
+                        for (let i = 0; i < park3Obj[j].geometry.coordinates[k].length; i++) {
+                            var park3Paths_single = [];
+                            for (let l = 0; l < park3Obj[j].geometry.coordinates[k][i].length; l++) {
+                                park3Paths_single.push(new kakao.maps.LatLng(park3Obj[j].geometry.coordinates[k][i][l][1], park3Obj[j].geometry.coordinates[k][i][l][0]));
                             }
-                        }
-                    } else {
-                        for (let k = 0; k < park3Obj[j].geometry.coordinates.length; k++) {
-                            for (let i = 0; i < park3Obj[j].geometry.coordinates[k].length; i++) {
-                                var park3Paths_single = [];
-                                for (let l = 0; l < park3Obj[j].geometry.coordinates[k][i].length; l++) {
-                                    park3Paths_single.push(new kakao.maps.LatLng(park3Obj[j].geometry.coordinates[k][i][l][1], park3Obj[j].geometry.coordinates[k][i][l][0]));
-                                }
-                                park3Paths.push(park3Paths_single);
-                            }
+                            park3Paths.push(park3Paths_single);
                         }
                     }
 
-                    // 지도에 표시할 다각형을 생성합니다
-                    var polygon3 = new kakao.maps.Polygon({
-                        path: park3Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#453F78', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#BA704F', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
+                    var polygon3;
+                    if (visitedParkList.includes(parkName)) {
+                        polygon3 = new kakao.maps.Polygon({
+                            path: park3Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#00FF00', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#A2FF99', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    } else {
+                        polygon3 = new kakao.maps.Polygon({
+                            path: park3Paths, // 그려질 다각형의 좌표 배열입니다
+                            strokeWeight: 3, // 선의 두께입니다
+                            strokeColor: '#453F78', // 선의 색깔입니다
+                            strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                            strokeStyle: 'longdash', // 선의 스타일입니다
+                            fillColor: '#BA704F', // 채우기 색깔입니다
+                            fillOpacity: 0.7 // 채우기 불투명도 입니다
+                        });
+                    }
+
                     polygon3.setMap(map);
 
-                    var visitedPolygon3 = new kakao.maps.Polygon({
-                        path: visitedPark3Paths, // 그려질 다각형의 좌표 배열입니다
-                        strokeWeight: 3, // 선의 두께입니다
-                        strokeColor: '#00FF00', // 선의 색깔입니다
-                        strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'longdash', // 선의 스타일입니다
-                        fillColor: '#A2FF99', // 채우기 색깔입니다
-                        fillOpacity: 0.7 // 채우기 불투명도 입니다
-                    });
-                    visitedPolygon3.setMap(map);
 
                     kakao.maps.event.addListener(polygon3, 'click', function (mouseEvent) {
                         var latlng = mouseEvent.latLng;
@@ -689,56 +649,54 @@
                         nowParkLat = latlng.getLat();
                         nowParkLng = latlng.getLng();
                         console.log(nowPark);
-                        checkIfVisitedPark(nowPark, park3Paths);
+                        visitPark(nowPark, park3Paths);
                     });
                 }
             }
 
-            function checkIfVisitedPark(nowPark, paths) {
-                if (!visitedParkList.includes(nowPark.park_name)) {
-                    var polylineTrans = new kakao.maps.Polyline({
-                        map: map,
-                        path: [
-                            new kakao.maps.LatLng(nowParkLat, nowParkLng),
-                            //new kakao.maps.LatLng(nowLat, notLng)
-                            new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
-                        ],
-                        strokeWeight: 2,
-                        strokeColor: '#FF00FF',
-                        strokeOpacity: 0,
-                        strokeStyle: 'dashed'
-                    });
-                    var length = polylineTrans.getLength()
-                    console.log("길이: " + length);
-                    if (length <= 10111111) {
-                        nowPark.id = userId;
-                        var xhttp6 = new XMLHttpRequest();
-                        xhttp6.onreadystatechange = function () {
-                            if (this.readyState == 4 && this.status == 200) {
-                                // 요청이 완료되었을 때의 동작
-                                console.log("Visited Parks added successfully!");
+            function visitPark(nowPark, paths) {
+                var polylineTrans = new kakao.maps.Polyline({
+                    map: map,
+                    path: [
+                        new kakao.maps.LatLng(nowParkLat, nowParkLng),
+                        //new kakao.maps.LatLng(nowLat, notLng)
+                        new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                    ],
+                    strokeWeight: 2,
+                    strokeColor: '#FF00FF',
+                    strokeOpacity: 0,
+                    strokeStyle: 'dashed'
+                });
+                var length = polylineTrans.getLength()
+                console.log("길이: " + length);
+                if (length <= 10111111) {
+                    nowPark.id = userId;
+                    var xhttp6 = new XMLHttpRequest();
+                    xhttp6.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("Visited Parks added successfully!");
 
-                                var polygon = new kakao.maps.Polygon({
-                                    path: paths, // 그려질 다각형의 좌표 배열입니다
-                                    strokeWeight: 3, // 선의 두께입니다
-                                    strokeColor: '#00FF00', // 선의 색깔입니다
-                                    strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                                    strokeStyle: 'longdash', // 선의 스타일입니다
-                                    fillColor: '#A2FF99', // 채우기 색깔입니다
-                                    fillOpacity: 0.7 // 채우기 불투명도 입니다
-                                });
-                                polygon.setMap(map);
-                            }
-                        };
+                            var polygon = new kakao.maps.Polygon({
+                                path: paths, // 그려질 다각형의 좌표 배열입니다
+                                strokeWeight: 3, // 선의 두께입니다
+                                strokeColor: '#00FF00', // 선의 색깔입니다
+                                strokeOpacity: 0.8, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                                strokeStyle: 'longdash', // 선의 스타일입니다
+                                fillColor: '#A2FF99', // 채우기 색깔입니다
+                                fillOpacity: 0.7 // 채우기 불투명도 입니다
+                            });
+                            polygon.setMap(map);
+                        }
+                    };
 
-                        var url = "/addVisitedPark";
-                        xhttp6.open("POST", url, true);
-                        xhttp6.setRequestHeader("Content-type", "application/json");
+                    var url = "/addVisitedPark";
+                    xhttp6.open("POST", url, true);
+                    xhttp6.setRequestHeader("Content-type", "application/json");
 
-                        var data = JSON.stringify(nowPark);
-                        console.log(data);
-                        xhttp6.send(data);
-                    }
+                    var data = JSON.stringify(nowPark);
+                    console.log(data);
+                    xhttp6.send(data);
 
                 }
             }

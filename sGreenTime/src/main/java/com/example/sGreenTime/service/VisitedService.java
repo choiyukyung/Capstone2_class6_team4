@@ -32,7 +32,6 @@ public class VisitedService {
 
     public void saveTrail(VisitedTrailDTO visitedTrailDTO){
         VisitedTrailEntity visitedTrailEntity = VisitedTrailEntity.toVisitedTrailEntity(visitedTrailDTO);
-        System.out.println("111");
         visitedTrailEntity.setVisitTime(LocalDateTime.now());
         visitedRepository.save(visitedTrailEntity);
     }
@@ -47,8 +46,9 @@ public class VisitedService {
     }
 
     public void saveHiking(VisitedHikingDTO visitedHikingDTO){
-        VisitedHikingEntity newVisitedHikingEntity = VisitedHikingEntity.toVisitedHikingEntity(visitedHikingDTO);
-        visitedRepository.save(newVisitedHikingEntity);
+        VisitedHikingEntity visitedHikingEntity = VisitedHikingEntity.toVisitedHikingEntity(visitedHikingDTO);
+        visitedHikingEntity.setVisitTime(LocalDateTime.now());
+        visitedRepository.save(visitedHikingEntity);
     }
 
     public List<String> getVisitedParkName(String id){
@@ -61,7 +61,8 @@ public class VisitedService {
     }
 
     public void savePark(VisitedParkDTO visitedParkDTO){
-        VisitedParkEntity newVisitedParkEntity = VisitedParkEntity.toVisitedParkEntity(visitedParkDTO);
-        visitedRepository.save(newVisitedParkEntity);
+        VisitedParkEntity visitedParkEntity = VisitedParkEntity.toVisitedParkEntity(visitedParkDTO);
+        visitedParkEntity.setVisitTime(LocalDateTime.now());
+        visitedRepository.save(visitedParkEntity);
     }
 }
