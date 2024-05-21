@@ -53,7 +53,7 @@ public class MapController {
         String park3ApiUrl1;
 
         trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
-        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.6)";
+        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.55)";
         park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
         park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
         park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
@@ -129,7 +129,7 @@ public class MapController {
         modelAndView.addObject("hikingData1", hikingFeatures1);
 
         String hikingApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&page=";
-        String hikingApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.6)";
+        String hikingApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.55)";
 
         //반복문 통해 모든 등산로 불러오기
         for (int j = 2; j <= hikingTotalPagesNum; j++) {
