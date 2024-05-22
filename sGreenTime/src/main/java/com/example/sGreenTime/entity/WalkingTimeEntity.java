@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -18,7 +19,7 @@ public class WalkingTimeEntity {
     @Column
     private String id;
     @Column
-    private LocalDate date;
+    private LocalDateTime dateTime;
     @Column
     private float walkingTime; //분으로 소숫점 첫째자리까지 저장하기
 }
