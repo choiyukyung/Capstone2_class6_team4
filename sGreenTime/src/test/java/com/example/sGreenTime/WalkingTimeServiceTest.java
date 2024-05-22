@@ -1,6 +1,7 @@
 package com.example.sGreenTime;
 
 import com.example.sGreenTime.dto.WalkingTimeDTO;
+import com.example.sGreenTime.entity.WalkingTimeEntity;
 import com.example.sGreenTime.repository.WalkingTimeRepository;
 import com.example.sGreenTime.service.WalkingTimeService;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -31,5 +33,11 @@ public class WalkingTimeServiceTest {
         System.out.println(result.get("trails"));
         System.out.println(result.get("hikings"));
         System.out.println(result.get("totalWalkTimeInCar"));
+
+        List<WalkingTimeEntity> top10 = walkingTimeService.getWalkingTop10();
+        for(WalkingTimeEntity i : top10){
+            System.out.println(i.getId());
+            System.out.println(i.getWalkingTime());
+        }
     }
 }
