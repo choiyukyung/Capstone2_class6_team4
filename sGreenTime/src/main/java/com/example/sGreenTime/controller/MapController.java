@@ -29,7 +29,7 @@ public class MapController {
         model.addAttribute("nowLongitude", nowLongitude);
         return "hello";
     }
-    
+
     @GetMapping("/vworldData")
     public ModelAndView vworldData() throws JSONException {
         ModelAndView modelAndView = new ModelAndView();

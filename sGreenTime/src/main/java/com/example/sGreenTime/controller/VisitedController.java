@@ -36,6 +36,11 @@ public class VisitedController {
         visitedService.saveTrail(visitedTrailDTO);
     }
 
+    @PostMapping("/notVisitedTrail")
+    public String notVisitedTrail(@RequestBody VisitedTrailDTO visitedTrailDTO){
+        return "farTrail";
+    }
+
     @PostMapping("/visitedHikings")
     public List<String> getVisitedHikings(Model model, String id){
         List<String> visitedHikingMntnNmList = visitedService.getVisitedHikingMntnNm(id);
@@ -49,6 +54,11 @@ public class VisitedController {
         visitedService.saveHiking(visitedHikingDTO);
     }
 
+    @PostMapping("/notVisitedHiking")
+    public String notVisitedHiking(@RequestBody VisitedHikingDTO visitedHikingDTO){
+        return "farHiking";
+    }
+
     @PostMapping("/visitedParks")
     public List<String> getVisitedParks(Model model, String id){
         List<String> visitedParkNameList = visitedService.getVisitedParkName(id);
@@ -60,5 +70,10 @@ public class VisitedController {
     public void addVisitedPark(@RequestBody VisitedParkDTO visitedParkDTO){
         System.out.println(visitedParkDTO.getParkName());
         visitedService.savePark(visitedParkDTO);
+    }
+
+    @PostMapping("/notVisitedPark")
+    public String notVisitedPark(@RequestBody VisitedParkDTO visitedParkDTO){
+        return "farPark";
     }
 }
