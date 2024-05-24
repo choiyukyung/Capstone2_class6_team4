@@ -23,8 +23,10 @@ public class UsageStatsController {
     public List<UsageStatsEntity> saveAndSend(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
         List<UsageStatsEntity> entityList = new ArrayList<>();
         for(UsageStatsDTO usageStatsDTO : usageStatsDTOList){
-            UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
-            entityList.add(entity);
+            if(Integer.parseInt(usageStatsDTO.getTotalTimeInForeground())>0) {
+                UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
+                entityList.add(entity);
+            }
         }
         return entityList;
     }

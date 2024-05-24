@@ -25,48 +25,69 @@ public class UsageStatsService {
 
         // 동영상 어플
         if(packageName.equals("com.google.android.youtube")){
-            packageName = "youtube";
+            packageName = "Youtube";
         } else if (packageName.equals("com.netflix.mediaclient")) {
-            packageName = "netflix";
+            packageName = "Netflix";
         } else if (packageName.equals("net.cj.cjhv.gs.tving")) {
-            packageName = "tving";
+            packageName = "Tving";
         } else if (packageName.equals("kr.co.captv.pooqV2")) {
-            packageName = "wavve";
+            packageName = "Wavve";
         } else if (packageName.equals("com.coupang.mobile.play")) {
-            packageName = "coupang play";
+            packageName = "Coupang play";
         } else if (packageName.equals("com.disney.disneyplus")) {
-            packageName = "disney+";
+            packageName = "Disney+";
         }
         ///
 
         else if (packageName.equals("com.twitter.android")) {
             packageName = "X";
         } else if (packageName.equals("com.linkedin.android")) {
-            packageName = "linkedIn";
+            packageName = "LinkedIn";
         } else if (packageName.equals("com.facebook.katana")) {
-            packageName = "facebook";
+            packageName = "Facebook";
         }
 
         //채팅 어플
         else if (packageName.equals("com.snapchat.android")) {
-            packageName = "snapchat";
+            packageName = "Snapchat";
         } else if (packageName.equals("com.kakao.talk")) {
-            packageName = "kakaotalk";
+            packageName = "Kakaotalk";
         } else if (packageName.equals("jp.naver.line.android")) {
-            packageName = "line";
+            packageName = "Line";
         } else if (packageName.equals("org.telegram.messenger")) {
-            packageName = "telegram";
+            packageName = "Telegram";
         }
         ///
 
         else if (packageName.equals("com.instagram.android")) {
-            packageName = "instagram";
+            packageName = "Instagram";
         } else if (packageName.equals("com.pinterest")) {
-            packageName = "pinterest";
+            packageName = "Pinterest";
         } else if (packageName.equals("com.reddit.frontpage")) {
-            packageName = "reddit";
+            packageName = "Reddit";
         } else if (packageName.equals("com.ss.android.ugc.trill")) {
-            packageName = "tiktok";
+            packageName = "Tiktok";
+        }
+
+        // 여기서부터 새로 추가
+        else if (packageName.equals("com.samsung.android.calendar")) {
+            packageName = "Samsung calendar";
+        } else if (packageName.equals("com.discord")) {
+            packageName = "Discord";
+        } else if (packageName.equals("com.musinsa.store")) {
+            packageName = "Musinsa";
+        } else if (packageName.equals("com.android.chrome")) {
+            packageName = "Chrome";
+        } else if (packageName.equals("com.spotify.music")) {
+            packageName = "Spotify";
+        } else if (packageName.equals("com.airbnb.android")) {
+            packageName = "Airbnb";
+        } else if (packageName.equals("com.android.settings")) {
+            packageName = "Settings";
+        } else if (packageName.equals("samsung.android.spay")) {
+            packageName = "Samsung Wallet";
+        } else if (packageName.equals("com.kakao.taxi")) {
+            packageName = "Kakao T";
         } else {
         }
         UsageStatsEntity entity = UsageStatsEntity.toUsageStatsEntity(usageStatsDTO.getUsageStatsId(), usageStatsDTO.getId(), usageStatsDTO.getLastTimeUsed(), packageName, Integer.toString(totalTime), usageStatsDTO.getNowTimeStamp());
