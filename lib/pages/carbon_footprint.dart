@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'package:fl_chart/fl_chart.dart';
-import 'package:vertical_barchart/vertical-barchartmodel.dart';
-import 'package:vertical_barchart/vertical-barchart.dart';
 
+import '../data/user.dart';
 import '../services/mychart.dart';
 import '../services/mycolor.dart';
+import '../services/myapi.dart';
 
 class CarbonFootprint extends StatefulWidget {
-  const CarbonFootprint({super.key});
+  User? user;
+  CarbonFootprint({required this.user, super.key});
 
   @override
   State<CarbonFootprint> createState() => _CarbonFootprintState();
 }
 
 class _CarbonFootprintState extends State<CarbonFootprint> {
+  Service? service;
+  var carbonYesterday = [];
+  var carbonChange = [];
+  var carbonDailyStats = [];
+  var carbonWeeklyStats = [];
+  var carbonBaseValue = 0.0;
+  var carbonInObj = {};
+  var walingRanking = [];
+
   int pieTouchedIndex = 0;
   int barTouchedIndex = 0;
   double targetCarbon = 5.0;
@@ -25,33 +34,57 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
 
   DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
 
-  List<String> items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6',
-    'Item 7',
-    'Item 8',
-  ];
-  List<String> itemContents = [
-    'Item 1 Contents',
-    'Item 2 Contents',
-    'Item 3 Contents',
-    'Item 4 Contents',
-    'Item 5 Contents',
-    'Item 6 Contents',
-    'Item 7 Contents',
-    'Item 8 Contents',
-  ];
+  @override
+  void initState() {
+    super.initState();
 
-  void cardClickEvent(BuildContext context, int index) {
-    String content = itemContents[index];
+    service = Service(user: widget.user);
+    initCarbonData();
+  }
+
+  Future<dynamic> initCarbonData() async {
+    dynamic response = await service?.queryCarbonYesterday();
+    if (response.isNotEmpty){
+      carbonYesterday = response;
+    }
+
+    response = await service?.queryCarbonChange();
+    if (response.isNotEmpty){
+      carbonChange = response;
+    }
+
+    response = await service?.queryCarbonDailyStats();
+    if (response.isNotEmpty){
+      carbonDailyStats = response;
+    }
+
+    response = await service?.queryCarbonWeeklyStats();
+    if (response.isNotEmpty){
+      carbonWeeklyStats = response;
+    }
+
+    response = await service?.queryCarbonBaseValue();
+    if (response!=0){
+      carbonBaseValue = response;
+    }
+
+    response = await service?.queryCarbonInObj();
+    if (response.isNotEmpty){
+      carbonInObj = response;
+    }
+
+    response = await service?.getWalkingRanking();
+    if (response.isNotEmpty){
+      walingRanking = response;
+    }
+  }
+
+  void cardClickEvent(BuildContext context, String nickName) {
+    String content = nickName;
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ContentPage(content: content),
+        builder: (context) => UserPage(content: content),
       ),
     );
   }
@@ -100,7 +133,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                   fontWeight: FontWeight.w500,
                                   color: Colors.white),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               "\ndate: ${DateFormat('MM.dd').format(
                                   yesterday)}\nreporter: SGreenTime",
@@ -110,77 +143,67 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 35.0,),
+                        const SizedBox(height: 50.0,),
                         const Text(
-                          " What's the biggest cause of digital carbon?",
-                          style: TextStyle(fontSize: 11.0,
+                          " ∎  The biggest cause of digital carbon",
+                          style: TextStyle(fontSize: 13.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
-                        const SizedBox(height: 80,),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(),
-                            SizedBox(
-                              width: 90, height: 90,
-                              child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final shortestSide = constraints.biggest
-                                        .shortestSide;
-                                    return PieChart(
-                                      PieChartData(
-                                        pieTouchData: PieTouchData(
-                                          touchCallback: (FlTouchEvent event,
-                                              pieTouchResponse) {
-                                            setState(() {
-                                              if (!event
-                                                  .isInterestedForInteractions ||
-                                                  pieTouchResponse == null ||
-                                                  pieTouchResponse.touchedSection ==
-                                                      null) {
-                                                pieTouchedIndex = -1;
-                                                return;
-                                              }
-                                              pieTouchedIndex =
-                                                  pieTouchResponse.touchedSection!
-                                                      .touchedSectionIndex;
-                                            });
-                                          },
-                                        ),
-                                        borderData: FlBorderData(
-                                          show: false,
-                                        ),
-                                        sectionsSpace: 10,
-                                        centerSpaceRadius: 35,
-                                        sections: MyPieChart.showingSections(
-                                            shortestSide, pieTouchedIndex),
+                        const SizedBox(height: 100,),
+                        Center(
+                          child: SizedBox(
+                            width: 110, height: 110,
+                            child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final shortestSide = constraints.biggest
+                                      .shortestSide;
+                                  return PieChart(
+                                    PieChartData(
+                                      pieTouchData: PieTouchData(
+                                        touchCallback: (FlTouchEvent event,
+                                            pieTouchResponse) {
+                                          setState(() {
+                                            if (!event
+                                                .isInterestedForInteractions ||
+                                                pieTouchResponse == null ||
+                                                pieTouchResponse.touchedSection ==
+                                                    null) {
+                                              pieTouchedIndex = -1;
+                                              return;
+                                            }
+                                            pieTouchedIndex =
+                                                pieTouchResponse.touchedSection!
+                                                    .touchedSectionIndex;
+                                          });
+                                        },
                                       ),
-                                    );
-                                  }
-                              ),
+                                      borderData: FlBorderData(
+                                        show: false,
+                                      ),
+                                      sectionsSpace: 10,
+                                      centerSpaceRadius: 35,
+                                      sections: MyPieChart.showingSections(
+                                          List.generate(4, (i) => double.parse(carbonYesterday?[i]["appCarbon"])),
+                                          shortestSide,
+                                          pieTouchedIndex
+                                      ),
+                                    ),
+                                  );
+                                }
                             ),
-                            const Spacer(),
-                            const Text(
-                              '''The biggest cause is 
-                          \ninstagram.
-                          \nadvice: how about turn off
-                          \nalarm of instagram?''',
-                              style: TextStyle(fontSize: 9.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white70),
-                            ),
-                          ],
+                          ),
                         ),
                         const Spacer(),
                         //SizedBox(height: 80,),
 
                         const Text(
-                          " How much daily digital carbon amount changes?",
-                          style: TextStyle(fontSize: 11.0,
+                          " ∎  Daily carbon amount changes",
+                          style: TextStyle(fontSize: 13.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
+                        const SizedBox(height: 40,),
                         AspectRatio(
                           aspectRatio: 0.8,
                           child: Padding(
@@ -271,12 +294,15 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                 borderData: FlBorderData(
                                   show: false,
                                 ),
-                                barGroups: MyBarChart.barMainItems.entries
+                                barGroups: List.generate(carbonChange.length, (i) => {
+                                  "key": carbonChange[i]["appEntry"],
+                                  "value": double.parse(carbonChange[i]["appCarbon"]),
+                                })
                                     .map(
                                       (e) =>
                                       MyBarChart.generateBarGroup(
-                                        e.key,
-                                        e.value,
+                                        e["key"],
+                                        e["value"],
                                         barTouchedIndex,
                                         barWidth,
                                         barShadowOpacity,
@@ -291,11 +317,12 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                         //const SizedBox(height: 55.0,),
 
                         const Text(
-                          " How much digital carbon generated for 7 days?",
-                          style: TextStyle(fontSize: 11.0,
+                          " ∎  Digital carbon generated for 7 days",
+                          style: TextStyle(fontSize: 13.0,
                               fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
+                        const SizedBox(height: 10,),
                         Container(
                             width: double.infinity, height: 250,
                             margin: const EdgeInsets.only(top: 10, bottom: 25),
@@ -314,7 +341,12 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                       enabled: true,),
                                     lineBarsData: [
                                       LineChartBarData(
-                                        spots: MyLineChart.lineChartBarData,
+                                        spots: List.generate(
+                                            7,
+                                            (i) {
+                                              return FlSpot(i.toDouble(), double.parse(carbonWeeklyStats[i]["dayCarbonUsage"]));
+                                            }
+                                        ), //MyLineChart.lineChartBarData,
                                         isCurved: true,
                                         barWidth: 4,
                                         gradient: const LinearGradient(
@@ -393,21 +425,13 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                         );
                                       },
                                       checkToShowHorizontalLine: (double value) {
-                                        return value == targetCarbon;
+                                        return value == carbonBaseValue;
                                       },
                                     ),
                                   ),
                                 ),
                               ),
                             )
-                        ),
-                        const Text(
-                          '''     for 5 days, screen time goal was successfully achieved!
-                      \n     but for 2 days, failed.
-                      ''',
-                          style: TextStyle(fontSize: 9.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white70),
                         ),
                       ],
                     ),
@@ -417,109 +441,125 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
             ),
 
             //Tab2
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 30,),
-                  Container(
-                    width: 410,
-                    child: Text(
-                        ' Ranking',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white)
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 40, right: 40),
-                      child: ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Card(
-                              elevation: 1,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.elliptical(20, 20))),
+            Container(
+              color: MyColors.deepGreenBlue,
+              padding: const EdgeInsets.all(10.0),
 
-                              child: GestureDetector(
-                                onTap: () => cardClickEvent(context, index),
-                                child: Container(
-                                  height: 70,
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(15),
-                                  //margin: const EdgeInsets.all(32),
-                                  decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFF846AFF),
-                                          Color(0xFF755EE8),
-                                          Colors.purpleAccent,
-                                          Colors.amber,
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  // Adds a gradient background and rounded corners to the container
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Column(
+              child: Container(
+                width: double.infinity, height: 800,
+                margin: const EdgeInsets.all(7),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: MyColors.brightGreenBlue.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 410,
+                        child: Text(
+                            'Carbon Footprint Ranking',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 15.0,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white)
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: ListView.builder(
+                            itemCount: walingRanking.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                  elevation: 1,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.elliptical(20, 20))),
+
+                                  child: GestureDetector(
+                                    //onTap: () => cardClickEvent(context, walingRanking[index]),
+                                    child: Container(
+                                      height: 70,
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(15),
+                                      //margin: const EdgeInsets.all(32),
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [Colors.lime, Colors.purpleAccent, Colors.blue],
+                                          ),
+                                          borderRadius: BorderRadius.circular(10)),
+                                      // Adds a gradient background and rounded corners to the container
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center,
                                         crossAxisAlignment: CrossAxisAlignment
                                             .start,
                                         children: [
-                                          Row(
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
                                             children: [
-                                              Text(
-                                                  '${index + 1} nickname',
-                                                  style: TextStyle(
-                                                      fontSize: 13.0,
-                                                      fontWeight: FontWeight
-                                                          .w500,
-                                                      color: Colors.white)
-                                              ),
-                                              const Spacer(),
-                                              Text(
-                                                  '100',
-                                                  style: TextStyle(
+                                              Row(
+                                                children: [
+                                                  const SizedBox(width: 5,),
+                                                  Text(
+                                                    '${index + 1}',
+                                                    style: const TextStyle(
                                                       fontSize: 20.0,
                                                       fontWeight: FontWeight
-                                                          .w500,
-                                                      color: Colors.white)
-                                              ),
-                                              /*
-                                                Stack(
-                                                  children: List.generate(
-                                                    2,
-                                                        (index) => Container(
-                                                      margin: EdgeInsets.only(left: (15 * index).toDouble()),
-                                                      height: 30,
-                                                      width: 30,
-                                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white54),
+                                                          .w700,
+                                                      color: Colors.white,
+                                                      shadows: [
+                                                        Shadow(
+                                                          blurRadius: 5.0,  // shadow blur
+                                                          color: Colors.white, // shadow color
+                                                          offset: Offset(0,0), // how much shadow will be shown
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ) // Adds a stack of two circular containers to the right of the title
-                                                */
+                                                  const SizedBox(width: 15,),
+                                                  Text(
+                                                      '${walingRanking[index]["id"]}',
+                                                      style: const TextStyle(
+                                                          fontSize: 14.0,
+                                                          fontWeight: FontWeight
+                                                              .w500,
+                                                          color: Colors.white)
+                                                  ),
+                                                  const Spacer(),
+                                                  Text(
+                                                      '${walingRanking[index]["walkingTime"]}',
+                                                      style: const TextStyle(
+                                                        fontSize: 21.0,
+                                                        fontWeight: FontWeight
+                                                            .w500,
+                                                        color: Colors.white,
+                                                      )
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                          );
-                        },
+                                    ),
+                                  )
+                              );
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ],

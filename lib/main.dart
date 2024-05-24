@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:capstone/services/mycolor.dart';
 import 'package:capstone/pages/carbon_footprint.dart';
 import 'package:capstone/pages/walk_map.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './pages/login.dart';
 import './pages/signup.dart';
 import './pages/screen_time.dart';
+import 'data/user.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,24 +27,17 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        '/': (BuildContext context) => LogIn(),
-        '/login': (BuildContext context) => LogIn(),
-        '/signup': (BuildContext context) => SignUp(),
-        '/main': (BuildContext context) => Main(),
-
-        '/main/screen-time': (BuildContext context) => ScreenTime(""),
-        //'/main/walk-map': (BuildContext context) => WalkMap(),
-        //'/main/carbon-footprint': (BuildContext context) => CarbonFootPrint(),
-
-        //'/main/screen-time/daily': (BuildContext context) => DailyScreenTime(""),
-        //'/main/screen-time/weekly': (BuildContext context) => WeeklyScreenTime(""),
+        '/': (BuildContext context) => const LogIn(),
+        '/login': (BuildContext context) => const LogIn(),
+        '/signup': (BuildContext context) => const SignUp(),
       }
     );
   }
 }
 
 class Main extends StatefulWidget {
-  const Main({super.key});
+  User? user;
+  Main({required this.user, super.key});
 
   @override
   State<Main> createState() => _UsageStatsTestState();
@@ -50,6 +45,20 @@ class Main extends StatefulWidget {
 
 class _UsageStatsTestState extends State<Main> {
   int currentIndex = 0;
+  int distractionCount = 0;
+
+  List body_item = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    body_item = [
+      ScreenTime(user: widget.user),
+      WalkMap(user: widget.user),
+      CarbonFootprint(user: widget.user),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +66,13 @@ class _UsageStatsTestState extends State<Main> {
       backgroundColor: MyColors.deepGreenBlue,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
-        child: AppBar(),
+        child: Text(
+          "distraction Count: $distractionCount",
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+          ),
+        ),//AppBar(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         //현재 index 변수에 저장
@@ -85,10 +100,6 @@ class _UsageStatsTestState extends State<Main> {
             icon: Icon(FontAwesomeIcons.seedling),
             label: 'carbon footprint',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'settings',
-          ),
         ],
         //selected된 item color
         selectedItemColor: MyColors.mint,
@@ -108,10 +119,3 @@ class _UsageStatsTestState extends State<Main> {
     );
   }
 }
-
-List body_item = [
-  ScreenTime(''),
-  WalkMap(),
-  CarbonFootprint(),
-  Text("settings"),
-];

@@ -1,4 +1,4 @@
-class UsageStats{
+class UsageInfos{
   String? userId;
   String? firstTimeStamp;
   String? lastTimeStamp;
@@ -6,7 +6,7 @@ class UsageStats{
   String? packageName;
   String? totalTimeInForeground;
 
-  UsageStats({
+  UsageInfos({
     required this.userId,
     required this.firstTimeStamp,
     required this.lastTimeStamp,
@@ -15,8 +15,8 @@ class UsageStats{
     required this.totalTimeInForeground
   });
 
-  factory UsageStats.fromJson(Map<String, dynamic> json) {
-    return UsageStats(
+  factory UsageInfos.fromJson(Map<String, dynamic> json) {
+    return UsageInfos(
       userId: json['userId'],
       firstTimeStamp: json['firstTimeStamp'],
       lastTimeStamp: json['lastTimeStamp'],

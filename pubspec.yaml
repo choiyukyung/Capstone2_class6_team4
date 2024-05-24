@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: '^3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -43,9 +43,12 @@ dependencies:
   flutter_svg: ^2.0.10+1
   font_awesome_flutter: ^10.7.0
   vertical_barchart: ^2.0.0+2
-  geolocator: ^11.0.0
+  geolocator: ^12.0.0
   webview_flutter: ^4.5.0
   smooth_page_indicator: ^1.1.0
+  location: ^6.0.2
+  focus_detector: ^2.0.1
+  visibility_detector: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -76,13 +79,14 @@ flutter:
     - assets/icons/gmail.jpeg
     - assets/icons/discord.jpeg
     - assets/images/report_card_0.jpg
+    - assets/images/distnace.jpg
     - assets/images/report_card_1.jpg
     - assets/images/report_card_2.jpg
     - assets/images/report_card_3.jpg
-    - assets/images/report_card_4.jpg
     - assets/images/leaves.jpg
     - assets/images/deer_in_forest.jpg
     - assets/images/sunny_forest.jpg
+    - assets/images/blue_map.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

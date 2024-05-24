@@ -1,20 +1,67 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:location/location.dart';
 import 'package:usage_stats/usage_stats.dart';
+
+import '../data/usage_stats.dart';
 import '../data/user.dart';
 
 class Service {
-  static const https = "https://6590-219-255-43-158.ngrok-free.app";
-  static const MethodChannel _channel = MethodChannel('usage_stats');
+  User? user;
+  Service({required this.user});
 
+  static const https = "https://ca74-165-194-17-200.ngrok-free.app";
   static const naverId = "apsz5g7nue";
   static const naverKey = "E4QCjVeH5c4MTYKUVIHM1QLK7Z96qyLzU2fB50my";
+  static const openweatherKey = "a1348d850873d2c02fb6e5c160881ecf";
+  static const MethodChannel _channel = MethodChannel('usage_stats');
 
-  dynamic queryAddress(Position p) async {
+  static Future<bool?> queryUserInfo(User user) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$https/member/login"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+
+        if (data["message"] == "success") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (e) {
+      print("queryUserInfo: Failed to get response: $e");
+    }
+    return false;
+  }
+
+  static Future<bool> postUserInfo(User user) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$https/member/join"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(user),
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed to join");
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print("postUserInfo: Failed to get response: $e");
+    }
+    return false;
+  }
+
+  dynamic queryAddress(Position p) async { //날씨, 대략적 주소
     try {
       String endpoint = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc";
       String output = "json";
@@ -22,7 +69,7 @@ class Service {
       String longtitude = p.longitude.toString();
       String latitude = p.latitude.toString();
 
-      http.Response response = await get(
+      http.Response response = await http.get(
         Uri.parse("$endpoint?coords=$longtitude,$latitude&output=$output&orders=$orders"),
         headers: {
           "X-NCP-APIGW-API-KEY-ID" : naverId,
@@ -49,7 +96,7 @@ class Service {
     return null;
   }
 
-  Future<List> queryUsageStats(DateTime startDate, DateTime endDate) async {
+  Future<List> queryUsageStats(DateTime startDate, DateTime endDate) async { //앱 사용 정보 수신
     int now = DateTime.now().millisecondsSinceEpoch;
     int end = endDate.millisecondsSinceEpoch;
     int start = startDate.millisecondsSinceEpoch;
@@ -61,50 +108,31 @@ class Service {
       if (int.parse(map['totalTimeInForeground']) > 0) {
         map.remove('firstTimeStamp');
         map.remove('lastTimeStamp');
-        map['id'] = "sample";
+        map['id'] = "${user?.id}";
         map['nowTimeStamp'] = now.toString();
-        print(map['lastTimeUsed'].runtimeType);
-        print(map['lastTimeUsed']);
-        print(map['nowTimeStamp']);
-        print(map['totalTimeInForeground']);
+
+        //usageInfos.add(map);
         usageInfos.add(map);
       }
     }
     return usageInfos;
   }
 
-  Future<List<dynamic>> postUsageStats(String id, DateTime startDate, DateTime endDate) async {
-    /*
-    List sample =[
-      {
-        "firstTimeStamp": "1712203495982",
-        "lastTimeStamp": "1712289895981",
-        "lastTimeUsed": "0",
-        "packageName": "google.android.sample3",
-        "totalTimeInForeground": "10"
-      },
-      {
-        "firstTimeStamp": "1712203495982",
-        "lastTimeStamp": "1712289895981",
-        "lastTimeUsed": "0",
-        "packageName": "google.android.sample4",
-        "totalTimeInForeground": "20"
-      }
-    ];
-    var body = jsonEncode(sample);
-    */
-    var usageInfos = queryUsageStats(startDate, endDate);
+  Future<List<dynamic>> postUsageStats(DateTime startDate, DateTime endDate) async { //앱 사용 정보 백엔드 송신
+    var usageInfos = await queryUsageStats(startDate, endDate);
+    //var data = List.generate(usageInfos.length, generator)
     var body = jsonEncode(usageInfos);
 
     try {
-      http.Response response = await http.post(
+      final response = await http.post(
         Uri.parse("$https/usageStats"),
         headers: {"Content-Type": "application/json"}, // 필수
         body: body,
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List<dynamic>;
+        final data = json.decode(response.body);
+        print(data);
 
         return data;
       } else {
@@ -118,6 +146,7 @@ class Service {
     return [];
   }
 
+  /*
   Future<List> queryCarbon(String id, DateTime startDate, DateTime endDate) async {
     var usageInfos = queryUsageStats(startDate, endDate);
     var body = jsonEncode(usageInfos);
@@ -143,40 +172,197 @@ class Service {
 
     return [];
   }
+  */
 
-  Future<User?> queryUserInfoId(String id) async {
+  Future<List> queryCarbonYesterday() async {
     try {
-      final response = await http.get(
-          Uri.parse("$https/member/$id"));
+      http.Response response = await http.post(
+        Uri.parse("$https/appInfoYesterday"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-        return User(
-          id: data['id'],
-          password: data['password'],
-          name: data['name'],
-          birthdate: data['birthdate'],
-        );
+        final data = json.decode(response.body) as List<dynamic>;
+
+        return data;
+      } else {
+        print("Failed to get carbon yesterday data: ${response.statusCode}");
       }
-    } catch (e) {
-      print("Failed to get response: $e");
+    }
+    catch (e) {
+      print("queryCarbonYesterday: Failed to get response: $e");
+    }
+
+    return [];
+  }
+
+  Future<List> queryCarbonChange() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("$https/appInfoChange"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List<dynamic>;
+
+        return data;
+      } else {
+        print("Failed to get carbon change data: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print("queryCarbonChange: Failed to get response: $e");
+    }
+
+    return [];
+  }
+
+  Future<dynamic> queryCarbonDailyStats() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("$https/statistics"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map;
+        return data;
+      } else {
+        print("Failed to get carbon daily stats: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print("queryCarbonDailyStats: Failed to get response: $e");
     }
     return null;
   }
 
-  Future<bool> postUserInfo(User user) async {
+  Future<List> queryCarbonWeeklyStats() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("$https/statistics7days"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List<dynamic>;
+        return data;
+      } else {
+        print("Failed to get carbon weekly stats: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print("queryCarbonWeeklyStats: Failed to get response: $e");
+    }
+    return [];
+  }
+
+  Future<double> queryCarbonBaseValue() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("$https/userBaseValue"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data;
+      } else {
+        print("Failed to get carbon base value: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print("queryCarbonBaseValue: Failed to get response: $e");
+    }
+    return 0;
+  }
+
+  Future<dynamic> queryCarbonInObj() async { //사용된 탄소 -> 주행 거리, 나무 개수
+    try {
+      http.Response response = await http.post(
+        Uri.parse("$https/carbonInObj"),
+        headers: {"Content-Type": "application/json"}, // 필수
+        body: jsonEncode(user),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map;
+        return data;
+      } else {
+        print("Failed to get carbon in objects: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      print("queryCarbonInObj: Failed to get response: $e");
+    }
+    return null;
+  }
+
+  Future<bool> postCoordinates(LocationData l) async {
     try {
       final response = await http.post(
-        Uri.parse("$https/member/join"),
+        Uri.parse("$https/coordinates"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode(user.toJson()),
+        body: jsonEncode({
+          "id": user?.id,
+          "nowLatitude": l.latitude,
+          "nowLongitude": l.longitude
+        }),
       );
       if (response.statusCode != 200) {
-        throw Exception("Failed to register");
+        throw Exception("Failed to post coordinates");
+      } else {
+        return true;
       }
-      return true;
     } catch (e) {
-      print("Failed to get response: $e");
+      print("postCoordinates: Failed to get response: $e");
     }
     return false;
+  }
+
+  Future<bool> postWalkingReport(DateTime totalTime, int totalCnt) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$https/walkingTime"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "id": user?.id,
+          "totalWalkTime": totalTime.millisecondsSinceEpoch,
+          "totalDistractionCnt": totalCnt
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed to post walking report");
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print("postWalkingReport: Failed to get response: $e");
+    }
+    return false;
+  }
+
+  Future<List> getWalkingRanking() async {
+    try {
+      final response = await http.post(
+        Uri.parse("$https/rankingTop10"),
+        headers: {"Content-Type": "application/json"},
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed to get walking ranking");
+      } else {
+        final data = json.decode(response.body) as List<dynamic>;
+        return data;
+      }
+    } catch (e) {
+      print("getWalkingRanking: Failed to get response: $e");
+    }
+    return [];
   }
 }

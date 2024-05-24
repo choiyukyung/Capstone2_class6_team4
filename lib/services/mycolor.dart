@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class MyColors{
   static const deepGreen = Color(0xff1e2f23);
+  static const deepBlue = Color(0xff00001c);
   static const brightOrange = Color(0xfffbb02d);
 
   static const deepGreenBlue = Color(0xff163235);

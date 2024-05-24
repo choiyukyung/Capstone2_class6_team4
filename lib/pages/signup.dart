@@ -35,7 +35,6 @@ class SignupForm extends StatefulWidget {
 class _SignupFormState extends State<SignupForm> {
   final _formKey = GlobalKey<FormState>();
 
-  Service service = Service();
   String id = '';
   String password = '';
   String name = '';
@@ -167,7 +166,7 @@ class _SignupFormState extends State<SignupForm> {
                       name: name,
                       birthdate: birthdate,
                   );
-                  final response = await service.postUserInfo(user);
+                  final response = await Service.postUserInfo(user);
                   if (response == true){
                     _formKey.currentState!.reset();
                     if (!mounted) return;

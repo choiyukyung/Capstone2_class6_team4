@@ -1,6 +1,7 @@
 import 'package:capstone/pages/screen_time.dart';
 import 'package:flutter/material.dart';
 import 'package:capstone/data/user.dart';
+import '../main.dart';
 import '../services/myapi.dart';
 import 'package:capstone/pages/signup.dart';
 
@@ -38,7 +39,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
 
-  Service service = Service();
+  Service? service;
   String id = '';
   String password = '';
 
@@ -116,17 +117,31 @@ class _LoginFormState extends State<LoginForm> {
                     textStyle: const TextStyle(fontSize: 12)
                 ),
                 onPressed: () async {
-                  if (id == 'master') { //개발용 - 나중에 삭제
-                    Navigator.pushNamed(context, '/main');
-                    return;
-                  }
                   try{
-                    final user = await service.queryUserInfoId(id);
-                    if (user != null){
+                    final user = User(
+                        id: id,
+                        password: password,
+                        name: "",
+                        birthdate: ""
+                    );
+
+                    final response = await Service.queryUserInfo(user);
+
+                    if (response == null) {
+                      print("userInfo response is null");
+                      return;
+                    }
+                    if (response){
                       _formKey.currentState!.reset();
+
                       if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenTime(id)));
-                      //Navigator.of(context).pushNamed("/screen-time");
+                      print(id); print(password);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Main(
+                                user: user,
+                              )));
                     }
                   } catch(e){
                     print(e);

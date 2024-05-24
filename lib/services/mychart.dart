@@ -11,8 +11,8 @@ import 'mycolor.dart';
 abstract class MyPieChart extends StatelessWidget {
   const MyPieChart({super.key});
 
-  static List<PieChartSectionData> showingSections(double shortestSide, int pieTouchedIndex) {
-    return List.generate(4, (i) {
+  static List<PieChartSectionData> showingSections(List appCarbon, double shortestSide, int pieTouchedIndex) {
+    return List.generate(4, (i) { //appInfoYesterday: 데이터 정렬 필요?
       final isTouched = i == pieTouchedIndex;
       final fontSize = isTouched ? 18.0 : 14.0;
       final radius = shortestSide / 2; //isTouched ? 65.0 : 60.0;
@@ -24,8 +24,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 0:
           return PieChartSectionData(
             color: MyColors.brightGreenBlue,
-            value: 40,
-            title: '40%',
+            value: appCarbon[i],
+            title: '${appCarbon[i]}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -34,7 +34,7 @@ abstract class MyPieChart extends StatelessWidget {
               //shadows: shadows,
             ),
             badgeWidget: PieBadge(
-              'assets/icons/instagram.jpeg',
+              'assets/icons/instagram.jpeg', //수정 필요
               size: widgetSize,
               borderColor: Colors.transparent,
             ),
@@ -43,8 +43,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 1:
           return PieChartSectionData(
             color: Colors.lime,
-            value: 30,
-            title: '30%',
+            value: appCarbon[i],
+            title: '${appCarbon[i]}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -62,8 +62,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 2:
           return PieChartSectionData(
             color: MyColors.brightOrange,
-            value: 10,
-            title: '10%',
+            value: appCarbon[i],
+            title: '${appCarbon[i]}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -81,8 +81,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 3:
           return PieChartSectionData(
             color: Colors.green,
-            value: 21,
-            title: '21%',
+            value: appCarbon[i],
+            title: '${appCarbon[i]}%',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -146,33 +146,8 @@ class PieBadge extends StatelessWidget {
 }
 
 abstract class MyBarChart extends StatelessWidget {
-  MyBarChart({super.key});
-
-  static final barMainItems = <int, double>{
-    0: 2.5,
-    1: -1.5,
-    2: 3.5,
-    3: 4,
-    4: -5,
-    5: -1.2,
-    6: 4.8,
-  };
-
-  final List<BarChartGroupData> _myData = List.generate(
-      7, //item 개수
-          (index) =>
-          BarChartGroupData(
-              x: index + 1,
-              barRods: [
-                BarChartRodData(
-                    fromY: 0,
-                    toY: Random().nextInt(20) + 1.0,
-                    width: 20,
-                    color: Colors.amber
-                ),
-              ]
-          )
-  );
+  List? carbonChange;
+  MyBarChart({required this.carbonChange, super.key});
 
   static bool isShadowBar(int rodIndex) => rodIndex == 1;
 
@@ -343,16 +318,6 @@ class DotLineChart extends StatelessWidget {
 
 abstract class MyLineChart extends StatelessWidget {
   const MyLineChart({super.key});
-
-  static const lineChartBarData = [
-    FlSpot(0, 4),
-    FlSpot(1, 3.5),
-    FlSpot(2, 4.5),
-    FlSpot(3, 1),
-    FlSpot(4, 4),
-    FlSpot(5, 6),
-    FlSpot(6, 7),
-  ];
 }
 
 class LineBottomTitles extends StatelessWidget {
@@ -430,16 +395,16 @@ abstract class MyRankingChart extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ContentPage(content: content),
+        builder: (context) => UserPage(content: content),
       ),
     );
   }
 }
 
-class ContentPage extends StatelessWidget {
+class UserPage extends StatelessWidget {
   final String content;
 
-  const ContentPage({Key? key, required this.content}) : super(key: key);
+  const UserPage({Key? key, required this.content}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
