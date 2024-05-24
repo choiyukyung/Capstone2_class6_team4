@@ -29,20 +29,9 @@ public class MapController {
         model.addAttribute("nowLongitude", nowLongitude);
         return "hello";
     }
-
-    @CrossOrigin
-    @PostMapping("getMapSwNe")
-    public ModelAndView mapCoordinates(@RequestParam("swLatLng") String swLatLng,
-                                            @RequestParam("neLatLng") String neLatLng) {
-        System.out.println("received: " + swLatLng + ", " + neLatLng);
-        ModelAndView modelAndView = vworldData(swLatLng, neLatLng);
-        System.out.println("********************************");
-        return modelAndView;
-    }
-
-    @GetMapping("vworldData")
-    public ModelAndView vworldData(@RequestParam(required = false) String swLatLng,
-                                   @RequestParam(required = false) String neLatLng) throws JSONException {
+    
+    @GetMapping("/vworldData")
+    public ModelAndView vworldData() throws JSONException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
 
