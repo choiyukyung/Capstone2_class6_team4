@@ -23,7 +23,10 @@ public class UsageStatsController {
     public List<UsageStatsEntity> saveAndSend(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
         List<UsageStatsEntity> entityList = new ArrayList<>();
         for(UsageStatsDTO usageStatsDTO : usageStatsDTOList){
-            if(Integer.parseInt(usageStatsDTO.getTotalTimeInForeground())>0) {
+            //totaltimeinforeground 분으로 가공
+            int timeInMillisec = Integer.parseInt(usageStatsDTO.getTotalTimeInForeground());
+            int totalTime = timeInMillisec / 6000;
+            if(totalTime>0) {
                 UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
                 entityList.add(entity);
             }
