@@ -326,6 +326,23 @@
                     var data = JSON.stringify(nowTrail);
                     console.log(data);
                     xhttp3.send(data);
+                } else {
+                    nowTrail.id = userId;
+                    var xhttp3 = new XMLHttpRequest();
+                    xhttp3.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("Far Trail!");
+                        }
+                    };
+
+                    var url = "/notVisitedTrail";
+                    xhttp3.open("POST", url, true);
+                    xhttp3.setRequestHeader("Content-type", "application/json");
+
+                    var data = JSON.stringify(nowTrail);
+                    console.log(data);
+                    xhttp3.send(data);
                 }
 
             }
@@ -435,6 +452,23 @@
                     };
 
                     var url = "/addVisitedHiking";
+                    xhttp5.open("POST", url, true);
+                    xhttp5.setRequestHeader("Content-type", "application/json");
+
+                    var data = JSON.stringify(nowHiking);
+                    console.log(data);
+                    xhttp5.send(data);
+                } else {
+                    nowHiking.id = userId;
+                    var xhttp5 = new XMLHttpRequest();
+                    xhttp5.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("Far Hiking!");
+                        }
+                    };
+
+                    var url = "/notVisitedHiking";
                     xhttp5.open("POST", url, true);
                     xhttp5.setRequestHeader("Content-type", "application/json");
 
@@ -692,6 +726,24 @@
                     };
 
                     var url = "/addVisitedPark";
+                    xhttp6.open("POST", url, true);
+                    xhttp6.setRequestHeader("Content-type", "application/json");
+
+                    var data = JSON.stringify(nowPark);
+                    console.log(data);
+                    xhttp6.send(data);
+
+                } else {
+                    nowPark.id = userId;
+                    var xhttp6 = new XMLHttpRequest();
+                    xhttp6.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // 요청이 완료되었을 때의 동작
+                            console.log("far Park!");
+                        }
+                    };
+
+                    var url = "/notVisitedPark";
                     xhttp6.open("POST", url, true);
                     xhttp6.setRequestHeader("Content-type", "application/json");
 
