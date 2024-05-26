@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -64,5 +67,32 @@ public class VisitedService {
         VisitedParkEntity visitedParkEntity = VisitedParkEntity.toVisitedParkEntity(visitedParkDTO);
         visitedParkEntity.setVisitTime(LocalDateTime.now());
         visitedRepository.save(visitedParkEntity);
+    }
+
+    public Object findMostRecentVisitedPlace(String id){
+        VisitedTrailEntity recentTrail = visitedRepository.findRecentVisitedTrail(id);
+        VisitedHikingEntity recentHiking = visitedRepository.findRecentVisitedHiking(id);
+        VisitedParkEntity recentPark = visitedRepository.findRecentVisitedPark(id);
+
+        Object mostRecentVisitedPlace = null;
+        LocalDateTime mostRecentTime = null;
+
+        if(recentTrail != null){
+            mostRecentVisitedPlace = recentTrail;
+            mostRecentTime = recentTrail.getVisitTime();
+        }
+        if(recentHiking != null && (mostRecentTime == null|| recentHiking.getVisitTime().isAfter(mostRecentTime))){
+            mostRecentVisitedPlace = recentHiking;
+            mostRecentTime = recentHiking.getVisitTime();
+        }
+        if(recentPark != null && (mostRecentTime == null|| recentPark.getVisitTime().isAfter(mostRecentTime))){
+            mostRecentVisitedPlace = recentPark;
+            mostRecentTime = recentPark.getVisitTime();
+        }
+
+        return mostRecentVisitedPlace;
+
+
+
     }
 }

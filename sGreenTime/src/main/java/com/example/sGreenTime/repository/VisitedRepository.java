@@ -71,4 +71,28 @@ public class VisitedRepository {
         return query.getResultList();
     }
 
+    public VisitedTrailEntity findRecentVisitedTrail(String id){
+        String jpql = "SELECT v FROM VisitedTrailEntity v WHERE v.id = :id ORDER BY v.visitTime DESC";
+        TypedQuery<VisitedTrailEntity> query = em.createQuery(jpql, VisitedTrailEntity.class);
+        query.setParameter("id", id);
+        query.setMaxResults(1);
+        return query.getResultList().stream().findFirst().orElse(null);
+    }
+
+    public VisitedHikingEntity findRecentVisitedHiking(String id){
+        String jpql = "SELECT v FROM VisitedHikingEntity v WHERE v.id = :id ORDER BY v.visitTime DESC";
+        TypedQuery<VisitedHikingEntity> query = em.createQuery(jpql, VisitedHikingEntity.class);
+        query.setParameter("id", id);
+        query.setMaxResults(1);
+        return query.getResultList().stream().findFirst().orElse(null);
+    }
+
+    public VisitedParkEntity findRecentVisitedPark(String id){
+        String jpql = "SELECT v FROM VisitedParkEntity v WHERE v.id = :id ORDER BY v.visitTime DESC";
+        TypedQuery<VisitedParkEntity> query = em.createQuery(jpql, VisitedParkEntity.class);
+        query.setParameter("id", id);
+        query.setMaxResults(1);
+        return query.getResultList().stream().findFirst().orElse(null);
+    }
+
 }

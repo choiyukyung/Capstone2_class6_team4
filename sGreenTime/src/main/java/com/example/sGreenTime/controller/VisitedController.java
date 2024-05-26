@@ -1,6 +1,7 @@
 package com.example.sGreenTime.controller;
 
 
+import com.example.sGreenTime.dto.MemberDTO;
 import com.example.sGreenTime.dto.VisitedHikingDTO;
 import com.example.sGreenTime.dto.VisitedParkDTO;
 import com.example.sGreenTime.dto.VisitedTrailDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -75,5 +77,11 @@ public class VisitedController {
     @PostMapping("/notVisitedPark")
     public String notVisitedPark(@RequestBody VisitedParkDTO visitedParkDTO){
         return "farPark";
+    }
+
+    @PostMapping("/startWalk")
+    public Object getRecentVisitedPlace(@RequestBody MemberDTO memberDTO){
+        Object recentVisitedPlace = visitedService.findMostRecentVisitedPlace(memberDTO.getId());
+        return recentVisitedPlace;
     }
 }
