@@ -13,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -69,30 +68,35 @@ public class VisitedService {
         visitedRepository.save(visitedParkEntity);
     }
 
-    public Object findMostRecentVisitedPlace(String id){
+    public Map<String, Object> findMostRecentVisitedPlace(String id){
         VisitedTrailEntity recentTrail = visitedRepository.findRecentVisitedTrail(id);
         VisitedHikingEntity recentHiking = visitedRepository.findRecentVisitedHiking(id);
         VisitedParkEntity recentPark = visitedRepository.findRecentVisitedPark(id);
 
         Object mostRecentVisitedPlace = null;
         LocalDateTime mostRecentTime = null;
+        String placeType = "";
 
         if(recentTrail != null){
             mostRecentVisitedPlace = recentTrail;
             mostRecentTime = recentTrail.getVisitTime();
+            placeType = "trail";
         }
         if(recentHiking != null && (mostRecentTime == null|| recentHiking.getVisitTime().isAfter(mostRecentTime))){
             mostRecentVisitedPlace = recentHiking;
             mostRecentTime = recentHiking.getVisitTime();
+            placeType = "hiking";
         }
         if(recentPark != null && (mostRecentTime == null|| recentPark.getVisitTime().isAfter(mostRecentTime))){
             mostRecentVisitedPlace = recentPark;
             mostRecentTime = recentPark.getVisitTime();
+            placeType = "park";
         }
 
-        return mostRecentVisitedPlace;
+        Map<String, Object> result = new HashMap<>();
+        result.put(placeType, mostRecentVisitedPlace);
 
-
+        return result;
 
     }
 }

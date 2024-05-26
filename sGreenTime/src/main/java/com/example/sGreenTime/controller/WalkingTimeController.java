@@ -20,13 +20,13 @@ public class WalkingTimeController {
     private final WalkingTimeService walkingTimeService;
 
     @PostMapping("/endWalk")
-    public float getWalkingTimeInfo(@RequestBody WalkingTimeDTO walkingTimeDTO){
+    public Map<String, Float> getWalkingTimeInfo(@RequestBody WalkingTimeDTO walkingTimeDTO) {
         walkingTimeService.toWalkingTimeEntity(walkingTimeDTO);
         return walkingTimeService.getWalkingTimeInCar(walkingTimeDTO);
     }
 
     @PostMapping("/rankingTop10")
-    public List<WalkingTimeEntity> rankingTop10(){
+    public List<WalkingTimeEntity> rankingTop10() {
         return walkingTimeService.getWalkingTop10();
     }
 }

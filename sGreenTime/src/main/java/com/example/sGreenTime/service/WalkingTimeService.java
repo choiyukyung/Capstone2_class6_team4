@@ -33,7 +33,7 @@ public class WalkingTimeService {
         return walkingTimeEntity;
     }
 
-    public float getWalkingTimeInCar(WalkingTimeDTO walkingTimeDTO) {
+    public Map<String, Float> getWalkingTimeInCar(WalkingTimeDTO walkingTimeDTO) {
         float totalWalkingTimeInMinutes = walkingTimeDTO.getTotalWalkTime() / (1000f * 60f);
 //        LocalDateTime endTime = LocalDateTime.now();
 //        LocalDateTime startTime = endTime.minus((long) (totalWalkingTimeInMinutes * 60), ChronoUnit.SECONDS);
@@ -45,12 +45,25 @@ public class WalkingTimeService {
 //        result.put("hikings", hikings);
 //        result.put("parks", parks);
 
+        Map<String, Float> totalWalkingTimeIn = new HashMap<>();
         //자동차로 변환한 값 계산
         //휴대폰 1분에 0.1g
         //1g에 8.26m
         //=> 휴대폰 1분에 0.826m
         float totalWalkingTimeInCar = (float) (totalWalkingTimeInMinutes * 0.826);
-        return totalWalkingTimeInCar;
+        totalWalkingTimeIn.put("car", totalWalkingTimeInCar);
+
+        //나무로 변환한 값 계산
+        //휴대폰 1분에 0.1g
+        //나무 1그루가 하루동안 흡수하는 이산화탄소량 11900g/365 = 32.6g
+        //나무는 1g을 1/32.6일동안 흡수
+        //나무는 0.1g을 1/326일동안 흡수
+        //내가 나무 1그루가 n일동안 흡수하는 이산화탄소량을 절감하였다.
+        //=> totalWalkingTime x분 => 0.1 * x
+        float totalWalkingTimeInTree = (float) (totalWalkingTimeInMinutes / 326);
+        totalWalkingTimeIn.put("tree", totalWalkingTimeInTree);
+
+        return totalWalkingTimeIn;
 
     }
 

@@ -5,7 +5,6 @@ import com.example.sGreenTime.dto.MemberDTO;
 import com.example.sGreenTime.dto.VisitedHikingDTO;
 import com.example.sGreenTime.dto.VisitedParkDTO;
 import com.example.sGreenTime.dto.VisitedTrailDTO;
-import com.example.sGreenTime.entity.VisitedTrailEntity;
 import com.example.sGreenTime.service.VisitedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -80,8 +78,7 @@ public class VisitedController {
     }
 
     @PostMapping("/startWalk")
-    public Object getRecentVisitedPlace(@RequestBody MemberDTO memberDTO){
-        Object recentVisitedPlace = visitedService.findMostRecentVisitedPlace(memberDTO.getId());
-        return recentVisitedPlace;
+    public Map<String, Object> getRecentVisitedPlace(@RequestBody MemberDTO memberDTO){
+       return visitedService.findMostRecentVisitedPlace(memberDTO.getId());
     }
 }
