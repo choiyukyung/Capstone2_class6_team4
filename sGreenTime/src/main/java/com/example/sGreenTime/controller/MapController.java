@@ -1,5 +1,6 @@
 package com.example.sGreenTime.controller;
 
+import com.example.sGreenTime.dto.MemberDTO;
 import com.example.sGreenTime.service.MapService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +31,12 @@ public class MapController {
         return "hello";
     }
 
-    @GetMapping("/vworldData")
-    public ModelAndView vworldData() throws JSONException {
+    @GetMapping("/vworldData/{id}")
+    public ModelAndView vworldData(@PathVariable("id") String id) throws JSONException {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
+
+        modelAndView.addObject("userId", id);
 
         String trailApiUrl1;
         String hikingApiUrl1;

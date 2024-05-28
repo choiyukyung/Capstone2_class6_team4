@@ -8,6 +8,7 @@
 </head>
 <body>
 <div id="map" style="width:100%;height:100vh;"></div>
+<div id="userId" th:data-value="${userId}"></div>
 <!--산책로-->
 <!-- 모델로부터 trailTotalPagesNum 변수를 받아오는 코드 -->
 <div id="trailTotalPagesNum" th:data-value="${trailTotalPagesNum}"></div>
@@ -68,6 +69,7 @@
 <input type="hidden" id="swLatLngHtml" value="값"/>
 
 <script>
+    var userId = document.getElementById("userId").getAttribute("data-value");
 
     //현재 사용자 위치
     var nowLat = document.getElementById("nowLatitude").getAttribute("data-value");
@@ -78,7 +80,7 @@
     //방문한 산책로 리스트 가져오기
     var xhttp2 = new XMLHttpRequest();
     var visitedTrailList = [];
-    var userId = "master"; // 실제 사용자 아이디로 변경하기
+
     // HTTP 요청을 Promise로 감싸기
     // (visitedTrailList에 값이 들어오기 전에 사용하는 것 방지)
     function makeTrailRequest() {
@@ -101,7 +103,7 @@
     //방문한 등산로 리스트 가져오기
     var xhttp4 = new XMLHttpRequest();
     var visitedHikingList = [];
-    var userId = "master"; // 실제 사용자 아이디로 변경하기
+
     // HTTP 요청을 Promise로 감싸기
     // (visitedHikingList에 값이 들어오기 전에 사용하는 것 방지)
     function makeHikingRequest() {
@@ -124,7 +126,7 @@
     //방문한 공원 리스트 가져오기
     var xhttp6 = new XMLHttpRequest();
     var visitedParkList = [];
-    var userId = "master"; // 실제 사용자 아이디로 변경하기
+
     // HTTP 요청을 Promise로 감싸기
     // (visitedParkList에 값이 들어오기 전에 사용하는 것 방지)
     function makeParkRequest() {
@@ -252,7 +254,6 @@
                     var polyline;
                     if (visitedTrailList.includes(lnkNam)) {
                         polyline = new kakao.maps.Polyline({
-                            map: map,
                             path: paths,
                             strokeWeight: 10,
                             strokeColor: '#79DF00',
@@ -261,7 +262,6 @@
                         });
                     } else {
                         polyline = new kakao.maps.Polyline({
-                            map: map,
                             path: paths,
                             strokeWeight: 10,
                             strokeColor: '#424141',
@@ -269,6 +269,7 @@
                             strokeStyle: 'solid'
                         });
                     }
+                    polyline.setMap(map);
 
 
                     kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
@@ -308,7 +309,6 @@
                             console.log("Visited trails added successfully!");
 
                             var polyline = new kakao.maps.Polyline({
-                                map: map,
                                 path: paths,
                                 strokeWeight: 10,
                                 strokeColor: '#79DF00',
@@ -382,7 +382,6 @@
                     var polyline;
                     if (visitedHikingList.includes(mntnNm)) {
                         polyline = new kakao.maps.Polyline({
-                            map: map,
                             path: paths2,
                             strokeWeight: 10,
                             strokeColor: '#79DF00',
@@ -391,7 +390,6 @@
                         });
                     } else {
                         polyline = new kakao.maps.Polyline({
-                            map: map,
                             path: paths2,
                             strokeWeight: 10,
                             strokeColor: '#424141',
@@ -440,7 +438,6 @@
                             console.log("Visited Hikings added successfully!");
 
                             var polyline = new kakao.maps.Polyline({
-                                map: map,
                                 path: paths,
                                 strokeWeight: 10,
                                 strokeColor: '#79DF00',
@@ -517,7 +514,6 @@
                     var polygon;
                     if (visitedParkList.includes(parkName)) {
                         polygon = new kakao.maps.Polygon({
-                            map: map,
                             path: park1Paths, // 그려질 다각형의 좌표 배열입니다
                             strokeWeight: 3, // 선의 두께입니다
                             strokeColor: '#79DF00', // 선의 색깔입니다
@@ -528,7 +524,6 @@
                         });
                     } else {
                         polygon = new kakao.maps.Polygon({
-                            map: map,
                             path: park1Paths, // 그려질 다각형의 좌표 배열입니다
                             strokeWeight: 3, // 선의 두께입니다
                             strokeColor: '#424141', // 선의 색깔입니다

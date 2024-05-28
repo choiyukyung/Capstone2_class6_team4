@@ -29,7 +29,6 @@ public class WalkingTimeController {
         map.put("place", visitedService.findMostRecentVisitedPlace(memberDTO.getId()));
         map.put("rank", walkingTimeService.getWalkingMyRank(memberDTO.getId()));
         return map;
-        //사용자 본인의 랭킹 보내기
     }
 
     @PostMapping("/endWalk")
@@ -39,7 +38,6 @@ public class WalkingTimeController {
         map.put("walking", walkingTimeService.getWalkingTimeInCar(walkingTimeDTO));
         map.put("rank", walkingTimeService.getWalkingMyRank(walkingTimeDTO.getId()));
         return map;
-        //사용자 본인 랭킹 보내고
     }
 
     @PostMapping("/rankingTop10")
