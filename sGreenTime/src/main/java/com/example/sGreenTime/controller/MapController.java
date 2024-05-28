@@ -41,26 +41,33 @@ public class MapController {
         String park2ApiUrl1;
         String park3ApiUrl1;
 
-        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
-        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.55)";
-        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
-        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
-        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
+        //124,34,132,43
+        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,36,128,41)";
+        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(126.9,37.45,127,37.55)";
+        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
+        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
+        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
 
 
         //산책로 처리
         String responseData1 = mapService.getDataFromExternalAPI(trailApiUrl1);
         //System.out.println(responseData);
         JSONObject jsonObject1 = new JSONObject(responseData1);
+        Integer trailTotalPagesNum=0;
 
-        //페이지 수 가져오기
-        JSONObject pageObject1 = jsonObject1.getJSONObject("response").getJSONObject("page");
-        Integer trailTotalPagesNum = Integer.parseInt(pageObject1.getString("total"));
-        System.out.println("Total Pages: " + trailTotalPagesNum);
-        modelAndView.addObject("trailTotalPagesNum", trailTotalPagesNum);
+        try {
+            //페이지 수 가져오기
+            JSONObject pageObject1 = jsonObject1.getJSONObject("response").getJSONObject("page");
+            trailTotalPagesNum = Integer.parseInt(pageObject1.getString("total"));
+            System.out.println("Total Pages: " + trailTotalPagesNum);
+            modelAndView.addObject("trailTotalPagesNum", trailTotalPagesNum);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
 
-        String trailApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&page=";
-        String trailApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
+        String trailApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&size=100&page=";
+        String trailApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,36,128,41)";
 
         //반복문 통해 모든 산책로 불러오기
         for (int j = 1; j <= trailTotalPagesNum; j++) {
@@ -91,7 +98,7 @@ public class MapController {
         modelAndView.addObject("hikingTotalPagesNum", hikingTotalPagesNum);
 
 
-        String hikingApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&page=";
+        String hikingApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&size=100&page=";
         String hikingApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.55)";
 
         //반복문 통해 모든 등산로 불러오기
@@ -122,8 +129,8 @@ public class MapController {
         modelAndView.addObject("park1TotalPagesNum", park1TotalPagesNum);
 
 
-        String park1ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&page=";
-        String park1ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
+        String park1ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&size=100&page=";
+        String park1ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원1 불러오기
         for (int j = 1; j <= park1TotalPagesNum; j++) {
@@ -152,8 +159,8 @@ public class MapController {
         modelAndView.addObject("park2TotalPagesNum", park2TotalPagesNum);
 
 
-        String park2ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&page=";
-        String park2ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
+        String park2ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&size=100&page=";
+        String park2ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원2 불러오기
         for (int j = 1; j <= park2TotalPagesNum; j++) {
@@ -183,8 +190,8 @@ public class MapController {
         modelAndView.addObject("park3TotalPagesNum", park3TotalPagesNum);
 
 
-        String park3ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&page=";
-        String park3ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,34,132,43)";
+        String park3ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&size=100&page=";
+        String park3ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원3 불러오기
         for (int j = 1; j <= park3TotalPagesNum; j++) {
