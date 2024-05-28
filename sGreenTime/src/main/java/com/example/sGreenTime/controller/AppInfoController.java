@@ -50,7 +50,7 @@ public class AppInfoController {
     // 사용자의 id 주면 앱별 탄소 사용량 전날-전전날 보내기(값이 +면 어제가 많이 사용한 것)
     //[{"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"youtube","appIcon":null,"appTime":null,"appCarbon":11.5},{"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":11.5}]
     //여기서 appEntry와 appCarbon만 어제와 그제의 차이를 나타내는 유의미한 정보고(+id, appIcon) 나머지는 의미 없는 정보임.
-    @GetMapping("/appInfoChange")
+    @PostMapping("/appInfoChange")
     public List<AppInfoEntity> sendChange() {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId("33");

@@ -77,8 +77,5 @@ public class VisitedController {
         return "farPark";
     }
 
-    @PostMapping("/startWalk")
-    public Map<String, Object> getRecentVisitedPlace(@RequestBody MemberDTO memberDTO){
-       return visitedService.findMostRecentVisitedPlace(memberDTO.getId());
-    }
+
 }

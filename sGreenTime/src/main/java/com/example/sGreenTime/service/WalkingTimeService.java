@@ -108,4 +108,21 @@ public class WalkingTimeService {
         Collections.sort(weekAll, Comparator.comparing(WalkingTimeEntity::getWalkingTime).reversed());
         return weekAll.subList(0, 10);
     }
+
+    public int getWalkingMyRank(String id) {
+        List<WalkingTimeEntity> weekAll = getWalkingTimeWeek();
+
+        Collections.sort(weekAll, Comparator.comparing(WalkingTimeEntity::getWalkingTime).reversed());
+
+        //우리 사용자 찾기
+        int i = 0;
+        for(WalkingTimeEntity w : weekAll){
+            i++;
+            if(w.getId().equals(id)){
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }
