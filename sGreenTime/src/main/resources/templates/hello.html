@@ -246,13 +246,9 @@
                 // 데이터 요소에서 데이터 가져오기
                 let myPlaceData = document.getElementById(dataElementId).getAttribute("data-value");
 
-
-
                 // 데이터 파싱
                 const obj = JSON.parse(myPlaceData);
                 //console.log(obj);
-
-
 
                 /// 문자열을 배열로 변환
                 var arr = obj.coordinates.split("],[");
@@ -267,10 +263,8 @@
 
                 let paths = [];
 
-
-                for (let k = 0; k < coordinates.length; k++) {
-
-                    paths.push(new kakao.maps.LatLng(coordinates[k][0], coordinates[k][1]));
+                for (let j = 0; j < coordinates.length; j++) {
+                    paths.push(new kakao.maps.LatLng(coordinates[j][0], coordinates[j][1]));
 
                 }
                 var lnkNam = obj.lnk_nam;
@@ -304,7 +298,6 @@
                     nowTrailLat = latlng.getLat();
                     nowTrailLng = latlng.getLng();
                     console.log(nowTrail);
-                    // coordinates 값을 제거
                     // coordinates 값을 제거
                     const { coordinates, myPlaceId, ...newData } = nowTrail;
 
