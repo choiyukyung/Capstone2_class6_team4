@@ -3,6 +3,7 @@ package com.example.sGreenTime.controller;
 import com.example.sGreenTime.entity.MyPlaceEntity;
 import com.example.sGreenTime.service.MapService;
 import com.example.sGreenTime.service.MyPlaceService;
+import com.example.sGreenTime.service.VisitedService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class MapController {
 
     private final MapService mapService;
     private final MyPlaceService myPlaceService;
+    private final VisitedService visitedService;
     private final ObjectMapper objectMapper;
 
     @PostMapping("/coordinates")
@@ -49,6 +51,18 @@ public class MapController {
             String myPlaceJson = objectMapper.writeValueAsString(myPlaceEntityList.get(j));
             modelAndView.addObject("myPlaceData" + j, myPlaceJson);
         }
+
+        //visitedTrailLnkNamList MapController로 가져오기
+        List<String> visitedTrailLnkNamList = visitedService.getVisitedTrailLnkNam(id);
+        modelAndView.addObject("visitedTrailLnkNamList", visitedTrailLnkNamList);
+
+        //visitedHikingMntnNmList
+        List<String> visitedHikingMntnNmList = visitedService.getVisitedHikingMntnNm(id);
+        modelAndView.addObject("visitedHikingMntnNmList", visitedHikingMntnNmList);
+
+        //visitedParkNameList
+        List<String> visitedParkNameList = visitedService.getVisitedParkName(id);
+        modelAndView.addObject("visitedParkNameList", visitedParkNameList);
 
         String trailApiUrl1;
         String hikingApiUrl1;
