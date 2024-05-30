@@ -1,7 +1,13 @@
 package com.example.sGreenTime.controller;
 
 import com.example.sGreenTime.dto.MemberDTO;
+import com.example.sGreenTime.entity.MyPlaceEntity;
 import com.example.sGreenTime.service.MapService;
+import com.example.sGreenTime.service.MyPlaceService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,16 +16,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 public class MapController {
 
     private final MapService mapService;
-
-    @Autowired
-    public MapController(MapService mapService) {
-        this.mapService = mapService;
-    }
-
+    private final MyPlaceService myPlaceService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/coordinates")
     public String receiveGPS(@RequestBody String json, Model model) {
@@ -32,11 +38,19 @@ public class MapController {
     }
 
     @GetMapping("/vworldData/{id}")
-    public ModelAndView vworldData(@PathVariable("id") String id) throws JSONException {
+    public ModelAndView vworldData(@PathVariable("id") String id) throws JSONException, JsonProcessingException {
+        List<MyPlaceEntity> myPlaceEntityList = myPlaceService.findMyPlaceById(id);
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
 
         modelAndView.addObject("userId", id);
+
+        modelAndView.addObject("myPlaceEntityListSize", myPlaceEntityList.size());
+        for (int j = 0; j < myPlaceEntityList.size(); j++) {
+            String myPlaceJson = objectMapper.writeValueAsString(myPlaceEntityList.get(j));
+            modelAndView.addObject("myPlaceData" + j, myPlaceJson);
+        }
 
         String trailApiUrl1;
         String hikingApiUrl1;
