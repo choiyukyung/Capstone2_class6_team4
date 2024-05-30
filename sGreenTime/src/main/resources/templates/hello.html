@@ -284,7 +284,9 @@
 
                     for (let k = 0; k < obj[j].geometry.coordinates.length; k++) {
                         for (let i = 0; i < obj[j].geometry.coordinates[k].length; i++) {
-                            paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
+                            if(i%10==0){
+                                paths.push(new kakao.maps.LatLng(obj[j].geometry.coordinates[k][i][1], obj[j].geometry.coordinates[k][i][0]));
+                            }
                         }
                     }
 
@@ -412,7 +414,9 @@
 
                     for (let k = 0; k < hikingObj[j].geometry.coordinates.length; k++) {
                         for (let i = 0; i < hikingObj[j].geometry.coordinates[k].length; i++) {
-                            paths2.push(new kakao.maps.LatLng(hikingObj[j].geometry.coordinates[k][i][1], hikingObj[j].geometry.coordinates[k][i][0]));
+                            if(i%10==0){
+                                paths2.push(new kakao.maps.LatLng(hikingObj[j].geometry.coordinates[k][i][1], hikingObj[j].geometry.coordinates[k][i][0]));
+                            }
                         }
                     }
 
@@ -543,7 +547,9 @@
                         for (let i = 0; i < park1Obj[j].geometry.coordinates[k].length; i++) {
                             var park1Paths_single = [];
                             for (let l = 0; l < park1Obj[j].geometry.coordinates[k][i].length; l++) {
-                                park1Paths_single.push(new kakao.maps.LatLng(park1Obj[j].geometry.coordinates[k][i][l][1], park1Obj[j].geometry.coordinates[k][i][l][0]));
+                                if(l%50==0){
+                                    park1Paths_single.push(new kakao.maps.LatLng(park1Obj[j].geometry.coordinates[k][i][l][1], park1Obj[j].geometry.coordinates[k][i][l][0]));
+                                }
                             }
                             park1Paths.push(park1Paths_single);
                         }
@@ -611,7 +617,10 @@
                         for (let i = 0; i < park2Obj[j].geometry.coordinates[k].length; i++) {
                             var park2Paths_single = [];
                             for (let l = 0; l < park2Obj[j].geometry.coordinates[k][i].length; l++) {
-                                park2Paths_single.push(new kakao.maps.LatLng(park2Obj[j].geometry.coordinates[k][i][l][1], park2Obj[j].geometry.coordinates[k][i][l][0]));
+                                if(l%50==0){
+                                    console.log(l);
+                                    park2Paths_single.push(new kakao.maps.LatLng(park2Obj[j].geometry.coordinates[k][i][l][1], park2Obj[j].geometry.coordinates[k][i][l][0]));
+                                }
                             }
                             park2Paths.push(park2Paths_single);
                         }
@@ -679,7 +688,9 @@
                         for (let i = 0; i < park3Obj[j].geometry.coordinates[k].length; i++) {
                             var park3Paths_single = [];
                             for (let l = 0; l < park3Obj[j].geometry.coordinates[k][i].length; l++) {
-                                park3Paths_single.push(new kakao.maps.LatLng(park3Obj[j].geometry.coordinates[k][i][l][1], park3Obj[j].geometry.coordinates[k][i][l][0]));
+                                if(l%50==0){
+                                    park3Paths_single.push(new kakao.maps.LatLng(park3Obj[j].geometry.coordinates[k][i][l][1], park3Obj[j].geometry.coordinates[k][i][l][0]));
+                                }
                             }
                             park3Paths.push(park3Paths_single);
                         }
