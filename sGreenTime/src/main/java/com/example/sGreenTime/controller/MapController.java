@@ -59,14 +59,15 @@ public class MapController {
         String park3ApiUrl1;
 
         //124,34,132,43
-        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,36,128,41)";
-        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(126.9,37.45,127,37.55)";
-        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
-        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
-        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=100&geomfilter=BOX(124,37,132,42)";
+        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,36,128,41)";
+        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(126.9,37.45,127,37.55)";
+        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
+        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
+        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
 
 
         //산책로 처리
+        /*
         String responseData1 = mapService.getDataFromExternalAPI(trailApiUrl1);
         //System.out.println(responseData);
         JSONObject jsonObject1 = new JSONObject(responseData1);
@@ -83,27 +84,32 @@ public class MapController {
             e.printStackTrace();
         }
 
-        String trailApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&size=100&page=";
+        String trailApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&size=1000&page=";
         String trailApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,36,128,41)";
 
         //반복문 통해 모든 산책로 불러오기
         for (int j = 1; j <= trailTotalPagesNum; j++) {
             String trailApiUrl = trailApiBaseUrl1 + j + trailApiBaseUrl2;
             String responseData = mapService.getDataFromExternalAPI(trailApiUrl);
-            //System.out.println(j+"th"+responseData);
-            JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject response = jsonObject.getJSONObject("response");
-            JSONObject result = response.getJSONObject("result");
-            JSONObject featureCollection = result.getJSONObject("featureCollection");
+         */
+        String responseData = mapService.getDataFromExternalAPI(trailApiUrl1);
 
-            JSONArray features = featureCollection.getJSONArray("features");
+        //System.out.println(j+"th"+responseData);
+        JSONObject jsonObject = new JSONObject(responseData);
+        JSONObject response = jsonObject.getJSONObject("response");
+        JSONObject result = response.getJSONObject("result");
+        JSONObject featureCollection = result.getJSONObject("featureCollection");
 
-            modelAndView.addObject("trailData" + j, features);
-        }
+        JSONArray features = featureCollection.getJSONArray("features");
+
+        //modelAndView.addObject("trailData" + j, features);
+        modelAndView.addObject("trailData", features);
+
 
 
 
         //등산로 처리
+        /*
         String hikingResponseData1 = mapService.getDataFromExternalAPI(hikingApiUrl1);
         //System.out.println(hikingResponseData1);
         JSONObject hikingJsonObject1 = new JSONObject(hikingResponseData1);
@@ -115,27 +121,28 @@ public class MapController {
         modelAndView.addObject("hikingTotalPagesNum", hikingTotalPagesNum);
 
 
-        String hikingApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&size=100&page=";
+        String hikingApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&size=1000&page=";
         String hikingApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(126.9,37.45,127,37.55)";
 
         //반복문 통해 모든 등산로 불러오기
         for (int j = 1; j <= hikingTotalPagesNum; j++) {
             String hikingApiUrl = hikingApiBaseUrl1 + j + hikingApiBaseUrl2;
-            String responseData = mapService.getDataFromExternalAPI(hikingApiUrl);
-            //System.out.println(j+"th"+responseData);
-            JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject response = jsonObject.getJSONObject("response");
-            JSONObject result = response.getJSONObject("result");
-            JSONObject featureCollection = result.getJSONObject("featureCollection");
+        */
+        responseData = mapService.getDataFromExternalAPI(hikingApiUrl1);
+        //System.out.println(j+"th"+responseData);
+        jsonObject = new JSONObject(responseData);
+        response = jsonObject.getJSONObject("response");
+        result = response.getJSONObject("result");
+        featureCollection = result.getJSONObject("featureCollection");
 
-            JSONArray features = featureCollection.getJSONArray("features");
+        features = featureCollection.getJSONArray("features");
 
-            modelAndView.addObject("hikingData" + j, features);
-        }
+        modelAndView.addObject("hikingData", features);
 
 
 
         //공원1 처리
+        /*
         String park1ResponseData1 = mapService.getDataFromExternalAPI(park1ApiUrl1);
         JSONObject park1JsonObject1 = new JSONObject(park1ResponseData1);
 
@@ -146,26 +153,27 @@ public class MapController {
         modelAndView.addObject("park1TotalPagesNum", park1TotalPagesNum);
 
 
-        String park1ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&size=100&page=";
+        String park1ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&size=1000&page=";
         String park1ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원1 불러오기
         for (int j = 1; j <= park1TotalPagesNum; j++) {
             String park1ApiUrl = park1ApiBaseUrl1 + j + park1ApiBaseUrl2;
-            String responseData = mapService.getDataFromExternalAPI(park1ApiUrl);
-            //System.out.println(j+"th"+responseData);
-            JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject response = jsonObject.getJSONObject("response");
-            JSONObject result = response.getJSONObject("result");
-            JSONObject featureCollection = result.getJSONObject("featureCollection");
+         */
+        responseData = mapService.getDataFromExternalAPI(park1ApiUrl1);
+        //System.out.println(j+"th"+responseData);
+        jsonObject = new JSONObject(responseData);
+        response = jsonObject.getJSONObject("response");
+        result = response.getJSONObject("result");
+        featureCollection = result.getJSONObject("featureCollection");
 
-            JSONArray features = featureCollection.getJSONArray("features");
+        features = featureCollection.getJSONArray("features");
 
-            modelAndView.addObject("park1Data" + j, features);
-        }
+        modelAndView.addObject("park1Data", features);
 
 
         //공원2 처리
+        /*
         String park2ResponseData1 = mapService.getDataFromExternalAPI(park2ApiUrl1);
         JSONObject park2JsonObject1 = new JSONObject(park2ResponseData1);
 
@@ -176,27 +184,28 @@ public class MapController {
         modelAndView.addObject("park2TotalPagesNum", park2TotalPagesNum);
 
 
-        String park2ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&size=100&page=";
+        String park2ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&size=1000&page=";
         String park2ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원2 불러오기
         for (int j = 1; j <= park2TotalPagesNum; j++) {
             String park2ApiUrl = park2ApiBaseUrl1 + j + park2ApiBaseUrl2;
-            String responseData = mapService.getDataFromExternalAPI(park2ApiUrl);
-            //System.out.println(j+"th"+responseData);
-            JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject response = jsonObject.getJSONObject("response");
-            JSONObject result = response.getJSONObject("result");
-            JSONObject featureCollection = result.getJSONObject("featureCollection");
+        */
+        responseData = mapService.getDataFromExternalAPI(park2ApiUrl1);
+        //System.out.println(j+"th"+responseData);
+        jsonObject = new JSONObject(responseData);
+        response = jsonObject.getJSONObject("response");
+        result = response.getJSONObject("result");
+        featureCollection = result.getJSONObject("featureCollection");
 
-            JSONArray features = featureCollection.getJSONArray("features");
+        features = featureCollection.getJSONArray("features");
 
-            modelAndView.addObject("park2Data" + j, features);
-        }
+        modelAndView.addObject("park2Data", features);
 
 
 
         //공원3 처리
+        /*
         String park3ResponseData1 = mapService.getDataFromExternalAPI(park3ApiUrl1);
         JSONObject park3JsonObject1 = new JSONObject(park3ResponseData1);
 
@@ -207,23 +216,24 @@ public class MapController {
         modelAndView.addObject("park3TotalPagesNum", park3TotalPagesNum);
 
 
-        String park3ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&size=100&page=";
+        String park3ApiBaseUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&size=1000&page=";
         String park3ApiBaseUrl2 = "&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&geomfilter=BOX(124,37,132,42)";
 
         //반복문 통해 모든 공원3 불러오기
         for (int j = 1; j <= park3TotalPagesNum; j++) {
             String park3ApiUrl = park3ApiBaseUrl1 + j + park3ApiBaseUrl2;
-            String responseData = mapService.getDataFromExternalAPI(park3ApiUrl);
-            //System.out.println(j+"th"+responseData);
-            JSONObject jsonObject = new JSONObject(responseData);
-            JSONObject response = jsonObject.getJSONObject("response");
-            JSONObject result = response.getJSONObject("result");
-            JSONObject featureCollection = result.getJSONObject("featureCollection");
+         */
+        responseData = mapService.getDataFromExternalAPI(park3ApiUrl1);
+        //System.out.println(j+"th"+responseData);
+        jsonObject = new JSONObject(responseData);
+        response = jsonObject.getJSONObject("response");
+        result = response.getJSONObject("result");
+        featureCollection = result.getJSONObject("featureCollection");
 
-            JSONArray features = featureCollection.getJSONArray("features");
+        features = featureCollection.getJSONArray("features");
 
-            modelAndView.addObject("park3Data" + j, features);
-        }
+        modelAndView.addObject("park3Data", features);
+
 
         return modelAndView;
     }

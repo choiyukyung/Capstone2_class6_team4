@@ -19,59 +19,24 @@
     <div th:id="'myPlaceData' + ${index}" th:attr="data-value=${__${'myPlaceData' + index}__}"></div>
 </div>
 <!--산책로-->
-<!-- 모델로부터 trailTotalPagesNum 변수를 받아오는 코드 -->
-<div id="trailTotalPagesNum" th:data-value="${trailTotalPagesNum}"></div>
-<div th:with="trailTotalPagesNum=${trailTotalPagesNum}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(1, trailTotalPagesNum)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'trailDataElement' + ${index}" th:attr="data-value=${__${'trailData' + index}__}"></div>
-</div>
-<!-- 반복문 끝 -->
+<div id="trailDataElement" th:data-value="${trailData}"></div>
+<div th:with="trailDataElement=${trailData}"></div>
 
 <!--등산로-->
-<!-- 모델로부터 hikingTotalPagesNum 변수를 받아오는 코드 -->
-<div id="hikingTotalPagesNum" th:data-value="${hikingTotalPagesNum}"></div>
-<div th:with="hikingTotalPagesNum=${hikingTotalPagesNum}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(1, hikingTotalPagesNum)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'hikingDataElement' + ${index}" th:attr="data-value=${__${'hikingData' + index}__}"></div>
-</div>
-<!-- 반복문 끝 -->
+<div id="hikingDataElement" th:data-value="${hikingData}"></div>
+<div th:with="hikingDataElement=${hikingData}"></div>
 
 <!--공원1-->
-<!-- 모델로부터 park1TotalPagesNum 변수를 받아오는 코드 -->
-<div id="park1TotalPagesNum" th:data-value="${park1TotalPagesNum}"></div>
-<div th:with="park1TotalPagesNum=${park1TotalPagesNum}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(1, park1TotalPagesNum)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'park1DataElement' + ${index}" th:attr="data-value=${__${'park1Data' + index}__}"></div>
-</div>
-<!-- 반복문 끝 -->
+<div id="park1DataElement" th:data-value="${park1Data}"></div>
+<div th:with="park1DataElement=${park1Data}"></div>
 
 <!--공원2-->
-<!-- 모델로부터 park2TotalPagesNum 변수를 받아오는 코드 -->
-<div id="park2TotalPagesNum" th:data-value="${park2TotalPagesNum}"></div>
-<div th:with="park2TotalPagesNum=${park2TotalPagesNum}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(1, park2TotalPagesNum)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'park2DataElement' + ${index}" th:attr="data-value=${__${'park2Data' + index}__}"></div>
-</div>
-<!-- 반복문 끝 -->
+<div id="park2DataElement" th:data-value="${park2Data}"></div>
+<div th:with="park1DataElement=${park2Data}"></div>
 
 <!--공원3-->
-<!-- 모델로부터 park3TotalPagesNum 변수를 받아오는 코드 -->
-<div id="park3TotalPagesNum" th:data-value="${park3TotalPagesNum}"></div>
-<div th:with="park3TotalPagesNum=${park3TotalPagesNum}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(1, park3TotalPagesNum)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'park3DataElement' + ${index}" th:attr="data-value=${__${'park3Data' + index}__}"></div>
-</div>
-<!-- 반복문 끝 -->
+<div id="park3DataElement" th:data-value="${park3Data}"></div>
+<div th:with="park3DataElement=${park3Data}"></div>
 
 <div id="nowLatitude" th:data-value="${nowLatitude}"></div>
 <div id="nowLongitude" th:data-value="${nowLongitude}"></div>
@@ -163,25 +128,6 @@
     }
 
 
-    //산책로 page 수 가져오기
-    var trailTotalPagesNum = document.getElementById("trailTotalPagesNum").getAttribute("data-value");
-
-
-    //등산로 page 수 가져오기
-    var hikingTotalPagesNum = document.getElementById("hikingTotalPagesNum").getAttribute("data-value");
-
-
-    //공원1 page 수 가져오기
-    var park1TotalPagesNum = document.getElementById("park1TotalPagesNum").getAttribute("data-value");
-
-
-    //공원2 page 수 가져오기
-    var park2TotalPagesNum = document.getElementById("park2TotalPagesNum").getAttribute("data-value");
-
-
-    //공원3 page 수 가져오기
-    var park3TotalPagesNum = document.getElementById("park3TotalPagesNum").getAttribute("data-value");
-
 
     //다 출력 금지 - 로딩 안됨
     // for(i = 0;obj.length;i++){
@@ -246,9 +192,13 @@
                 // 데이터 요소에서 데이터 가져오기
                 let myPlaceData = document.getElementById(dataElementId).getAttribute("data-value");
 
+
+
                 // 데이터 파싱
                 const obj = JSON.parse(myPlaceData);
                 //console.log(obj);
+
+
 
                 /// 문자열을 배열로 변환
                 var arr = obj.coordinates.split("],[");
@@ -261,7 +211,9 @@
 
                 console.log(coordinates);
 
+
                 let paths = [];
+
 
                 for (let j = 0; j < coordinates.length; j++) {
                     paths.push(new kakao.maps.LatLng(coordinates[j][0], coordinates[j][1]));
@@ -309,9 +261,9 @@
 
             //산책로 page 1~all
             //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
-            for (let k = 1; k <= trailTotalPagesNum; k++) {
+            //for (let k = 1; k <= trailTotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
-                let dataElementId = "trailDataElement" + k;
+                let dataElementId = "trailDataElement";
 
                 // 데이터 요소에서 데이터 가져오기
                 let trailData = document.getElementById(dataElementId).getAttribute("data-value");
@@ -368,7 +320,7 @@
                         visitTrail(nowTrail, paths);
                     });
                 }
-            }
+            //}
 
             function visitTrail(nowTrail, paths) {
                 var polylineTrans = new kakao.maps.Polyline({
@@ -441,9 +393,9 @@
 
 
             //등산로 page 1~all
-            for (let k = 1; k <= hikingTotalPagesNum; k++) {
+            //for (let k = 1; k <= hikingTotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
-                let dataElementId = "hikingDataElement" + k;
+                dataElementId = "hikingDataElement";
 
                 // 데이터 요소에서 데이터 가져오기
                 let hikingData = document.getElementById(dataElementId).getAttribute("data-value");
@@ -497,7 +449,7 @@
                         visitHiking(nowHiking, paths2);
                     });
                 }
-            }
+            //}
 
             function visitHiking(nowHiking, paths) {
                 var polylineTrans = new kakao.maps.Polyline({
@@ -570,9 +522,10 @@
 
 
             //공원1 page 1~all
-            for (let k = 1; k <= park1TotalPagesNum; k++) {
+            //for (let k = 1; k <= park1TotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
-                let dataElementId = "park1DataElement" + k;
+                //let dataElementId = "park1DataElement" + k;
+                dataElementId = "park1DataElement";
 
                 // 데이터 요소에서 데이터 가져오기
                 let park1Data = document.getElementById(dataElementId).getAttribute("data-value");
@@ -633,13 +586,14 @@
                         visitPark(nowPark, park1Paths);
                     });
                 }
-            }
+            //}
 
 
             //공원2 page 1~all
-            for (let k = 1; k <= park2TotalPagesNum; k++) {
+            //for (let k = 1; k <= park2TotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
-                let dataElementId = "park2DataElement" + k;
+                //let dataElementId = "park2DataElement" + k;
+                dataElementId = "park2DataElement";
 
                 // 데이터 요소에서 데이터 가져오기
                 let park2Data = document.getElementById(dataElementId).getAttribute("data-value");
@@ -700,13 +654,14 @@
                         visitPark(nowPark, park2Paths);
                     });
                 }
-            }
+            //}
 
 
             //공원3 page 1~all
-            for (let k = 1; k <= park3TotalPagesNum; k++) {
+            //for (let k = 1; k <= park3TotalPagesNum; k++) {
                 // 각 데이터 요소에 대한 id
-                let dataElementId = "park3DataElement" + k;
+                //let dataElementId = "park3DataElement" + k;
+                dataElementId = "park3DataElement";
 
                 // 데이터 요소에서 데이터 가져오기
                 let park3Data = document.getElementById(dataElementId).getAttribute("data-value");
@@ -767,7 +722,7 @@
                         visitPark(nowPark, park3Paths);
                     });
                 }
-            }
+            //}
 
             function visitPark(nowPark, paths) {
                 var polylineTrans = new kakao.maps.Polyline({
