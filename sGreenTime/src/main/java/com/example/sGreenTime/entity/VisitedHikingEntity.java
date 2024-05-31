@@ -2,6 +2,7 @@ package com.example.sGreenTime.entity;
 
 import com.example.sGreenTime.dto.VisitedHikingDTO;
 import com.example.sGreenTime.dto.VisitedTrailDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class VisitedHikingEntity {
     @Column
     private String catNam;
     //{"up_min":"3","down_min":"2","mntn_nm":"배봉산","sec_len":"180","cat_nam":"하"}
-    @Column
+    @Column @JsonIgnore
     private LocalDateTime visitTime;
 
     public static VisitedHikingEntity toVisitedHikingEntity(VisitedHikingDTO visitedHikingDTO){

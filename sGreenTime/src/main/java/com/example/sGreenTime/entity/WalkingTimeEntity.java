@@ -1,5 +1,6 @@
 package com.example.sGreenTime.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class WalkingTimeEntity {
     private int walkingTimeId;
     @Column
     private String id;
-    @Column
+    @Column @JsonIgnore
     private LocalDateTime dateTime;
     @Column
     private float walkingTime; //분으로 소숫점 첫째자리까지 저장하기

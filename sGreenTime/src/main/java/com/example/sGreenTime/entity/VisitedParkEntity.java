@@ -1,6 +1,7 @@
 package com.example.sGreenTime.entity;
 
 import com.example.sGreenTime.dto.VisitedParkDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class VisitedParkEntity {
     @Column
     private String parkName;
     //{"park_name":"수리산"}
-    @Column
+    @Column @JsonIgnore
     private LocalDateTime visitTime;
 
     public static VisitedParkEntity toVisitedParkEntity(VisitedParkDTO visitedParkDTO){
