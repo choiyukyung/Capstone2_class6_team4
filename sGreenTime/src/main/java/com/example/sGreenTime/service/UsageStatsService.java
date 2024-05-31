@@ -91,11 +91,11 @@ public class UsageStatsService {
         } else if (packageName.equals("com.example.capstone")){
             packageName = "SGreenTime";
         } else if (packageName.equals("com.nhn.android.search")){
-            packageName = "SGreenTime";
+            packageName = "Naver";
         }else if (packageName.equals("com.sec.android.camera")){
             packageName = "Camera";
         } else {
-
+            packageName = "others";
         }
         UsageStatsEntity entity = UsageStatsEntity.toUsageStatsEntity(usageStatsDTO.getUsageStatsId(), usageStatsDTO.getId(), usageStatsDTO.getLastTimeUsed(), packageName, Integer.toString(totalTime), usageStatsDTO.getNowTimeStamp());
         usageStatsRepository.save(entity);

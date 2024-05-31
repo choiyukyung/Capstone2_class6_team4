@@ -7,6 +7,7 @@ import com.example.sGreenTime.service.VisitedService;
 import com.example.sGreenTime.service.WalkingTimeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class WalkingTimeController {
     private final WalkingTimeService walkingTimeService;
     private final VisitedService visitedService;
 
+    //@PostMapping(value = "/startWalk", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/startWalk")
     public Map<String, Object> getRecentVisitedPlace(@RequestBody MemberDTO memberDTO){
         Map<String, Object> map = new HashMap<>();
