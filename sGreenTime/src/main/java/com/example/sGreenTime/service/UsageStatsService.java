@@ -88,7 +88,14 @@ public class UsageStatsService {
             packageName = "Samsung Wallet";
         } else if (packageName.equals("com.kakao.taxi")) {
             packageName = "Kakao T";
+        } else if (packageName.equals("com.example.capstone")){
+            packageName = "SGreenTime";
+        } else if (packageName.equals("com.nhn.android.search")){
+            packageName = "SGreenTime";
+        }else if (packageName.equals("com.sec.android.camera")){
+            packageName = "Camera";
         } else {
+
         }
         UsageStatsEntity entity = UsageStatsEntity.toUsageStatsEntity(usageStatsDTO.getUsageStatsId(), usageStatsDTO.getId(), usageStatsDTO.getLastTimeUsed(), packageName, Integer.toString(totalTime), usageStatsDTO.getNowTimeStamp());
         usageStatsRepository.save(entity);

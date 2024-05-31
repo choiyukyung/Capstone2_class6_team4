@@ -51,7 +51,7 @@ public class AppInfoService {
         LocalDateTime nowTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
 
             String appName = usageStatsEntity.getPackageName();
-            String appTime = usageStatsEntity.getTotalTimeInForeground();
+            String appTime = usageStatsEntity.getTotalTimeInForeground(); //UsageStatsEntity - min
             float appCarbon;
 
             //앱 이름 파싱 불가능 문제

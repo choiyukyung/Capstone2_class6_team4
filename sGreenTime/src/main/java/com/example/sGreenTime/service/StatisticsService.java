@@ -8,6 +8,8 @@ import com.example.sGreenTime.repository.StatisticsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,6 +80,26 @@ public class StatisticsService {
 
         carbonInObjService.save(id, yesterday);
         return statisticsEntity;
+    }
+
+
+    public float userCarbonAvgPerMin(@RequestBody MemberDTO memberDTO) {
+        LocalDate day = LocalDate.now().minusDays(1);
+        StatisticsEntity statisticsEntity = find(memberDTO, day);
+        float totalCarbonUsage = statisticsEntity.getTotalCarbonUsage();
+        float totalMin = 0;
+
+        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findById(memberDTO.getId());
+
+        for(AppInfoEntity appInfoEntity : appInfoEntityList) {
+            //하루의 온전한 사용시간이 있어야 함.
+            //(24시간 단위로만 사용시간을 저장한다고 했으니까 23:50에 이후(23:55) 받아오는 시간으로 온전한 사용시간을 지정)
+            LocalTime endTime = appInfoEntity.getEndDate().toLocalTime();
+            if(endTime.isAfter(LocalTime.of(23, 50))) {
+                totalMin += Integer.parseInt(appInfoEntity.getAppTime()); // appInfoEntity.getAppTime() - 분
+            }
+        }
+        return totalCarbonUsage/totalMin;
     }
 
 }
