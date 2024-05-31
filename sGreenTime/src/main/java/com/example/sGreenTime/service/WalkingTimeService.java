@@ -22,6 +22,7 @@ import java.util.*;
 public class WalkingTimeService {
     private final WalkingTimeRepository walkingTimeRepository;
     private final VisitedRepository visitedRepository;
+    private final StatisticsService statisticsService;
 
     public WalkingTimeEntity toWalkingTimeEntity(WalkingTimeDTO walkingTimeDTO) {
         WalkingTimeEntity walkingTimeEntity = new WalkingTimeEntity();
@@ -47,20 +48,22 @@ public class WalkingTimeService {
 
         Map<String, Float> totalWalkingTimeIn = new HashMap<>();
         //자동차로 변환한 값 계산
-        //휴대폰 1분에 0.1g
-        //1g에 8.26m
-        //=> 휴대폰 1분에 0.826m
-        float totalWalkingTimeInCar = (float) (totalWalkingTimeInMinutes * 0.826);
+        //휴대폰 1분에 userCarbonAvgPerMin에서 얻어온 값 (0.25g)
+        //산책동안 아낀 총 carbon: 0.25*시간(분단위)
+        //탄소 1g에 8.26m
+        //총 carbon*8.26
+        float myCarbonAvgPerMin = statisticsService.userCarbonAvgPerMin(walkingTimeDTO.getId());
+        float totalCarbon = myCarbonAvgPerMin*totalWalkingTimeInMinutes;
+        float totalWalkingTimeInCar = (float) (totalCarbon * 8.26);
         totalWalkingTimeIn.put("car", totalWalkingTimeInCar);
 
         //나무로 변환한 값 계산
         //휴대폰 1분에 0.1g
         //나무 1그루가 하루동안 흡수하는 이산화탄소량 11900g/365 = 32.6g
         //나무는 1g을 1/32.6일동안 흡수
-        //나무는 0.1g을 1/326일동안 흡수
-        //내가 나무 1그루가 n일동안 흡수하는 이산화탄소량을 절감하였다.
-        //=> totalWalkingTime x분 => 0.1 * x
-        float totalWalkingTimeInTree = (float) (totalWalkingTimeInMinutes / 326);
+        //나무 1그루가 1시간 동안 흡수하는 이산화탄소량 1.36g
+        //산책동안 아낀 탄소량 / 1.36 = 시간당 나무가 흡수하는 이산화탄소량으로 변환한 산책탄소량
+        float totalWalkingTimeInTree = (float) (totalCarbon / 1.36);
         totalWalkingTimeIn.put("tree", totalWalkingTimeInTree);
 
         return totalWalkingTimeIn;

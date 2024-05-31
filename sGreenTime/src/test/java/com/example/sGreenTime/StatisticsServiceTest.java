@@ -31,13 +31,13 @@ public class StatisticsServiceTest {
         MemberDTO member = new MemberDTO();
         member.setId("33");
         LocalDate day = LocalDate.now().minusDays(1);
-        statisticsService.find(member, day);
+        statisticsService.find(member.getId(), day);
 
         // 일주일치 매일 가져오기 test
         List<StatisticsEntity> statisticsEntityList = new ArrayList<>();
         for(int i = 0;i<7;i++){
             day = LocalDate.now().minusDays(i+1);
-            statisticsEntityList.add(statisticsService.find(member, day));
+            statisticsEntityList.add(statisticsService.find(member.getId(), day));
         }
 
         for(StatisticsEntity entity : statisticsEntityList){

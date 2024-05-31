@@ -27,8 +27,7 @@ public class StatisticsService {
 
     // 해당 회원의 어제까지의 통계(어제, 일주일, 한달) 보내기
     @Transactional
-    public StatisticsEntity find(MemberDTO memberDTO, LocalDate day){
-        String id = memberDTO.getId();
+    public StatisticsEntity find(String id, LocalDate day){
         Optional<StatisticsEntity> statisticsEntity = statisticsRepository.findByIdAndDate(id, day);
         //해당 아이디에 해당 날짜까지의 정보가 있는지 확인
         if(statisticsEntity.isPresent()){
@@ -83,13 +82,13 @@ public class StatisticsService {
     }
 
 
-    public float userCarbonAvgPerMin(@RequestBody MemberDTO memberDTO) {
+    public float userCarbonAvgPerMin(String id) {
         LocalDate day = LocalDate.now().minusDays(1);
-        StatisticsEntity statisticsEntity = find(memberDTO, day);
+        StatisticsEntity statisticsEntity = find(id, day);
         float totalCarbonUsage = statisticsEntity.getTotalCarbonUsage();
         float totalMin = 0;
 
-        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findById(memberDTO.getId());
+        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findById(id);
 
         for(AppInfoEntity appInfoEntity : appInfoEntityList) {
             //하루의 온전한 사용시간이 있어야 함.

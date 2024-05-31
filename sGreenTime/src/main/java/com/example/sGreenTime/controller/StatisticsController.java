@@ -24,7 +24,7 @@ public class StatisticsController {
     @PostMapping("/statistics")
     public StatisticsDTO send(@RequestBody MemberDTO memberDTO){
         LocalDate day = LocalDate.now().minusDays(1);
-        return StatisticsDTO.toStatisticsDTO(statisticsService.find(memberDTO, day));
+        return StatisticsDTO.toStatisticsDTO(statisticsService.find(memberDTO.getId(), day));
     }
 
     @PostMapping("/statistics7days")
@@ -32,7 +32,7 @@ public class StatisticsController {
         List<StatisticsEntity> statisticsEntityList = new ArrayList<>();
         for(int i = 0;i<7;i++){
             LocalDate day = LocalDate.now().minusDays(i+1);
-            statisticsEntityList.add(statisticsService.find(memberDTO, day));
+            statisticsEntityList.add(statisticsService.find(memberDTO.getId(), day));
         }
 
         return statisticsEntityList;
@@ -41,7 +41,7 @@ public class StatisticsController {
     @PostMapping("/userBaseValue")
     public float baseValue(@RequestBody MemberDTO memberDTO){
         LocalDate day = LocalDate.now().minusDays(1);
-        StatisticsEntity statisticsEntity = statisticsService.find(memberDTO, day);
+        StatisticsEntity statisticsEntity = statisticsService.find(memberDTO.getId(), day);
         float totalCarbonUsage = statisticsEntity.getTotalCarbonUsage();
         int cDate = statisticsEntity.getCDate();
         return totalCarbonUsage/cDate;
