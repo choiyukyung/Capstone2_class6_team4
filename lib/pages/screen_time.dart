@@ -25,16 +25,19 @@ class _ScreenTimeState extends State<ScreenTime> {
       DateTime startDate = DateTime(
           endDate.year, endDate.month, endDate.day, 0, 0, 0);
 
-      var postReponse = await service?.postUsageStats
+      var result = await service?.postUsageStats
         (
           startDate,
           endDate
       );
-      if (postReponse!.isEmpty){
+      if (result!.isEmpty){
         print("postUsageStats: Wrong input");
       } else {
+        //순서 정렬: totalTime
+
+
         setState(() {
-          usageStats = postReponse;
+          usageStats = result;
         });
       }
     } catch (e) {
@@ -116,10 +119,12 @@ class _ScreenTimeState extends State<ScreenTime> {
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
                                       colors: [
+                                        Colors.redAccent,
+                                        Colors.pink,
+                                        Colors.purpleAccent,
                                         Color(0xFF846AFF),
                                         Color(0xFF755EE8),
-                                        Colors.purpleAccent,
-                                        Colors.amber,
+
                                       ],
                                     ),
                                     borderRadius: BorderRadius.circular(10)),
@@ -136,7 +141,7 @@ class _ScreenTimeState extends State<ScreenTime> {
                                       children: [
                                         Row(
                                           children: [
-                                            SizedBox(width: 5,),
+                                            const SizedBox(width: 5,),
                                             Text(
                                                 '${index + 1}',
                                                 style: const TextStyle(
@@ -153,7 +158,7 @@ class _ScreenTimeState extends State<ScreenTime> {
                                                     ],
                                                 ),
                                             ),
-                                            SizedBox(width: 15,),
+                                            const SizedBox(width: 15,),
                                             Text(
                                                 '${usageStats[index]['packageName']}',
                                                 style: const TextStyle(
@@ -172,19 +177,6 @@ class _ScreenTimeState extends State<ScreenTime> {
                                                     color: Colors.white,
                                                 )
                                             ),
-                                            /*
-                                            Stack(
-                                              children: List.generate(
-                                                2,
-                                                    (index) => Container(
-                                                  margin: EdgeInsets.only(left: (15 * index).toDouble()),
-                                                  height: 30,
-                                                  width: 30,
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white54),
-                                                ),
-                                              ),
-                                            ) // Adds a stack of two circular containers to the right of the title
-                                            */
                                           ],
                                         ),
                                       ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:capstone/data/walking_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +14,7 @@ class Service {
   User? user;
   Service({required this.user});
 
-  static const https = "https://ca74-165-194-17-200.ngrok-free.app";
+  static const https = "https://f7ba-165-194-17-200.ngrok-free.app";
   static const naverId = "apsz5g7nue";
   static const naverKey = "E4QCjVeH5c4MTYKUVIHM1QLK7Z96qyLzU2fB50my";
   static const openweatherKey = "a1348d850873d2c02fb6e5c160881ecf";
@@ -59,6 +60,52 @@ class Service {
       print("postUserInfo: Failed to get response: $e");
     }
     return false;
+  }
+
+  static Future<String?> queryNearCourse() async {
+    try {
+      //Trail
+      var response = await http.post(
+        Uri.parse("$https/notVisitedTrail"),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+
+        if (data == "farTrail") return data;
+      }
+
+      //Hiking
+      response = await http.post(
+        Uri.parse("$https/notVisitedHiking"),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+
+        if (data == "farHiking") return data;
+      }
+
+      //Park
+      response = await http.post(
+        Uri.parse("$https/notVisitedPark"),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+
+        if (data == "farPark") return data;
+      }
+    } catch (e) {
+      print("queryNearCourse: Failed to get response: $e");
+    }
+    return "nearCourse";
   }
 
   dynamic queryAddress(Position p) async { //날씨, 대략적 주소
@@ -118,11 +165,11 @@ class Service {
     return usageInfos;
   }
 
-  Future<List<dynamic>> postUsageStats(DateTime startDate, DateTime endDate) async { //앱 사용 정보 백엔드 송신
+  Future<List> postUsageStats(DateTime startDate, DateTime endDate) async { //앱 사용 정보 백엔드 송신
     var usageInfos = await queryUsageStats(startDate, endDate);
     //var data = List.generate(usageInfos.length, generator)
     var body = jsonEncode(usageInfos);
-
+    Map<String, Object> d;
     try {
       final response = await http.post(
         Uri.parse("$https/usageStats"),
@@ -132,7 +179,6 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print(data);
 
         return data;
       } else {
@@ -183,7 +229,7 @@ class Service {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List<dynamic>;
+        final data = json.decode(response.body);
 
         return data;
       } else {
@@ -206,7 +252,7 @@ class Service {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List<dynamic>;
+        final data = json.decode(response.body);
 
         return data;
       } else {
@@ -250,7 +296,7 @@ class Service {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as List<dynamic>;
+        final data = json.decode(response.body);
         return data;
       } else {
         print("Failed to get carbon weekly stats: ${response.statusCode}");
@@ -326,26 +372,109 @@ class Service {
     return false;
   }
 
-  Future<bool> postWalkingReport(DateTime totalTime, int totalCnt) async {
+  Future<WalkingInfo> getWalkingInfo(User? user) async {
     try {
       final response = await http.post(
-        Uri.parse("$https/walkingTime"),
+        Uri.parse("$https/startWalk"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(user),
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed to get walking info: ${response.statusCode}");
+      } else {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final place = data["place"];
+        String tag = place.keys.toList()[0];
+        print("tag: ${tag}");
+        Map<String, dynamic> entity = place[tag]; //수정?
+        print("keys: ${entity.keys}");
+        print("values: ${entity.values}");
+
+        /*
+        VisitedTrailEntity:  ‘’’{"lnk_nam":"애국의숲길","cos_nam":"관악산둘레길","cos_num":"1코스","comment":"","len_tim":"←2시간30분 6.2Km→", "leng_lnk":"6729.79251047","cos_lvl":"","cat_nam":"둘레길링크"}’’’
+        VisitedHikingEntity: '''{"up_min":"3","down_min":"2","mntn_nm":"배봉산","sec_len":"180","cat_nam":"하"}'''
+        VisitedParkEntity: '''{"park_name":"수리산"}'''
+        */
+
+        if (tag == "trail") {
+          List<String> parts = entity["lenTim"].split(" "); print(parts);
+          String time; String distance;
+          if (parts.length == 2){
+            time = parts[0];
+            distance = parts[1];
+          } else {
+            time = "${parts[0]} ${parts[1]}";
+            distance = parts[2];
+          }
+
+          List<String> details = [];
+          if (entity["cosNum"] != null) details.add("코스번호: ${entity["cosNum"]}");
+          //if (entity["cosLvl"] != null) details.add("난이도: ${entity["cosLvl"]}");
+
+          var temp = WalkingInfo(
+              name: entity["cosNam"],
+              time: time,
+              distance: distance,
+            details: details
+          );
+          print(temp);
+          return temp;
+        }
+        if (tag == "hiking") {
+          int time = int.parse(entity["upMin"]) + int.parse(entity["downMin"]);
+
+          var temp = WalkingInfo(
+          name: entity["mntnNm"],
+          time: "$time분",
+          distance: entity["secLen"],
+            details: ["none"]//["난이도: ${entity["catNam"]}"]
+          );
+          print(temp);
+          return temp;
+        }
+        if (tag == "park") {
+          var temp = WalkingInfo(
+            name: entity["parkName"],
+            time: "none",
+            distance: "none",
+            details: ["none"]
+          );
+          print(temp);
+          return temp;
+        }
+      }
+    } catch (e) {
+      print("getWalkingInfo: Failed to get response: $e");
+    }
+    return WalkingInfo(
+        name: "null",
+        time: "null",
+        distance: "null",
+        details: ["null"]
+    );
+  }
+
+  Future<dynamic> postWalkingReport(Duration totalTime, int totalCnt) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$https/endWalk"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "id": user?.id,
-          "totalWalkTime": totalTime.millisecondsSinceEpoch,
+          "totalWalkTime": totalTime.inMilliseconds,
           "totalDistractionCnt": totalCnt
         }),
       );
       if (response.statusCode != 200) {
         throw Exception("Failed to post walking report");
       } else {
-        return true;
+        final data = json.decode(response.body); //수정?
+        return data;
       }
     } catch (e) {
       print("postWalkingReport: Failed to get response: $e");
     }
-    return false;
+    return {"car": 0, "tree": 0};
   }
 
   Future<List> getWalkingRanking() async {
@@ -357,7 +486,7 @@ class Service {
       if (response.statusCode != 200) {
         throw Exception("Failed to get walking ranking");
       } else {
-        final data = json.decode(response.body) as List<dynamic>;
+        final data = json.decode(response.body); //수정?
         return data;
       }
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:capstone/data/walking_info.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:focus_detector/focus_detector.dart';
@@ -9,6 +10,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../data/user.dart';
+import '../main.dart';
 import '../services/mycolor.dart';
 import '../services/myapi.dart';
 
@@ -21,7 +23,7 @@ class WalkMap extends StatefulWidget {
 }
 
 class _WalkMapState extends State<WalkMap> {
-  static const mapHttps = "https://ca74-165-194-17-200.ngrok-free.app";
+  static const mapHttps = Service.https; //"https://ca74-165-194-17-200.ngrok-free.app";
 
   Map? weather;
   DateTime? startTime;
@@ -192,7 +194,7 @@ class _WalkMapState extends State<WalkMap> {
                 const SizedBox(height: 10,),
                 Container(
                   width: double.infinity,
-                  height: 500,
+                  height: 430,
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
@@ -214,21 +216,90 @@ class _WalkMapState extends State<WalkMap> {
                         ),
                       ),
                       const Spacer(),
-                      const SafeArea(
+                      SafeArea(
                           child: SizedBox(
-                            height: 380,
-                              child: MapWebView(https: mapHttps,),
+                            height: 350,
+                              child: MapWebView(https: mapHttps, user: widget.user),
                           )
                       ),
+
+
                       const SizedBox(height: 10,),
-                      ElevatedButton(
-                        onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>WalkRecord(user: widget.user)));
-                        },
-                        child: const Text('select'),
-                      )
                     ],
                   ),
+                ),
+                const SizedBox(height: 15,),
+                OutlineCircleButton(
+                    radius: 50.0,
+                    borderSize: 0.5,
+                    onTap: () async {
+                      var startTimeStamp = DateTime.now();
+                      //var response = Service.queryNearCourse();
+
+                      if (true){ //response == "nearCourse"
+                        WalkingInfo? data = await service?.getWalkingInfo(widget.user);
+                        if (data?.name != "null") {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WalkRecord(
+                                        user: widget.user,
+                                        startTimeStamp: startTimeStamp,
+                                        walkingInfo: data,
+                                      )));
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Container(
+                                  width: 200, height: 150,
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: MyColors.deepBlue,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(height: 10,),
+                                      const Text(
+                                        "Please select a near course.",
+                                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                                      ),
+                                      const SizedBox(height: 30,),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(	//모서리를 둥글게
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              backgroundColor: Colors.white,
+
+                                              //child 정렬 - 아래의 Text('$test')
+                                              alignment: Alignment.center,
+                                              textStyle: const TextStyle(fontSize: 15, color: MyColors.deepBlue)
+                                          ),
+
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('close'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      } else {
+                        print("queryNearCourse response: None");
+                        //수정: popup
+                      }
+                    },
+                    child: const Icon(Icons.play_arrow_rounded, size: 28,)
                 ),
               ],
             )
@@ -239,7 +310,8 @@ class _WalkMapState extends State<WalkMap> {
 
 class MapWebView extends StatefulWidget {
   final String https;
-  const MapWebView({super.key, required this.https});
+  User? user;
+  MapWebView({super.key, required this.https, required this.user});
 
   @override
   State<MapWebView> createState() => _MapWebViewState();
@@ -253,7 +325,7 @@ class _MapWebViewState extends State<MapWebView> {
     super.initState();
 
     _webViewController = WebViewController()
-      ..loadRequest(Uri.parse(widget.https))
+      ..loadRequest(Uri.parse("${widget.https}/vworldData/${widget.user?.id}"))
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
      /*
       ..addJavaScriptChannel(
@@ -285,13 +357,12 @@ class _MapWebViewState extends State<MapWebView> {
 
 class WalkRecord extends StatefulWidget {
   User? user;
-  //이하 정보들 받아 오는 api 필요
-  String? location;
-  String? trail;
-  String? hour; String? minute; String? second;
-  double? distance;
+  DateTime startTimeStamp;
+  WalkingInfo? walkingInfo;
+  //String? location;
 
-  WalkRecord({required this. user, super.key});
+
+  WalkRecord({required this.user, required this.startTimeStamp, required this.walkingInfo, super.key});
 
   @override
   State<WalkRecord> createState() => _WalkRecordState();
@@ -299,8 +370,6 @@ class WalkRecord extends StatefulWidget {
 
 class _WalkRecordState extends State<WalkRecord> {
   Service? service;
-  DateTime startTimeStamp = DateTime(0);
-  DateTime finishTimeStamp = DateTime(0);
   int distractionCount = 0;
 
   Color blockColor = Colors.blueAccent;
@@ -314,6 +383,8 @@ class _WalkRecordState extends State<WalkRecord> {
 
   @override
   Widget build(BuildContext context) {
+    Duration totalWalkTime;
+
     return PopScope(
       canPop: false, //뒤로가기 버튼 제한
 
@@ -344,7 +415,7 @@ class _WalkRecordState extends State<WalkRecord> {
                     children: [
                       Container(
                         margin: const EdgeInsets.all(7),
-                        width: double.infinity, height: 150,
+                        width: double.infinity, height: 190,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.asset(
@@ -376,19 +447,22 @@ class _WalkRecordState extends State<WalkRecord> {
                                   ),
                                 )
                             ),
-                            const SizedBox(height: 25,),
-                            Text(
-                              "${widget.location}, ${widget.trail}",
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 21,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 13.0,  // shadow blur
-                                    color: Colors.lightBlueAccent, // shadow color
-                                    //offset: Offset(2.0,2.0), // how much shadow will be shown
-                                  ),
-                                ],
+                            const SizedBox(height: 40,),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Text(
+                                "${widget.walkingInfo?.name}",
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 21,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 13.0,  // shadow blur
+                                      color: Colors.lightBlueAccent, // shadow color
+                                      //offset: Offset(2.0,2.0), // how much shadow will be shown
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -396,79 +470,88 @@ class _WalkRecordState extends State<WalkRecord> {
                       ),
                     ]
                 ),
+                Container(
+                  width: double.infinity, height: 120,
+                  margin: const EdgeInsets.all(7),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: blockColor.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
 
-                Row(
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.infinity, height: 100,
-                        margin: const EdgeInsets.all(7),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: blockColor.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: Column(
-                          children: [
-                            const Align(
-                              alignment: Alignment.topLeft,
-                                child: Text(
-                                    'Time',
-                                  style: TextStyle(fontSize: 12, color: Colors.white),
-                                )
-                            ),
-                            const SizedBox(height: 5,),
-                            Text(
-                                "${widget.hour} : ${widget.minute} : ${widget.second}",
-                              style: const TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                          ],
-                        ),
+                  child: Column(
+                    children: [
+                      const Align(
+                        alignment: Alignment.topLeft,
+                          child: Text(
+                              'Time',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          )
                       ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: double.infinity, height: 100,
-                        margin: const EdgeInsets.all(7),
-                        padding: const EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          color: blockColor.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-
-                        child: Column(
-                          children: [
-                            const Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  'Distance',
-                                  style: TextStyle(fontSize: 12, color: Colors.white),
-                                )
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "${widget.distance} ",
-                                  style: const TextStyle(color: Colors.white, fontSize: 25),
-                                ),
-                                const Text(
-                                  "\nkm",
-                                  style: TextStyle(color: Colors.white, fontSize: 10),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      const SizedBox(height: 10,),
+                      Text(
+                          "${widget.walkingInfo?.time}",
+                        style: const TextStyle(color: Colors.white, fontSize: 23),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Container(
-                  width: double.infinity, height: 380,
+                  width: double.infinity, height: 120,
+                  margin: const EdgeInsets.all(7),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: blockColor.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+
+                  child: Column(
+                    children: [
+                      const Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Distance',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          )
+                      ),
+                      const SizedBox(height: 10,),
+                      Text(
+                        "${widget.walkingInfo?.distance} ",
+                        style: const TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity, height: 150,
+                  margin: const EdgeInsets.all(7),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: blockColor.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+
+                  child: Column(
+                    children: [
+                      const Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Details',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          )
+                      ),
+                      const SizedBox(height: 15,),
+                      Text(
+                        "${widget.walkingInfo?.details?.join("\n")}", //수정?
+                        style: const TextStyle(color: Colors.white, fontSize: 19),
+                      ),
+                    ],
+                  ),
+                ),
+                /*
+
+                Container(
+                  width: double.infinity, height: 200,
                   margin: const EdgeInsets.all(7),
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
@@ -486,7 +569,7 @@ class _WalkRecordState extends State<WalkRecord> {
                           )
                       ),
                       Text(
-                        "start: $startTimeStamp",
+                        "start: ${widget.startTimeStamp}",
                         style: const TextStyle(fontSize: 10, color: Colors.white),
                       ),
                       Text(
@@ -496,81 +579,111 @@ class _WalkRecordState extends State<WalkRecord> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const SizedBox(width: 50,),
-                    OutlineCircleButton(
-                      radius: 50.0,
-                      borderSize: 0.5,
-                      onTap: () async {
-                        //Service().queryTrailInfo();
-                        setState(() {
-                          startTimeStamp = DateTime.now();
-                        });
-                      },
-                      child: const Icon(Icons.play_arrow_rounded, size: 28,)
-                    ),
-                    /*
-                    OutlineCircleButton(
-                        radius: 50.0,
-                        borderSize: 0.5,
-                        onTap: () async {
 
-                        },
-                        child: const Icon(Icons.pause, size: 25,)
-                    ),
-                    */
-                    OutlineCircleButton(
-                        radius: 50.0,
-                        borderSize: 0.5,
-                        onTap: () async {
-                          setState(() {
-                            finishTimeStamp = DateTime.now();
-                          });
+                */
+                const SizedBox(height: 30,),
+                OutlineCircleButton(
+                    radius: 50.0,
+                    borderSize: 0.5,
+                    onTap: () async {
+                      var finishTimeStamp = DateTime.now();
 
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text("Do you want to finish?"),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('no'),
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: Container(
+                              width: 200, height: 150,
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                color: MyColors.deepBlue,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 10,),
+                                  const Text(
+                                      "Do you want to finish?",
+                                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 30,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(	//모서리를 둥글게
+                                                borderRadius: BorderRadius.circular(20)),
+                                            backgroundColor: Colors.white,
+
+                                            //child 정렬 - 아래의 Text('$test')
+                                            alignment: Alignment.center,
+                                            textStyle: const TextStyle(fontSize: 15, color: MyColors.deepBlue)
                                         ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            service?.postWalkingReport( //수정
-                                                finishTimeStamp.subtract(startTimeStamp as Duration),
-                                                distractionCount
-                                            );
-                                            Navigator.of(context)
-                                                .popUntil(ModalRoute.withName("/main/walk-map"));
-                                          },
-                                          child: const Text('yes'),
+
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('no'),
+                                      ),
+                                      const SizedBox(width: 5,),
+                                      ElevatedButton( //int is not a subtype of type double?
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(	//모서리를 둥글게
+                                                borderRadius: BorderRadius.circular(20)),
+                                            backgroundColor: Colors.white,
+
+                                            //child 정렬 - 아래의 Text('$test')
+                                            alignment: Alignment.center,
+                                            textStyle: const TextStyle(fontSize: 15, color: MyColors.deepBlue)
                                         ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              );
-                            },
+
+                                        onPressed: () async {
+                                          totalWalkTime = finishTimeStamp.difference(widget.startTimeStamp);
+                                          var result = await service?.postWalkingReport(
+                                            totalWalkTime,
+                                            distractionCount
+                                          );
+                                          Navigator.push(
+                                            context,
+                                            /*
+                                            MaterialPageRoute(
+                                              builder: (context) => WalkReport(
+                                                user: widget.user,
+                                                name: widget.walkingInfo?.name,
+                                                time: totalWalkTime.inMinutes,
+                                                mileage: result["car"] * 0.1,
+                                                tree: result["tree"] * 0.1,
+                                              ),
+                                            ),
+                                            */
+                                            MaterialPageRoute(
+                                              builder: (context) => WalkReport(
+                                                user: widget.user,
+                                                name: widget.walkingInfo?.name,
+                                                time: "${totalWalkTime.inMinutes}", //seconds 변환?
+                                                mileage: result["walking"]["car"],
+                                                tree: result["walking"]["tree"],
+                                                distraction: distractionCount,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Text('yes'),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
                           );
                         },
-                        child: const Icon(Icons.stop)
-                    ),
-                    const SizedBox(width: 50,),
-                  ],
+                      );
+                    },
+                    child: const Icon(Icons.stop)
                 ),
+                const SizedBox(width: 50,),
                 const SizedBox(height: 10,),
               ],
             ),
@@ -583,7 +696,22 @@ class _WalkRecordState extends State<WalkRecord> {
 
 
 class WalkReport extends StatefulWidget {
-  const WalkReport({super.key});
+  User? user;
+  String? name;
+  String? time;
+  double mileage;
+  double tree;
+  int distraction;
+
+  WalkReport({
+    required this.user,
+    required this.name,
+    required this.time,
+    required this.mileage,
+    required this.tree,
+    required this.distraction,
+    super.key,
+  });
 
   @override
   State<WalkReport> createState() => _WalkReportState();
@@ -592,91 +720,13 @@ class WalkReport extends StatefulWidget {
 class _WalkReportState extends State<WalkReport> {
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
 
-  static final pageContents = [
-    ['your total time...', '100', 'min'],
-    //['your total distance...', '1.2', 'km',],
-    ['you save...', '100', 'km',],
-    ['you save...', '20', 'trees',],
-    ['you unlocked...', 'Han-river', '',],
-  ];
   static final pageColors = [
     MyColors.skyBlue,
-    //Colors.tealAccent.shade700,
     Colors.deepOrange,
     MyColors.deepGreen,
     Colors.indigoAccent,
+    Colors.tealAccent.shade700,
   ];
-
-  final pages = List.generate(
-      pageContents.length,
-          (index) => Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: pageColors[index],
-              ),
-            margin: const EdgeInsets.fromLTRB(15, 30, 15, 5),
-            child: Stack(
-              children: [
-                ShaderMask(
-                  shaderCallback: (Rect bound) {
-                    return const LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        // 그라데이션 분포 비율로 컬러를 설정했음
-                        stops: [0, 0.5],
-                        colors: [
-                          Colors.transparent,
-                          Colors.white,
-                        ]).createShader(bound);
-                  },
-                  blendMode: BlendMode.dstIn,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                        "assets/images/report_card_$index.jpg",
-                        fit: BoxFit.fitHeight
-                    ),
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 180,),
-                    Text(
-                      pageContents[index][0],
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(fontSize: 15.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white),
-                    ),
-                    const SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          pageContents[index][1],
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(fontSize: 33.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                        Text(
-                          "\n ${pageContents[index][2]}",
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(fontSize: 12.0,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 40,),
-                  ],
-                ),
-              ],
-            ),
-          )
-  );
-
 
   List<VBarChartModel> appdata = [
     const VBarChartModel(
@@ -709,7 +759,8 @@ class _WalkReportState extends State<WalkReport> {
                 padding: const EdgeInsets.all(15.0),
                 child: ElevatedButton(
                     onPressed: (){
-                      Navigator.pop(context);
+                      //Navigator.pop(context);
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Main(user: widget.user)));
                     },
                     style:  ElevatedButton.styleFrom(
                       backgroundColor: MyColors.brightGreenBlue.withOpacity(0.5),
@@ -749,6 +800,84 @@ class _WalkReportState extends State<WalkReport> {
                   controller: controller,
                   // itemCount: pages.length,
                   itemBuilder: (_, index) {
+                    var pageContents = [
+                      ['your total time...', '${widget.time}', 'min'],
+                      ['you reduced carbon \nas much as...', (widget.mileage.toStringAsFixed(2)), 'm',],
+                      ['you reduced carbon \nas much as...', (widget.tree.toStringAsFixed(2)), 'CO2/hour',],
+                      ['you unlocked...', '${widget.name}', '',],
+                      ['your total distractions...', '${widget.distraction}', '',],
+                    ];
+
+                    final pages = List.generate(
+                        pageContents.length,
+                            (index) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            color: pageColors[index],
+                          ),
+                          margin: const EdgeInsets.fromLTRB(15, 30, 15, 5),
+                          child: Stack(
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (Rect bound) {
+                                  return const LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      // 그라데이션 분포 비율로 컬러를 설정했음
+                                      stops: [0, 0.5],
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.white,
+                                      ]).createShader(bound);
+                                },
+                                blendMode: BlendMode.dstIn,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(
+                                      "assets/images/report_card_$index.jpg",
+                                      fit: BoxFit.fitHeight
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 180,),
+                                  Text(
+                                    pageContents[index][0],
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(fontSize: 15.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        pageContents[index][1],
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(fontSize: 30.0,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white),
+                                      ),
+                                      Text(
+                                        "\n ${pageContents[index][2]}",
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(fontSize: 12.0,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 40,),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )
+                    );
+
                     return pages[index % pages.length];
                   },
                 ),
@@ -759,7 +888,7 @@ class _WalkReportState extends State<WalkReport> {
               flex: 1,
               child: SmoothPageIndicator(
                 controller: controller,
-                count: pages.length,
+                count: 5,
                 effect: const ScrollingDotsEffect(
                   activeDotColor: MyColors.mint,
                   activeStrokeWidth: 2.6,

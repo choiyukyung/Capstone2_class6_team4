@@ -11,8 +11,8 @@ import 'mycolor.dart';
 abstract class MyPieChart extends StatelessWidget {
   const MyPieChart({super.key});
 
-  static List<PieChartSectionData> showingSections(List appCarbon, double shortestSide, int pieTouchedIndex) {
-    return List.generate(4, (i) { //appInfoYesterday: 데이터 정렬 필요?
+  static List<PieChartSectionData> showingSections(List<Map<String, dynamic>> appCarbon, double shortestSide, int pieTouchedIndex) {
+    return List.generate(appCarbon.length, (i) { //appInfoYesterday: 데이터 정렬 필요?
       final isTouched = i == pieTouchedIndex;
       final fontSize = isTouched ? 18.0 : 14.0;
       final radius = shortestSide / 2; //isTouched ? 65.0 : 60.0;
@@ -24,8 +24,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 0:
           return PieChartSectionData(
             color: MyColors.brightGreenBlue,
-            value: appCarbon[i],
-            title: '${appCarbon[i]}%',
+            value: appCarbon[i]["appCarbon"],
+            title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -43,8 +43,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 1:
           return PieChartSectionData(
             color: Colors.lime,
-            value: appCarbon[i],
-            title: '${appCarbon[i]}%',
+            value: appCarbon[i]["appCarbon"],
+            title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -62,8 +62,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 2:
           return PieChartSectionData(
             color: MyColors.brightOrange,
-            value: appCarbon[i],
-            title: '${appCarbon[i]}%',
+            value: appCarbon[i]["appCarbon"],
+            title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -81,8 +81,8 @@ abstract class MyPieChart extends StatelessWidget {
         case 3:
           return PieChartSectionData(
             color: Colors.green,
-            value: appCarbon[i],
-            title: '${appCarbon[i]}%',
+            value: appCarbon[i]["appCarbon"],
+            title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
             titleStyle: TextStyle(
               fontSize: fontSize,
@@ -230,7 +230,7 @@ class BarBottomTitles extends StatelessWidget {
   Widget build(BuildContext context) {
     const style = TextStyle(color: Colors.white, fontSize: 10);
     String text;
-    switch (value.toInt()) {
+    switch (value.toInt()) { //수정 필요
       case 0:
         text = 'Mon';
         break;
@@ -371,14 +371,14 @@ class LineLeftTitles extends StatelessWidget {
   Widget build(BuildContext context) {
     const style = TextStyle(
       color: Colors.yellowAccent,
-      fontSize: 7,
+      fontSize: 9,
       fontWeight: FontWeight.w500,
     );
     if (value == targetCarbon) {
       return SideTitleWidget(
         axisSide: meta.axisSide,
-        space: 1,
-        child: Text('${value}', style: style),
+        space: 3,
+        child: Text(value.toStringAsFixed(0), style: style),
       );
     } else {
       return Container();

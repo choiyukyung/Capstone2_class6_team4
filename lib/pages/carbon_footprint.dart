@@ -17,17 +17,57 @@ class CarbonFootprint extends StatefulWidget {
 
 class _CarbonFootprintState extends State<CarbonFootprint> {
   Service? service;
-  var carbonYesterday = [];
-  var carbonChange = [];
-  var carbonDailyStats = [];
-  var carbonWeeklyStats = [];
-  var carbonBaseValue = 0.0;
-  var carbonInObj = {};
-  var walingRanking = [];
+  /*
+  List<Map<String, dynamic>> carbonYesterday = [
+    {"screentimeId":8,"startDate":"2024-05-09T00:00:00","endDate":"2024-05-09T23:55:13.440265","id":"33","appEntry":"youtube","appIcon":null,"appTime":"10","appCarbon":11.5},
+    {"screentimeId":9,"startDate":"2024-05-09T00:00:00","endDate":"2024-05-09T23:55:13.440265","id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":"10","appCarbon":11.5},
+    {"screentimeId":9,"startDate":"2024-05-09T00:00:00","endDate":"2024-05-09T23:55:13.440265","id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":"10","appCarbon":28.1},
+  ]; //[], {} 중에 잘 확인해서 초기화
+  List<Map<String, dynamic>> carbonChange = [
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":2.9},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"youtube","appIcon":null,"appTime":null,"appCarbon":11.5},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":-11.6},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":35.2},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":-13.5},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":-6.0},
+    {"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":10.4},
+  ];
+  List<Map<String, dynamic>> carbonDailyStats = [{"screentimeId":8,"startDate":"2024-05-09T00:00:00","endDate":"2024-05-09T23:55:13.440265","id":"33","appEntry":"youtube","appIcon":null,"appTime":"10","appCarbon":11.5},
+    {"screentimeId":9,"startDate":"2024-05-09T00:00:00","endDate":"2024-05-09T23:55:13.440265","id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":"10","appCarbon":11.5}];
+  var carbonWeeklyStats = [
+    {"dayCarbonUsage":20},
+    {"dayCarbonUsage":15},
+    {"dayCarbonUsage":10},
+    {"dayCarbonUsage":11},
+    {"dayCarbonUsage":35},
+    {"dayCarbonUsage":27},
+    {"dayCarbonUsage":9},
+  ];
+  double carbonBaseValue = 20;
+  var carbonInObj = {"car": 20, "tree": 3};
+  var walingRanking = [
+    {"id": "nickname1", "walkingTime" : 100},
+    {"id": "orange", "walkingTime" : 90},
+    {"id": "tomato", "walkingTime" : 80},
+    {"id": "nickname2", "walkingTime" : 70},
+    {"id": "nickname3", "walkingTime" : 60},
+    {"id": "nickname4", "walkingTime" : 50},
+    {"id": "nickname5", "walkingTime" : 40},
+    {"id": "nickname6", "walkingTime" : 10},
+  ];
+  */
+  var carbonChangeLength;
+  List<Map<String, dynamic>>? carbonYesterday;
+  List<Map<String, dynamic>>? carbonChange;
+  List<Map<String, dynamic>>? carbonDailyStats;
+  var carbonWeeklyStats;
+  var carbonInObj;
+  var walingRanking;
+  double carbonBaseValue = 0;
 
   int pieTouchedIndex = 0;
   int barTouchedIndex = 0;
-  double targetCarbon = 5.0;
+  //double targetCarbon = 5.0; //수정 필요
 
   double barWidth = 20;
   double barShadowOpacity = 0.4;
@@ -44,37 +84,40 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
 
   Future<dynamic> initCarbonData() async {
     dynamic response = await service?.queryCarbonYesterday();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       carbonYesterday = response;
     }
 
     response = await service?.queryCarbonChange();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       carbonChange = response;
+      carbonChangeLength = carbonChange?.length;
+    } else {
+      carbonChangeLength = 0;
     }
 
     response = await service?.queryCarbonDailyStats();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       carbonDailyStats = response;
     }
 
     response = await service?.queryCarbonWeeklyStats();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       carbonWeeklyStats = response;
     }
 
     response = await service?.queryCarbonBaseValue();
-    if (response!=0){
+    if (response!=null && response!=0){
       carbonBaseValue = response;
     }
 
     response = await service?.queryCarbonInObj();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       carbonInObj = response;
     }
 
     response = await service?.getWalkingRanking();
-    if (response.isNotEmpty){
+    if (response!=null && response.isNotEmpty){
       walingRanking = response;
     }
   }
@@ -183,8 +226,8 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                       ),
                                       sectionsSpace: 10,
                                       centerSpaceRadius: 35,
-                                      sections: MyPieChart.showingSections(
-                                          List.generate(4, (i) => double.parse(carbonYesterday?[i]["appCarbon"])),
+                                      sections: MyPieChart.showingSections( //RangeError 발생: Valid value range is empty: 0
+                                          carbonYesterday!,
                                           shortestSide,
                                           pieTouchedIndex
                                       ),
@@ -211,7 +254,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                             child: BarChart(
                               BarChartData(
                                 alignment: BarChartAlignment.center,
-                                maxY: 5,
+                                maxY: 5, //수정?
                                 minY: -5,
                                 groupsSpace: 12,
                                 barTouchData: BarTouchData(
@@ -254,7 +297,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                   ),
                                   bottomTitles: AxisTitles(
                                     sideTitles: SideTitles(
-                                      showTitles: true,
+                                      showTitles: false,
                                       reservedSize: 32,
                                       getTitlesWidget: (double, TitleMeta) {
                                         return BarBottomTitles(double, TitleMeta);
@@ -294,9 +337,9 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                 borderData: FlBorderData(
                                   show: false,
                                 ),
-                                barGroups: List.generate(carbonChange.length, (i) => {
-                                  "key": carbonChange[i]["appEntry"],
-                                  "value": double.parse(carbonChange[i]["appCarbon"]),
+                                barGroups: List.generate(carbonChange==null ? 0 : carbonChange!.length, (i) => {
+                                  "key": i, //carbonChange[i]["appEntry"],
+                                  "value": carbonChange?[i]["appCarbon"] / 10,
                                 })
                                     .map(
                                       (e) =>
@@ -341,12 +384,11 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                       enabled: true,),
                                     lineBarsData: [
                                       LineChartBarData(
-                                        spots: List.generate(
-                                            7,
-                                            (i) {
-                                              return FlSpot(i.toDouble(), double.parse(carbonWeeklyStats[i]["dayCarbonUsage"]));
-                                            }
-                                        ), //MyLineChart.lineChartBarData,
+                                        spots:
+                                        List.generate(
+                                            carbonWeeklyStats==null ? 0 : carbonWeeklyStats.length, //수정?
+                                                (i) => FlSpot(i * 1.0, carbonWeeklyStats[i]["dayCarbonUsage"]! * 1.0)),
+
                                         isCurved: true,
                                         barWidth: 4,
                                         gradient: const LinearGradient(
@@ -360,13 +402,13 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                         belowBarData: BarAreaData(
                                           show: true,
                                           color: Colors.purpleAccent.withOpacity(0.7),
-                                          cutOffY: targetCarbon,
+                                          cutOffY: carbonBaseValue,
                                           applyCutOffY: true,
                                         ),
                                         aboveBarData: BarAreaData(
                                           show: true,
                                           color: Colors.greenAccent.withOpacity(0.7),
-                                          cutOffY: targetCarbon,
+                                          cutOffY: carbonBaseValue,
                                           applyCutOffY: true,
                                         ),
                                         dotData: const FlDotData(
@@ -401,7 +443,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                           interval: 1,
                                           getTitlesWidget: (meta, Title) {
                                             return LineLeftTitles(
-                                                meta, Title, targetCarbon);
+                                                meta, Title, carbonBaseValue);
                                           },
                                         ),
                                       ),
@@ -473,7 +515,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                         child: Container(
                           padding: const EdgeInsets.only(left: 10, right: 10),
                           child: ListView.builder(
-                            itemCount: walingRanking.length,
+                            itemCount: walingRanking==null ? 0 : walingRanking.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
                                   elevation: 1,
@@ -492,7 +534,11 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                           gradient: const LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
-                                            colors: [Colors.lime, Colors.purpleAccent, Colors.blue],
+                                            colors: [
+                                              Color(0xFF846AFF),
+                                              Color(0xFF755EE8),
+                                              Colors.purpleAccent,
+                                              Colors.amber,],
                                           ),
                                           borderRadius: BorderRadius.circular(10)),
                                       // Adds a gradient background and rounded corners to the container

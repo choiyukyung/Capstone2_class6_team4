@@ -1,3 +1,4 @@
+import 'package:capstone/data/walking_info.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -27,7 +28,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        '/': (BuildContext context) => const LogIn(),
+        '/': (BuildContext context) => LogIn(),
+
+        /*
+        '/': (BuildContext context) => WalkRecord(
+            user: User(id: "id", password: "password", name: "name", birthdate: "birthdate"),
+            startTimeStamp: DateTime.now(),
+            walkingInfo: WalkingInfo(name: "관악산둘레길", time: "2시간30분", distance: "6.2Km", details: ["난이도: 상"])
+        ),
+*/
         '/login': (BuildContext context) => const LogIn(),
         '/signup': (BuildContext context) => const SignUp(),
       }
@@ -45,8 +54,6 @@ class Main extends StatefulWidget {
 
 class _UsageStatsTestState extends State<Main> {
   int currentIndex = 0;
-  int distractionCount = 0;
-
   List body_item = [];
 
   @override
@@ -64,15 +71,8 @@ class _UsageStatsTestState extends State<Main> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColors.deepGreenBlue,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: Text(
-          "distraction Count: $distractionCount",
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-          ),
-        ),//AppBar(),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(8), child: Text(""),
       ),
       bottomNavigationBar: BottomNavigationBar(
         //현재 index 변수에 저장
