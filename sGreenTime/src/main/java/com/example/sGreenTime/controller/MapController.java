@@ -71,11 +71,11 @@ public class MapController {
         String park3ApiUrl1;
 
         //124,34,132,43
-        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,36,128,41)";
-        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(126.9,37.45,127,37.55)";
-        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
-        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
-        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(124,37,132,42)";
+        trailApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_TRKROAD&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(125,37,128,40)";
+        hikingApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_L_FRSTCLIMB&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(126.8,37.4,127.1,37.6)";
+        park1ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUG&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(125,37,128,40)";
+        park2ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPGUN&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(125,37,128,40)";
+        park3ApiUrl1 = "https://api.vworld.kr/req/data?service=data&request=GetFeature&data=LT_C_WGISNPDO&key=D24E3DA9-245A-3E4A-A680-6A704EA8A93A&size=1000&geomfilter=BOX(125,37,128,40)";
 
 
         //산책로 처리

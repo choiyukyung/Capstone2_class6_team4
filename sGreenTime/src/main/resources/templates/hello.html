@@ -98,10 +98,11 @@
     var options = {
         center: new kakao.maps.LatLng(37.5031, 126.9569),
         //37°30'11"N 126°57'25"E
-        level: 5
+        level: 3
     };
 
     var map = new kakao.maps.Map(container, options);
+    map.setMaxLevel(7);
 
     var marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(37.5031, 126.9569)
@@ -289,7 +290,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 10111111) {
+        if (length <= 750) {
             nowTrail.id = userId;
             var xhttp3 = new XMLHttpRequest();
             xhttp3.onreadystatechange = function () {
@@ -413,7 +414,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 10111111) {
+        if (length <= 750) {
             nowHiking.id = userId;
             var xhttp5 = new XMLHttpRequest();
             xhttp5.onreadystatechange = function () {
@@ -665,7 +666,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 10111111) {
+        if (length <= 750) {
             nowPark.id = userId;
             var xhttp6 = new XMLHttpRequest();
             xhttp6.onreadystatechange = function () {
