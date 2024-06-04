@@ -103,6 +103,17 @@
 
     var map = new kakao.maps.Map(container, options);
     map.setMaxLevel(7);
+    
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
+    
+    // 클릭한 위도, 경도 정보를 가져옵니다 
+    var latlng = mouseEvent.latLng;
+    
+    var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+    message += '경도는 ' + latlng.getLng() + ' 입니다';
+    
+    console.log(message);
+});
 
     var marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(37.5031, 126.9569)
@@ -290,7 +301,8 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 750) {
+        if (length <= 7500000000) {
+            console.log("방문");
             nowTrail.id = userId;
             var xhttp3 = new XMLHttpRequest();
             xhttp3.onreadystatechange = function () {
@@ -317,6 +329,7 @@
             console.log(data);
             xhttp3.send(data);
         } else {
+            console.log("방문 실패");
             nowTrail.id = userId;
             var xhttp3 = new XMLHttpRequest();
             xhttp3.onreadystatechange = function () {
@@ -414,7 +427,8 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 750) {
+        if (length <= 7500000000) {
+            console.log("방문");
             nowHiking.id = userId;
             var xhttp5 = new XMLHttpRequest();
             xhttp5.onreadystatechange = function () {
@@ -441,6 +455,7 @@
             console.log(data);
             xhttp5.send(data);
         } else {
+            console.log("방문 실패");
             nowHiking.id = userId;
             var xhttp5 = new XMLHttpRequest();
             xhttp5.onreadystatechange = function () {
@@ -666,7 +681,8 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 750) {
+        if (length <= 7500000000) {
+            console.log("방문");
             nowPark.id = userId;
             var xhttp6 = new XMLHttpRequest();
             xhttp6.onreadystatechange = function () {
@@ -696,6 +712,7 @@
             xhttp6.send(data);
 
         } else {
+            console.log("방문 실패");
             nowPark.id = userId;
             var xhttp6 = new XMLHttpRequest();
             xhttp6.onreadystatechange = function () {
