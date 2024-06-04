@@ -56,48 +56,48 @@ public class AppInfoService {
 
             //앱 이름 파싱 불가능 문제
             //동영상 어플
-            if(appName == "youtube"){
+            if(appName == "Youtube"){
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "netflix") {
+            } else if (appName == "Netflix") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "tving") {
+            } else if (appName == "Tving") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "wavve") {
+            } else if (appName == "Wavve") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "coupang play") {
+            } else if (appName == "Coupang play") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "disney+") {
+            } else if (appName == "Disney+") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
             }
             ///
 
             else if (appName == "X") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.52);
-            } else if (appName == "linkedIn") {
+            } else if (appName == "LinkedIn") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.47);
-            } else if (appName == "facebook") {
+            } else if (appName == "Facebook") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.63);
             }
 
             //채팅 어플
-            else if (appName == "snapchat") {
+            else if (appName == "Snapchat") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.65);
-            } else if (appName == "kakaotalk") {
+            } else if (appName == "Kakaotalk") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.65);
-            } else if (appName == "line") {
+            } else if (appName == "Line") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.65);
-            } else if (appName == "telegram") {
+            } else if (appName == "Telegram") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.65);
             }
             ///
 
-            else if (appName == "instagram") {
+            else if (appName == "Instagram") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.87);
-            } else if (appName == "pinterest") {
+            } else if (appName == "Pinterest") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.66);
-            } else if (appName == "reddit") {
+            } else if (appName == "Reddit") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.92);
-            } else if (appName == "tiktok") {
+            } else if (appName == "Tiktok") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.96);
             } else {
                 appCarbon = (float) (Float.valueOf(appTime)*0.1);
