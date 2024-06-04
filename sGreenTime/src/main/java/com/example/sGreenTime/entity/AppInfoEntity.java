@@ -1,5 +1,6 @@
 package com.example.sGreenTime.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,9 +16,9 @@ public class AppInfoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "screentime_id")
     private int screentimeId;
-    @Column
+    @Column @JsonIgnore
     private LocalDateTime startDate;
-    @Column
+    @Column @JsonIgnore
     private LocalDateTime endDate;
     @Column
     private String id;

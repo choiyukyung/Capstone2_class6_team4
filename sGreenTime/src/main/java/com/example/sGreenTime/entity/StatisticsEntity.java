@@ -1,5 +1,6 @@
 package com.example.sGreenTime.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class StatisticsEntity {
     private float weekCarbonUsage;
     @Column
     private float totalCarbonUsage;
-    @Column
+    @Column @JsonIgnore
     private LocalDate date;
     @Column
     private int cDate; // 누적일

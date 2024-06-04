@@ -26,7 +26,7 @@ public class UsageStatsController {
         for (UsageStatsDTO usageStatsDTO : usageStatsDTOList) {
             //totaltimeinforeground 분으로 가공
             int timeInMillisec = Integer.parseInt(usageStatsDTO.getTotalTimeInForeground());
-            int totalTime = timeInMillisec / 6000;
+            int totalTime = timeInMillisec / 60000;
             if (totalTime > 0) {
                 UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
                 entityList.add(entity);

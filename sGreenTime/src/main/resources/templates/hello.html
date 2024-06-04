@@ -104,9 +104,9 @@
     var map = new kakao.maps.Map(container, options);
 
     var marker = new kakao.maps.Marker({
-        map: map,
         position: new kakao.maps.LatLng(37.5031, 126.9569)
     });
+    marker.setMap(map);
 
     // 마우스 드래그로 지도 이동이 완료되었을 때 마지막 파라미터로 넘어온 함수를 호출하도록 이벤트를 등록합니다
     kakao.maps.event.addListener(map, 'dragend', function () {
@@ -119,7 +119,7 @@
         var swLatLngString = swLatLng.getLat() + "," + swLatLng.getLng();
         //console.log(swLatLng);
 
-        // 영역의 북동쪽 좌표를 얻어옵니다
+        // 영역의 북동쪽 좌표를 얻어옵니다.
         var neLatLng = bounds.getNorthEast();
         var neLatLngString = neLatLng.getLat() + "," + neLatLng.getLng();
         //console.log(neLatLng);

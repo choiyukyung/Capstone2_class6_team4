@@ -21,7 +21,7 @@ public class UsageStatsService {
 
         //totaltimeinforeground 분으로 가공 필요
         int timeInMillisec = Integer.parseInt(usageStatsDTO.getTotalTimeInForeground());
-        int totalTime = timeInMillisec / 6000;
+        int totalTime = timeInMillisec / 60000;
 
         // 동영상 어플
         if(packageName.equals("com.google.android.youtube")){
