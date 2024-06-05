@@ -56,7 +56,6 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
     {"id": "nickname6", "walkingTime" : 10},
   ];
   */
-  var carbonChangeLength;
   List<Map<String, dynamic>>? carbonYesterday;
   List<Map<String, dynamic>>? carbonChange;
   List<Map<String, dynamic>>? carbonDailyStats;
@@ -83,39 +82,43 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
   }
 
   Future<dynamic> initCarbonData() async {
+    carbonYesterday = [];
     dynamic response = await service?.queryCarbonYesterday();
     if (response!=null && response.isNotEmpty){
       carbonYesterday = response;
     }
 
+    carbonChange = [];
     response = await service?.queryCarbonChange();
     if (response!=null && response.isNotEmpty){
       carbonChange = response;
-      carbonChangeLength = carbonChange?.length;
-    } else {
-      carbonChangeLength = 0;
     }
 
+    carbonDailyStats = [];
     response = await service?.queryCarbonDailyStats();
     if (response!=null && response.isNotEmpty){
       carbonDailyStats = response;
     }
 
+    carbonWeeklyStats = [];
     response = await service?.queryCarbonWeeklyStats();
     if (response!=null && response.isNotEmpty){
       carbonWeeklyStats = response;
     }
 
+    carbonBaseValue = 0;
     response = await service?.queryCarbonBaseValue();
     if (response!=null && response!=0){
       carbonBaseValue = response;
     }
 
+    carbonInObj = {};
     response = await service?.queryCarbonInObj();
     if (response!=null && response.isNotEmpty){
       carbonInObj = response;
     }
 
+    walingRanking = [];
     response = await service?.getWalkingRanking();
     if (response!=null && response.isNotEmpty){
       walingRanking = response;
@@ -337,7 +340,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                 borderData: FlBorderData(
                                   show: false,
                                 ),
-                                barGroups: List.generate(carbonChange==null ? 0 : carbonChange!.length, (i) => {
+                                barGroups: List.generate(carbonChange?.length ?? 0, (i) => {
                                   "key": i, //carbonChange[i]["appEntry"],
                                   "value": carbonChange?[i]["appCarbon"] / 10,
                                 })
@@ -386,7 +389,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                                       LineChartBarData(
                                         spots:
                                         List.generate(
-                                            carbonWeeklyStats==null ? 0 : carbonWeeklyStats.length, //수정?
+                                            carbonWeeklyStats?.length ?? 0,
                                                 (i) => FlSpot(i * 1.0, carbonWeeklyStats[i]["dayCarbonUsage"]! * 1.0)),
 
                                         isCurved: true,
@@ -515,7 +518,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                         child: Container(
                           padding: const EdgeInsets.only(left: 10, right: 10),
                           child: ListView.builder(
-                            itemCount: walingRanking==null ? 0 : walingRanking.length,
+                            itemCount: walingRanking?.length ?? 0,
                             itemBuilder: (BuildContext context, int index) {
                               return Card(
                                   elevation: 1,

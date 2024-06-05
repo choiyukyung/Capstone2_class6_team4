@@ -49,6 +49,7 @@ dependencies:
   location: ^6.0.2
   focus_detector: ^2.0.1
   visibility_detector: ^0.2.2
+  webview_flutter_android: ^3.16.4
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +83,7 @@ flutter:
     - assets/images/report_card_1.jpg
     - assets/images/report_card_2.jpg
     - assets/images/report_card_3.jpg
-    - assets/images/report_card_4.jpg
+    - assets/images/unlocked.jpg
     - assets/images/leaves.jpg
     - assets/images/deer_in_forest.jpg
     - assets/images/sunny_forest.jpg

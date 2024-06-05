@@ -324,10 +324,28 @@ class _MapWebViewState extends State<MapWebView> {
   void initState() {
     super.initState();
 
+
     _webViewController = WebViewController()
-      ..loadRequest(Uri.parse("${widget.https}/vworldData/${widget.user?.id}"))
-      ..setJavaScriptMode(JavaScriptMode.unrestricted);
-     /*
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {
+            _webViewController?.clearCache();
+
+
+          },
+          onPageFinished: (String url) {},
+          onWebResourceError: (WebResourceError error) {
+            print(error);
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse("${widget.https}/vworldData/${widget.user?.id}"));
+
+    /*
       ..addJavaScriptChannel(
         'ChannelName',
           onMessageReceived: (JavaScriptMessage message) {
@@ -370,6 +388,7 @@ class WalkRecord extends StatefulWidget {
 
 class _WalkRecordState extends State<WalkRecord> {
   Service? service;
+  var walkingRanking;
   int distractionCount = 0;
 
   Color blockColor = Colors.blueAccent;
@@ -379,6 +398,16 @@ class _WalkRecordState extends State<WalkRecord> {
     super.initState();
 
     service = Service(user: widget.user);
+  }
+
+  void initWalkingRanking() async {
+    // 방법 1: 초기화를 통해 빈 리스트 할당
+    walkingRanking = [];
+
+    var response = await service?.getWalkingRanking();
+    if (response!=null){
+      walkingRanking = response;
+    }
   }
 
   @override
@@ -415,7 +444,7 @@ class _WalkRecordState extends State<WalkRecord> {
                     children: [
                       Container(
                         margin: const EdgeInsets.all(7),
-                        width: double.infinity, height: 190,
+                        width: double.infinity, height: 130,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image.asset(
@@ -447,7 +476,7 @@ class _WalkRecordState extends State<WalkRecord> {
                                   ),
                                 )
                             ),
-                            const SizedBox(height: 40,),
+                            const SizedBox(height: 20,),
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: Text(
@@ -470,34 +499,71 @@ class _WalkRecordState extends State<WalkRecord> {
                       ),
                     ]
                 ),
-                Container(
-                  width: double.infinity, height: 120,
-                  margin: const EdgeInsets.all(7),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: blockColor.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        height: 120,
+                        margin: const EdgeInsets.all(7),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: blockColor.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
 
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.topLeft,
-                          child: Text(
-                              'Time',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          )
+                        child: Column(
+                          children: [
+                            const Align(
+                              alignment: Alignment.topLeft,
+                                child: Text(
+                                    'Time',
+                                  style: TextStyle(fontSize: 12, color: Colors.white),
+                                )
+                            ),
+                            const SizedBox(height: 10,),
+                            Text(
+                                "${widget.walkingInfo?.time}",
+                              style: const TextStyle(color: Colors.white, fontSize: 23),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 10,),
-                      Text(
-                          "${widget.walkingInfo?.time}",
-                        style: const TextStyle(color: Colors.white, fontSize: 23),
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Container(
+                        height: 120,
+                        margin: const EdgeInsets.all(7),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: blockColor.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+
+                        child: Column(
+                          children: [
+                            const Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  'Distance',
+                                  style: TextStyle(fontSize: 12, color: Colors.white),
+                                )
+                            ),
+                            const SizedBox(height: 10,),
+                            Text(
+                              "${widget.walkingInfo?.distance} ",
+                              style: const TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+
                 Container(
-                  width: double.infinity, height: 120,
+                  width: double.infinity, height: 290,
                   margin: const EdgeInsets.all(7),
                   padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
@@ -510,77 +576,118 @@ class _WalkRecordState extends State<WalkRecord> {
                       const Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            'Distance',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          )
-                      ),
-                      const SizedBox(height: 10,),
-                      Text(
-                        "${widget.walkingInfo?.distance} ",
-                        style: const TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity, height: 150,
-                  margin: const EdgeInsets.all(7),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: blockColor.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-
-                  child: Column(
-                    children: [
-                      const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Details',
+                            'Ranking',
                             style: TextStyle(fontSize: 12, color: Colors.white),
                           )
                       ),
                       const SizedBox(height: 15,),
-                      Text(
-                        "${widget.walkingInfo?.details?.join("\n")}", //수정?
-                        style: const TextStyle(color: Colors.white, fontSize: 19),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: ListView.builder(
+                            // 방법 2: null 안전성을 고려한 length 접근
+                            itemCount: walkingRanking?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                  elevation: 1,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.elliptical(20, 20))),
+
+                                  child: GestureDetector(
+                                    //onTap: () => cardClickEvent(context, walingRanking[index]),
+                                    child: Container(
+                                      height: 70,
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(15),
+                                      //margin: const EdgeInsets.all(32),
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors:
+                                            [
+                                              Color(0xFF6e45e2),
+                                              Color(0xFF755EE8),
+                                              Color(0xFFa86aa4),
+                                              Color(0xFFcc6b8e),
+                                              Color(0xFFf18271),
+                                              Color(0xFFf3a469),
+                                              Color(0xFFf7c978),
+                                              //Color(0xFF74ebd5),
+                                              //Color(0xFF9face6),
+                                              //Color(0xFF846AFF),
+                                              //Color(0xFF755EE8),
+                                              //Colors.purpleAccent,
+                                              //Colors.amber,
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(10)),
+                                      // Adds a gradient background and rounded corners to the container
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center,
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const SizedBox(width: 5,),
+                                                  Text(
+                                                    '${index + 1}',
+                                                    style: const TextStyle(
+                                                      fontSize: 20.0,
+                                                      fontWeight: FontWeight
+                                                          .w700,
+                                                      color: Colors.white,
+                                                      shadows: [
+                                                        Shadow(
+                                                          blurRadius: 5.0,  // shadow blur
+                                                          color: Colors.white, // shadow color
+                                                          offset: Offset(0,0), // how much shadow will be shown
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 15,),
+                                                  Text(
+                                                      '${walkingRanking[index]["id"]}',
+                                                      style: const TextStyle(
+                                                          fontSize: 16.0,
+                                                          fontWeight: FontWeight
+                                                              .w500,
+                                                          color: Colors.white)
+                                                  ),
+                                                  const Spacer(),
+                                                  Text(
+                                                      '${walkingRanking[index]["walkingTime"]}',
+                                                      style: const TextStyle(
+                                                        fontSize: 21.0,
+                                                        fontWeight: FontWeight
+                                                            .w500,
+                                                        color: Colors.white,
+                                                      )
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                /*
-
-                Container(
-                  width: double.infinity, height: 200,
-                  margin: const EdgeInsets.all(7),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: blockColor.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-
-                  child: Column(
-                    children: [
-                      const Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            'Details',
-                            style: TextStyle(fontSize: 12, color: Colors.white),
-                          )
-                      ),
-                      Text(
-                        "start: ${widget.startTimeStamp}",
-                        style: const TextStyle(fontSize: 10, color: Colors.white),
-                      ),
-                      Text(
-                        "finish: $finishTimeStamp",
-                        style: const TextStyle(fontSize: 10, color: Colors.white),
-                      )
-                    ],
-                  ),
-                ),
-
-                */
                 const SizedBox(height: 30,),
                 OutlineCircleButton(
                     radius: 50.0,
@@ -647,25 +754,15 @@ class _WalkRecordState extends State<WalkRecord> {
                                           );
                                           Navigator.push(
                                             context,
-                                            /*
-                                            MaterialPageRoute(
-                                              builder: (context) => WalkReport(
-                                                user: widget.user,
-                                                name: widget.walkingInfo?.name,
-                                                time: totalWalkTime.inMinutes,
-                                                mileage: result["car"] * 0.1,
-                                                tree: result["tree"] * 0.1,
-                                              ),
-                                            ),
-                                            */
                                             MaterialPageRoute(
                                               builder: (context) => WalkReport(
                                                 user: widget.user,
                                                 name: widget.walkingInfo?.name,
                                                 time: "${totalWalkTime.inMinutes}", //seconds 변환?
-                                                mileage: result["walking"]["car"],
-                                                tree: result["walking"]["tree"],
+                                                mileage: result["walking"]["car"] ?? 0,
+                                                tree: result["walking"]["tree"] ?? 0,
                                                 distraction: distractionCount,
+                                                pastRanking: walkingRanking,
                                               ),
                                             ),
                                           );
@@ -702,6 +799,7 @@ class WalkReport extends StatefulWidget {
   double mileage;
   double tree;
   int distraction;
+  List<dynamic> pastRanking;
 
   WalkReport({
     required this.user,
@@ -710,6 +808,7 @@ class WalkReport extends StatefulWidget {
     required this.mileage,
     required this.tree,
     required this.distraction,
+    required this.pastRanking,
     super.key,
   });
 
@@ -718,16 +817,21 @@ class WalkReport extends StatefulWidget {
 }
 
 class _WalkReportState extends State<WalkReport> {
+  Service? service;
+  var walkingRanking;
+  num rankingDiff = 0; //음수: ranking up, 양수: ranking down
+
   final controller = PageController(viewportFraction: 0.8, keepPage: true);
 
   static final pageColors = [
     MyColors.skyBlue,
     Colors.deepOrange,
     MyColors.deepGreen,
-    Colors.indigoAccent,
+    //Colors.indigoAccent,
     Colors.tealAccent.shade700,
+    Colors.black26
   ];
-
+/*
   List<VBarChartModel> appdata = [
     const VBarChartModel(
       index: 0,
@@ -744,6 +848,84 @@ class _WalkReportState extends State<WalkReport> {
       tooltip: "78m",
     ),
   ];
+*/
+  @override
+  void initState() {
+    super.initState();
+
+    service = Service(user: widget.user);
+    initWalkingRanking();
+  }
+
+  void initWalkingRanking() async {
+    // 방법 1: 초기화를 통해 빈 리스트 할당
+    //walkingRanking = [];
+    walkingRanking = [
+      {
+        'id': 'master',
+        'walkingTime': 110.0,
+      },
+      {
+        'id': 'user1',
+        'walkingTime': 100.0,
+      },
+      {
+        'id': 'user2',
+        'walkingTime': 90.0,
+      },
+      {
+        'id': 'user4',
+        'walkingTime': 70.0,
+      },
+      {
+        'id': 'user5',
+        'walkingTime': 60.0,
+      },
+      {
+        'id': 'user6',
+        'walkingTime': 50.0,
+      },
+      {
+        'id': 'user7',
+        'walkingTime': 40.0,
+      },
+      {
+        'id': 'user8',
+        'walkingTime': 30.0,
+      },
+      {
+        'id': 'user9',
+        'walkingTime': 20.0,
+      },
+      {
+        'id': 'user10',
+        'walkingTime': 10.0,
+      },
+    ];
+
+
+    var response = await service?.getWalkingRanking();
+    if (response!=null && response.isNotEmpty){
+      walkingRanking = response;
+    }
+
+    for (var user in walkingRanking) {
+      if (user['id'] == widget.user?.id) {
+        rankingDiff += walkingRanking.indexOf(user);
+        print(walkingRanking.indexOf(user));
+      }
+    }
+
+    var pastRanking = widget.pastRanking;
+    for (var user in pastRanking) {
+      if (user['id'] == widget.user?.id) {
+        rankingDiff -= pastRanking.indexOf(user);
+        print(pastRanking.indexOf(user));
+      }
+    }
+
+    print('rankingDiff: $rankingDiff');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -804,8 +986,9 @@ class _WalkReportState extends State<WalkReport> {
                       ['your total time...', '${widget.time}', 'min'],
                       ['you reduced carbon \nas much as...', (widget.mileage.toStringAsFixed(2)), 'm',],
                       ['you reduced carbon \nas much as...', (widget.tree.toStringAsFixed(2)), 'CO2/hour',],
-                      ['you unlocked...', '${widget.name}', '',],
+                      //['you unlocked...', '${widget.name}', '',],
                       ['your total distractions...', '${widget.distraction}', '',],
+                      [],
                     ];
 
                     final pages = List.generate(
@@ -816,7 +999,158 @@ class _WalkReportState extends State<WalkReport> {
                             color: pageColors[index],
                           ),
                           margin: const EdgeInsets.fromLTRB(15, 30, 15, 5),
-                          child: Stack(
+                          child: (index==4) ?
+                          //Ranking Card
+                            Container(
+                              width: double.infinity, height: 800,
+                              margin: const EdgeInsets.all(7),
+                              padding: const EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                //color: MyColors.brightGreenBlue.withOpacity(0.3),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 410,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                            'Carbon Footprint Ranking',
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontSize: 15.0,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white)
+                                        ),
+                                        Text(
+                                            (rankingDiff < 0) ?
+                                            '${(rankingDiff)*-1} up'
+                                            : '$rankingDiff down',
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(fontSize: 15.0,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white)
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  Expanded(
+                                    child: Container(
+                                      width: double.infinity, height: 800,
+                                      margin: const EdgeInsets.all(7),
+                                      //padding: const EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                        //color: MyColors.brightGreenBlue.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ListView.builder(
+                                        // 방법 2: null 안전성을 고려한 length 접근
+                                        itemCount: walkingRanking?.length ?? 0,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return Card(
+                                              elevation: 1,
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(
+                                                      Radius.elliptical(20, 20))),
+
+                                              child: GestureDetector(
+                                                //onTap: () => cardClickEvent(context, walingRanking[index]),
+                                                child: Container(
+                                                  height: 70,
+                                                  width: double.infinity,
+                                                  padding: const EdgeInsets.all(15),
+                                                  //margin: const EdgeInsets.all(32),
+                                                  decoration: BoxDecoration(
+                                                      gradient: const LinearGradient(
+                                                        begin: Alignment.topLeft,
+                                                        end: Alignment.bottomRight,
+                                                        colors:
+                                                        [
+                                                          Color(0xFF6e45e2),
+                                                          Color(0xFF755EE8),
+                                                          Color(0xFFa86aa4),
+                                                          Color(0xFFcc6b8e),
+                                                          Color(0xFFf18271),
+                                                          Color(0xFFf3a469),
+                                                          Color(0xFFf7c978),
+                                                          //Color(0xFF74ebd5),
+                                                          //Color(0xFF9face6),
+                                                          //Color(0xFF846AFF),
+                                                          //Color(0xFF755EE8),
+                                                          //Colors.purpleAccent,
+                                                          //Colors.amber,
+                                                        ],
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(10)),
+                                                  // Adds a gradient background and rounded corners to the container
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment
+                                                        .center,
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              const SizedBox(width: 5,),
+                                                              Text(
+                                                                '${index + 1}',
+                                                                style: const TextStyle(
+                                                                  fontSize: 20.0,
+                                                                  fontWeight: FontWeight
+                                                                      .w700,
+                                                                  color: Colors.white,
+                                                                  shadows: [
+                                                                    Shadow(
+                                                                      blurRadius: 5.0,  // shadow blur
+                                                                      color: Colors.white, // shadow color
+                                                                      offset: Offset(0,0), // how much shadow will be shown
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              const SizedBox(width: 15,),
+                                                              Text(
+                                                                  '${walkingRanking[index]["id"]}',
+                                                                  style: const TextStyle(
+                                                                      fontSize: 16.0,
+                                                                      fontWeight: FontWeight
+                                                                          .w500,
+                                                                      color: Colors.white)
+                                                              ),
+                                                              const Spacer(),
+                                                              Text(
+                                                                  '${walkingRanking[index]["walkingTime"]}',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 21.0,
+                                                                    fontWeight: FontWeight
+                                                                        .w500,
+                                                                    color: Colors.white,
+                                                                  )
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                              : Stack(
                             children: [
                               ShaderMask(
                                 shaderCallback: (Rect bound) {

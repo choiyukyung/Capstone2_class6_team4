@@ -14,7 +14,7 @@ class Service {
   User? user;
   Service({required this.user});
 
-  static const https = "https://f7ba-165-194-17-200.ngrok-free.app";
+  static const https = "https://232e-219-255-207-131.ngrok-free.app";
   static const naverId = "apsz5g7nue";
   static const naverKey = "E4QCjVeH5c4MTYKUVIHM1QLK7Z96qyLzU2fB50my";
   static const openweatherKey = "a1348d850873d2c02fb6e5c160881ecf";
@@ -468,13 +468,13 @@ class Service {
       if (response.statusCode != 200) {
         throw Exception("Failed to post walking report");
       } else {
-        final data = json.decode(response.body); //수정?
+        final data = json.decode(response.body) ?? {"car": 0, "tree": 0}; //수정?
         return data;
       }
     } catch (e) {
       print("postWalkingReport: Failed to get response: $e");
+      return {"car": 0, "tree": 0};
     }
-    return {"car": 0, "tree": 0};
   }
 
   Future<List> getWalkingRanking() async {
@@ -486,7 +486,7 @@ class Service {
       if (response.statusCode != 200) {
         throw Exception("Failed to get walking ranking");
       } else {
-        final data = json.decode(response.body); //수정?
+        final data = json.decode(response.body) ?? [];
         return data;
       }
     } catch (e) {

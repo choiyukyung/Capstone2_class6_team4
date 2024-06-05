@@ -30,13 +30,64 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (BuildContext context) => LogIn(),
 
-        /*
-        '/': (BuildContext context) => WalkRecord(
+
+        '/ddd': (BuildContext context) => WalkRecord(
             user: User(id: "id", password: "password", name: "name", birthdate: "birthdate"),
             startTimeStamp: DateTime.now(),
             walkingInfo: WalkingInfo(name: "관악산둘레길", time: "2시간30분", distance: "6.2Km", details: ["난이도: 상"])
         ),
-*/
+
+        '/dd': (BuildContext context) => WalkReport(
+            user: User(id: "master", password: "password", name: "name", birthdate: "birthdate"),
+            name: "",
+            time: "",
+            mileage: 0,
+            tree: 0,
+            distraction: 0,
+            pastRanking:
+            const [
+              {
+                'id': 'user1',
+                'walkingTime': 100.0,
+              },
+              {
+                'id': 'user2',
+                'walkingTime': 90.0,
+              },
+              {
+                'id': 'master',
+                'walkingTime': 80.0,
+              },
+              {
+                'id': 'user4',
+                'walkingTime': 70.0,
+              },
+              {
+                'id': 'user5',
+                'walkingTime': 60.0,
+              },
+              {
+                'id': 'user6',
+                'walkingTime': 50.0,
+              },
+              {
+                'id': 'user7',
+                'walkingTime': 40.0,
+              },
+              {
+                'id': 'user8',
+                'walkingTime': 30.0,
+              },
+              {
+                'id': 'user9',
+                'walkingTime': 20.0,
+              },
+              {
+                'id': 'user10',
+                'walkingTime': 10.0,
+              },
+            ],
+        ),
         '/login': (BuildContext context) => const LogIn(),
         '/signup': (BuildContext context) => const SignUp(),
       }
