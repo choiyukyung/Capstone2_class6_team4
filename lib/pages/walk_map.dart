@@ -327,23 +327,10 @@ class _MapWebViewState extends State<MapWebView> {
 
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {
-            _webViewController?.clearCache();
-
-
-          },
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {
-            print(error);
-          },
-        ),
-      )
       ..loadRequest(Uri.parse("${widget.https}/vworldData/${widget.user?.id}"));
+    //  **WebChromeClient 설정**: WebViewController에 WebChromeClient를 설정합니다.
+    // WebChromeClient 설정
+    //_webViewController?.setWebChromeClient(WebChromeClient());
 
     /*
       ..addJavaScriptChannel(
