@@ -30,8 +30,6 @@ public class AppInfoController {
 
     @PostMapping("/appInfo")
     public List<AppInfoEntity> saveAndSend(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
-        List<AppInfoEntity> appInfoList = new ArrayList<>();
-
         List<UsageStatsDTO> uniqueUsageStatsDTOList = new ArrayList<>();
 
         for (UsageStatsDTO usageStatsDTO : usageStatsDTOList) {
@@ -55,7 +53,7 @@ public class AppInfoController {
             }
         }
 
-
+        List<AppInfoEntity> appInfoList = new ArrayList<>();
         for(UsageStatsDTO usageStatsDTO : uniqueUsageStatsDTOList){
             if(Integer.parseInt(usageStatsDTO.getTotalTimeInForeground()) > 60000){
                 UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
@@ -63,11 +61,36 @@ public class AppInfoController {
                 appInfoList.add(appInfo);
             }
         }
-        Collections.sort(appInfoList, (e1, e2) -> Float.compare(e2.getAppCarbon(), e1.getAppCarbon()));
-        if (appInfoList.size() < 10){
-            return appInfoList;
+        List<AppInfoEntity> uniqueAppInfoList = new ArrayList<>();
+        for (AppInfoEntity appInfoEntity : appInfoList) {
+            boolean found = false;
+            for (AppInfoEntity uniqueAppInfoEntity : uniqueAppInfoList) {
+                if (uniqueAppInfoEntity.getAppEntry().equals(appInfoEntity.getAppEntry())) {
+                    int totalTime = Integer.parseInt(appInfoEntity.getAppTime()) + Integer.parseInt(uniqueAppInfoEntity.getAppTime());
+                    uniqueAppInfoEntity.setAppTime(Integer.toString(totalTime));
+                    float totalCarbon = appInfoEntity.getAppCarbon() + uniqueAppInfoEntity.getAppCarbon();
+                    uniqueAppInfoEntity.setAppTime(Float.toString(totalCarbon));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                AppInfoEntity appInfoEntity1 = new AppInfoEntity();
+                appInfoEntity1.setId(appInfoEntity.getId());
+                appInfoEntity1.setAppTime(appInfoEntity.getAppTime());
+                appInfoEntity1.setAppEntry(appInfoEntity.getAppEntry());
+                appInfoEntity1.setStartDate(appInfoEntity.getStartDate());
+                appInfoEntity1.setEndDate(appInfoEntity.getEndDate());
+                appInfoEntity1.setAppCarbon(appInfoEntity.getAppCarbon());
+                uniqueAppInfoList.add(appInfoEntity1);
+            }
         }
-        return appInfoList.subList(0, 10);
+
+        Collections.sort(uniqueAppInfoList, (e1, e2) -> Float.compare(e2.getAppCarbon(), e1.getAppCarbon()));
+        if (uniqueAppInfoList.size() < 10){
+            return uniqueAppInfoList;
+        }
+        return uniqueAppInfoList.subList(0, 10);
     }
 
     // 사용자의 id 주면 앱별 탄소 사용량, 앱 사용량 보내기(전날 하루 00시 ~ 23시 55분)
