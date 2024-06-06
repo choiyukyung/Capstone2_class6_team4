@@ -92,9 +92,34 @@ public class UsageStatsService {
             packageName = "SGreenTime";
         } else if (packageName.equals("com.nhn.android.search")){
             packageName = "Naver";
-        }else if (packageName.equals("com.sec.android.camera")){
+        } else if (packageName.equals("com.sec.android.camera")){
             packageName = "Camera";
-        } else {
+        }
+
+
+        //game(종류별)
+        else if (packageName.equals("com.kiloo.subwaysurf")){
+            packageName = "Subway Surfers";
+        } else if (packageName.equals("com.kitkagames.fallbuddies")){
+            packageName = "Stumble Guys";
+        } else if (packageName.equals("com.roblox.client")){
+            packageName = "Roblox";
+        } else if (packageName.equals("com.king.candycrushsaga")){
+            packageName = "Candy Crush Saga";
+        } else if (packageName.equals("com.easygames.race")){
+            packageName = "Race Master 3D";
+        } else if (packageName.equals("com.miniclip.eightballpool")){
+            packageName = "8 Ball Pool";
+        } else if (packageName.equals("com.ea.gp.fifamobile")){
+            packageName = "FIFA Mobile";
+        } else if (packageName.equals("com.fusee.MergeMaster")){
+            packageName = "Merge Master";
+        } else if (packageName.equals("com.dts.freefireth")){
+            packageName = "Garena Free Fire";
+        }
+
+
+        else {
             packageName = "others";
         }
         UsageStatsEntity entity = UsageStatsEntity.toUsageStatsEntity(usageStatsDTO.getUsageStatsId(), usageStatsDTO.getId(), usageStatsDTO.getLastTimeUsed(), packageName, Integer.toString(totalTime), usageStatsDTO.getNowTimeStamp());

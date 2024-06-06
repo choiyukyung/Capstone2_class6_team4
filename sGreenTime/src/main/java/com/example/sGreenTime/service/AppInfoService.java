@@ -102,7 +102,32 @@ public class AppInfoService {
                 appCarbon = (float) (Float.valueOf(appTime)*0.92);
             } else if (appName == "Tiktok") {
                 appCarbon = (float) (Float.valueOf(appTime)*0.96);
-            } else {
+            }
+
+
+            //game
+            else if (appName == "Subway Surfers") {
+                appCarbon = (float) (Float.valueOf(appTime)*1.1);
+            } else if (appName == "Stumble Guys") {
+                appCarbon = (float) (Float.valueOf(appTime)*6.5);
+            } else if (appName == "Roblox") {
+                appCarbon = (float) (Float.valueOf(appTime)*2.5);
+            } else if (appName == "Candy Crush Saga") {
+                appCarbon = (float) (Float.valueOf(appTime)*1.9);
+            } else if (appName == "Race Master 3D") {
+                appCarbon = (float) (Float.valueOf(appTime)*4.4);
+            } else if (appName == "8 Ball Pool") {
+                appCarbon = (float) (Float.valueOf(appTime)*0.2);
+            } else if (appName == "FIFA Mobile") {
+                appCarbon = (float) (Float.valueOf(appTime)*20.1);
+            } else if (appName == "Merge Master") {
+                appCarbon = (float) (Float.valueOf(appTime)*3.8);
+            } else if (appName == "Garena Free Fire") {
+                appCarbon = (float) (Float.valueOf(appTime)*1.1);
+            }
+
+
+            else {
                 appCarbon = (float) (Float.valueOf(appTime)*0.1);
             }
 
