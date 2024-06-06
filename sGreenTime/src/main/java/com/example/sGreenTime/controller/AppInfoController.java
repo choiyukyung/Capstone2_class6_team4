@@ -31,7 +31,32 @@ public class AppInfoController {
     @PostMapping("/appInfo")
     public List<AppInfoEntity> saveAndSend(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
         List<AppInfoEntity> appInfoList = new ArrayList<>();
-        for(UsageStatsDTO usageStatsDTO : usageStatsDTOList){
+
+        List<UsageStatsDTO> uniqueUsageStatsDTOList = new ArrayList<>();
+
+        for (UsageStatsDTO usageStatsDTO : usageStatsDTOList) {
+            boolean found = false;
+            for (UsageStatsDTO uniqueUsageStatsDTO : uniqueUsageStatsDTOList) {
+                if (uniqueUsageStatsDTO.getPackageName().equals(usageStatsDTO.getPackageName())) {
+                    int totalTime = Integer.parseInt(usageStatsDTO.getTotalTimeInForeground()) + Integer.parseInt(uniqueUsageStatsDTO.getTotalTimeInForeground());
+                    uniqueUsageStatsDTO.setTotalTimeInForeground(Integer.toString(totalTime));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                UsageStatsDTO usageStatsDTO1 = new UsageStatsDTO();
+                usageStatsDTO1.setId(usageStatsDTO.getId());
+                usageStatsDTO1.setNowTimeStamp(usageStatsDTO.getNowTimeStamp());
+                usageStatsDTO1.setPackageName(usageStatsDTO.getPackageName());
+                usageStatsDTO1.setLastTimeUsed(usageStatsDTO.getPackageName());
+                usageStatsDTO1.setTotalTimeInForeground(usageStatsDTO.getTotalTimeInForeground());
+                uniqueUsageStatsDTOList.add(usageStatsDTO1);
+            }
+        }
+
+
+        for(UsageStatsDTO usageStatsDTO : uniqueUsageStatsDTOList){
             if(Integer.parseInt(usageStatsDTO.getTotalTimeInForeground()) > 60000){
                 UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
                 AppInfoEntity appInfo = appInfoService.updateAppInfo(entity);
@@ -39,6 +64,9 @@ public class AppInfoController {
             }
         }
         Collections.sort(appInfoList, (e1, e2) -> Float.compare(e2.getAppCarbon(), e1.getAppCarbon()));
+        if (appInfoList.size() < 10){
+            return appInfoList;
+        }
         return appInfoList.subList(0, 10);
     }
 
