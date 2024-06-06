@@ -28,11 +28,20 @@ public class AppInfoRepository {
                 .setParameter("id", id)
                 .getResultList();
     }
-
+/*
     public List<AppInfoEntity> findByIdandStartDate(String id, LocalDateTime startDate) {
         return em.createQuery("select m from AppInfoEntity m where m.id = :id and m.startDate = :startDate", AppInfoEntity.class)
                 .setParameter("id", id)
                 .setParameter("startDate", startDate)
+                .getResultList();
+    }
+*/
+    public List<AppInfoEntity> findByIdandStartDate(String id, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+
+        return em.createQuery("select m from AppInfoEntity m where m.id = :id and m.startDate between :startOfDay and :endOfDay", AppInfoEntity.class)
+                .setParameter("id", id)
+                .setParameter("startOfDay", startOfDay)
+                .setParameter("endOfDay", endOfDay)
                 .getResultList();
     }
 }

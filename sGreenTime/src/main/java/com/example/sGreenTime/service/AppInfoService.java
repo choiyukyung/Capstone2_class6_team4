@@ -21,10 +21,12 @@ import java.util.List;
 public class AppInfoService {
     private final AppInfoRepository appInfoRepository;
 
-    public List<AppInfoEntity> findAppInfoOneDay(MemberDTO memberDTO, LocalDateTime day){
+    public List<AppInfoEntity> findAppInfoOneDay(MemberDTO memberDTO, LocalDateTime today){
 
         String id = memberDTO.getId();
-        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findByIdandStartDate(id, day);
+        LocalDateTime startOfDay = today.minusMinutes(10);
+        LocalDateTime endOfDay = today.minusSeconds(1);
+        List<AppInfoEntity> appInfoEntityList = appInfoRepository.findByIdandStartDate(id, startOfDay, endOfDay);
 
         List<AppInfoEntity> appInfoEntityYesterday = new ArrayList<>();
         if(!appInfoEntityList.isEmpty()){
@@ -40,6 +42,7 @@ public class AppInfoService {
         else{
             System.out.println("사용자의 appInfo 정보가 없습니다.");
         }
+        System.out.println("size : " + appInfoEntityYesterday.get(0).getStartDate());
         return appInfoEntityYesterday;
 
     }

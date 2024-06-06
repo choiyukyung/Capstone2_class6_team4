@@ -292,7 +292,7 @@
             path: [
                 new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                new kakao.maps.LatLng(37.5031, 126.9569)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -301,7 +301,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 7500000000) {
+        if (length <= 1000) {
             console.log("방문");
             nowTrail.id = userId;
             var xhttp3 = new XMLHttpRequest();
@@ -418,7 +418,7 @@
             path: [
                 new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                new kakao.maps.LatLng(37.5031, 126.9569)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -427,7 +427,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 7500000000) {
+        if (length <= 1000) {
             console.log("방문");
             nowHiking.id = userId;
             var xhttp5 = new XMLHttpRequest();
@@ -672,7 +672,7 @@
             path: [
                 new kakao.maps.LatLng(nowParkLat, nowParkLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.47500129095575, 126.97069693667093)
+                new kakao.maps.LatLng(37.5031, 126.9569)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -681,7 +681,7 @@
         });
         var length = polylineTrans.getLength()
         console.log("길이: " + length);
-        if (length <= 7500000000) {
+        if (length <= 1000) {
             console.log("방문");
             nowPark.id = userId;
             var xhttp6 = new XMLHttpRequest();

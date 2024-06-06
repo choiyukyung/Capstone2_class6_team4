@@ -36,6 +36,7 @@ public class StatisticsService {
 
         return save(id, day);
     }
+
     @Transactional
     public StatisticsEntity save(String id, LocalDate yesterday){
         LocalDate lastWeekStart = yesterday.minusDays(7);

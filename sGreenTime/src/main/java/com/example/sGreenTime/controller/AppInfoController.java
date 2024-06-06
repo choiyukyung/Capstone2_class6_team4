@@ -38,16 +38,18 @@ public class AppInfoController {
                 appInfoList.add(appInfo);
             }
         }
-        Collections.sort(appInfoList, (e1, e2) -> Integer.compare(Integer.parseInt(e2.getAppTime()), Integer.parseInt(e1.getAppTime())));
+        Collections.sort(appInfoList, (e1, e2) -> Float.compare(e2.getAppCarbon(), e1.getAppCarbon()));
         return appInfoList.subList(0, 10);
     }
 
     // 사용자의 id 주면 앱별 탄소 사용량, 앱 사용량 보내기(전날 하루 00시 ~ 23시 55분)
     @PostMapping("/appInfoYesterday")
     public List<AppInfoEntity> sendYesterday(@RequestBody MemberDTO memberDTO) {
-        LocalDateTime yesterday = LocalDate.now().minusDays(1).atStartOfDay();
-        List<AppInfoEntity> appInfoEntityList = appInfoService.findAppInfoOneDay(memberDTO, yesterday);
-        return appInfoEntityList;
+        LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1);
+        List<AppInfoEntity> appInfoEntityList = appInfoService.findAppInfoOneDay(memberDTO, today);
+        Collections.sort(appInfoEntityList, (e1, e2) -> Float.compare(Math.abs(e2.getAppCarbon()), Math.abs(e1.getAppCarbon())));
+
+        return appInfoEntityList.subList(0, 4);
     }
 
     // 사용자의 id 주면 앱별 탄소 사용량 전날-전전날 보내기(값이 +면 어제가 많이 사용한 것)
@@ -56,11 +58,16 @@ public class AppInfoController {
     @PostMapping("/appInfoChange")
     public List<AppInfoEntity> sendChange() {
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setId("33");
+        memberDTO.setId("master");
+        /*
         LocalDateTime yesterday = LocalDate.now().minusDays(1).atStartOfDay();
         List<AppInfoEntity> appInfoEntityYesterday = appInfoService.findAppInfoOneDay(memberDTO, yesterday);
         LocalDateTime yesterday2 = LocalDate.now().minusDays(2).atStartOfDay();
         List<AppInfoEntity> appInfoEntityYesterday2 = appInfoService.findAppInfoOneDay(memberDTO, yesterday2);
+        */
+        LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1);
+        List<AppInfoEntity> appInfoEntityYesterday = appInfoService.findAppInfoOneDay(memberDTO, today);
+        List<AppInfoEntity> appInfoEntityYesterday2 = appInfoService.findAppInfoOneDay(memberDTO, today.minusDays(1));
 
         List<AppInfoEntity> appInfoEntityList = new ArrayList<>();
         boolean present = false; //어제는 썼는데 그제는 안 씀(==false)
@@ -107,6 +114,10 @@ public class AppInfoController {
             }
         }
 
-        return appInfoEntityList;
+        //절댓값이 큰 7개
+        Collections.sort(appInfoEntityList, (e1, e2) -> Float.compare(Math.abs(e2.getAppCarbon()), Math.abs(e1.getAppCarbon())));
+
+
+        return appInfoEntityList.subList(0, 7);
     }
 }
