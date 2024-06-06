@@ -104,11 +104,14 @@ public class WalkingTimeService {
     public List<WalkingTimeEntity> getWalkingTop10() {
         List<WalkingTimeEntity> weekAll = getWalkingTimeWeek();
 
-        if (weekAll.isEmpty() || weekAll.size() <= 10) {
+        if (weekAll.isEmpty()) {
             return weekAll;
         }
-
+        
         Collections.sort(weekAll, Comparator.comparing(WalkingTimeEntity::getWalkingTime).reversed());
+        if(weekAll.size() < 10){
+            return weekAll;
+        }
         return weekAll.subList(0, 10);
     }
 

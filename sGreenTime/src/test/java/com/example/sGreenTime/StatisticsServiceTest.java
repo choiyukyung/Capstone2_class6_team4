@@ -1,6 +1,7 @@
 package com.example.sGreenTime;
 
 import com.example.sGreenTime.dto.MemberDTO;
+import com.example.sGreenTime.dto.StatisticsDTO;
 import com.example.sGreenTime.entity.StatisticsEntity;
 import com.example.sGreenTime.repository.StatisticsRepository;
 import com.example.sGreenTime.service.StatisticsService;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +32,8 @@ public class StatisticsServiceTest {
     @Test
     public void StatisticsTest(){
         MemberDTO member = new MemberDTO();
-        member.setId("33");
+        member.setId("master");
+        /*
         LocalDate day = LocalDate.now().minusDays(1);
         statisticsService.find(member.getId(), day);
 
@@ -44,5 +48,28 @@ public class StatisticsServiceTest {
             System.out.println(entity.getDate() + " " + entity.getDayCarbonUsage() + " " + entity.getTotalCarbonUsage());
         }
 
+
+         */
+
+        LocalDate day = LocalDate.now().minusDays(1);
+        StatisticsEntity statisticsEntity = statisticsService.find(member.getId(), day);
+        System.out.println(statisticsEntity.getStatisticsId());
+
+
+        List<StatisticsEntity> statisticsEntityList = new ArrayList<>();
+        for(int i = 0;i<7;i++){
+            day = LocalDate.now().minusDays(i+1);
+            statisticsEntityList.add(statisticsService.find(member.getId(), day));
+        }
+        for(StatisticsEntity s : statisticsEntityList) {
+            System.out.println(s.getStatisticsId());
+        }
+
+
+        day = LocalDate.now().minusDays(1);
+        StatisticsEntity statisticsEntity1 = statisticsService.find(member.getId(), day);
+        float totalCarbonUsage = statisticsEntity1.getTotalCarbonUsage();
+        int cDate = statisticsEntity1.getCDate();
+        System.out.println(totalCarbonUsage/cDate);
     }
 }

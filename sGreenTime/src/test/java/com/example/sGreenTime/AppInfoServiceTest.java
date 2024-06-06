@@ -1,5 +1,6 @@
 package com.example.sGreenTime;
 
+import com.example.sGreenTime.controller.AppInfoController;
 import com.example.sGreenTime.dto.UsageStatsDTO;
 import com.example.sGreenTime.entity.AppInfoEntity;
 import com.example.sGreenTime.entity.MemberEntity;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -29,13 +31,20 @@ public class AppInfoServiceTest {
     @Autowired
     UsageStatsRepository usageStatsRepository;
     @Autowired
+    AppInfoController appInfoController;
+    @Autowired
     EntityManager em;
 
     @DisplayName("appTest")
     @Test
     public void AppInfoTest(){
         //given
-
+        List<AppInfoEntity> appInfoEntityList = appInfoController.sendChange();
+        for(AppInfoEntity a : appInfoEntityList){
+            System.out.println(a.getAppEntry());
+            System.out.println(a.getAppCarbon());
+        }
+        /*
         UsageStatsDTO usageStats1 = new UsageStatsDTO();
         usageStats1.setId("33");
         usageStats1.setPackageName("com.google.android.youtube");
@@ -44,7 +53,7 @@ public class AppInfoServiceTest {
 
         UsageStatsEntity usageStatsEntity1 = usageStatsService.save(usageStats1);
         AppInfoEntity appInfo1 = appInfoService.updateAppInfo(usageStatsEntity1);
-
+*/
 //        UsageStatsEntity usageStats2 = new UsageStatsEntity();
 //        usageStats2.setId("33");
 //        usageStats2.setPackageName("com.kakao.talk");

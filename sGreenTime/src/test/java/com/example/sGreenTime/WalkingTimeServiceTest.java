@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 @Transactional
@@ -25,6 +26,16 @@ public class WalkingTimeServiceTest {
     @DisplayName("WalkingTimeTest")
     @Test
     public void walkingTimeTest(){
+
+
+        List<WalkingTimeEntity> walkingTimeEntities = walkingTimeService.getWalkingTop10();
+        for(WalkingTimeEntity w : walkingTimeEntities){
+            System.out.println(w.getId() + " : " + w.getWalkingTime());
+        }
+
+
+
+        /*
         WalkingTimeDTO walkingTimeDTO1 = new WalkingTimeDTO();
         walkingTimeDTO1.setTotalWalkTime(600000);
         walkingTimeDTO1.setId("sample");
@@ -39,5 +50,7 @@ public class WalkingTimeServiceTest {
             System.out.println(i.getId());
             System.out.println(i.getWalkingTime());
         }
+
+         */
     }
 }
