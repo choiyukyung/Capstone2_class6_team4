@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -31,12 +32,14 @@ public class AppInfoController {
     public List<AppInfoEntity> saveAndSend(@RequestBody List<UsageStatsDTO> usageStatsDTOList){
         List<AppInfoEntity> appInfoList = new ArrayList<>();
         for(UsageStatsDTO usageStatsDTO : usageStatsDTOList){
-            UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
-            AppInfoEntity appInfo = appInfoService.updateAppInfo(entity);
-            appInfoList.add(appInfo);
+            if(Integer.parseInt(usageStatsDTO.getTotalTimeInForeground()) > 60000){
+                UsageStatsEntity entity = usageStatsService.save(usageStatsDTO);
+                AppInfoEntity appInfo = appInfoService.updateAppInfo(entity);
+                appInfoList.add(appInfo);
+            }
         }
-        System.out.println(appInfoList);
-        return appInfoList;
+        Collections.sort(appInfoList, (e1, e2) -> Integer.compare(Integer.parseInt(e2.getAppTime()), Integer.parseInt(e1.getAppTime())));
+        return appInfoList.subList(0, 10);
     }
 
     // 사용자의 id 주면 앱별 탄소 사용량, 앱 사용량 보내기(전날 하루 00시 ~ 23시 55분)
