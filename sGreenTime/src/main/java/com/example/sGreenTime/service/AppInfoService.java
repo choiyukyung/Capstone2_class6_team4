@@ -42,7 +42,7 @@ public class AppInfoService {
         else{
             System.out.println("사용자의 appInfo 정보가 없습니다.");
         }
-        System.out.println("size : " + appInfoEntityYesterday.get(0).getStartDate());
+
         return appInfoEntityYesterday;
 
     }

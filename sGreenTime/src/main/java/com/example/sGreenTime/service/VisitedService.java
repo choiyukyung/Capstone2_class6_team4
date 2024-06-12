@@ -95,8 +95,9 @@ public class VisitedService {
 
         Map<String, Object> result = new HashMap<>();
         
-        LocalDateTime nowMinusThreeMin = LocalDateTime.now().minusMinutes(3);
-        if(mostRecentTime.isAfter(nowMinusThreeMin)) {
+        //LocalDateTime nowMinusThreeMin = LocalDateTime.now().minusMinutes(3);
+        LocalDateTime nowMinus20Sec = LocalDateTime.now().minusSeconds(20);
+        if(mostRecentTime.isAfter(nowMinus20Sec)) {
             result.put(placeType, mostRecentVisitedPlace);
         }
         return result;

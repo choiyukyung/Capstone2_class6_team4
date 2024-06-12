@@ -64,8 +64,8 @@ public class AppInfoController {
             boolean found = false;
             for (AppInfoEntity uniqueAppInfoEntity : uniqueAppInfoList) {
                 if (uniqueAppInfoEntity.getAppEntry().equals(appInfoEntity.getAppEntry())) {
-                    int totalTime = Integer.parseInt(appInfoEntity.getAppTime()) + Integer.parseInt(uniqueAppInfoEntity.getAppTime());
-                    uniqueAppInfoEntity.setAppTime(Integer.toString(totalTime));
+                    float totalTime = Float.parseFloat(appInfoEntity.getAppTime()) + Float.parseFloat(uniqueAppInfoEntity.getAppTime());
+                    uniqueAppInfoEntity.setAppTime(Float.toString(totalTime));
                     float totalCarbon = appInfoEntity.getAppCarbon() + uniqueAppInfoEntity.getAppCarbon();
                     uniqueAppInfoEntity.setAppTime(Float.toString(totalCarbon));
                     found = true;
@@ -109,13 +109,8 @@ public class AppInfoController {
     @PostMapping("/appInfoChange")
     public List<AppInfoEntity> sendChange() {
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setId("master");
-        /*
-        LocalDateTime yesterday = LocalDate.now().minusDays(1).atStartOfDay();
-        List<AppInfoEntity> appInfoEntityYesterday = appInfoService.findAppInfoOneDay(memberDTO, yesterday);
-        LocalDateTime yesterday2 = LocalDate.now().minusDays(2).atStartOfDay();
-        List<AppInfoEntity> appInfoEntityYesterday2 = appInfoService.findAppInfoOneDay(memberDTO, yesterday2);
-        */
+        memberDTO.setId("demo");
+
         LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1);
         List<AppInfoEntity> appInfoEntityYesterday = appInfoService.findAppInfoOneDay(memberDTO, today);
         List<AppInfoEntity> appInfoEntityYesterday2 = appInfoService.findAppInfoOneDay(memberDTO, today.minusDays(1));
