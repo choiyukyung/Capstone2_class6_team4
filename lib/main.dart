@@ -29,15 +29,17 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (BuildContext context) => LogIn(),
+        '/carbonTest': (BuildContext context) => CarbonFootprint(user: User(id: "master", password: "master", name: "name", birthdate: "birthdate"),),
+        '/screenTimeTest': (BuildContext context) => ScreenTime(user: User(id: "sample", password: "sample", name: "name", birthdate: "birthdate"),),
 
-
-        '/ddd': (BuildContext context) => WalkRecord(
+        '/walkMapTest': (BuildContext context) => WalkMap(user: User(id: "sample", password: "sample", name: "name", birthdate: "birthdate"),),
+        '/walkRecordTest': (BuildContext context) => WalkRecord(
             user: User(id: "id", password: "password", name: "name", birthdate: "birthdate"),
             startTimeStamp: DateTime.now(),
             walkingInfo: WalkingInfo(name: "관악산둘레길", time: "2시간30분", distance: "6.2Km", details: ["난이도: 상"])
         ),
 
-        '/dd': (BuildContext context) => WalkReport(
+        '/walkReportTest': (BuildContext context) => WalkReport(
             user: User(id: "master", password: "password", name: "name", birthdate: "birthdate"),
             name: "",
             time: "",
@@ -117,6 +119,7 @@ class _UsageStatsTestState extends State<Main> {
       CarbonFootprint(user: widget.user),
     ];
   }
+
 
   @override
   Widget build(BuildContext context) {
