@@ -33,8 +33,9 @@ class _ScreenTimeState extends State<ScreenTime> {
       if (result!.isEmpty){
         print("postUsageStats: Wrong input");
       } else {
-        print("usageStats: $result");
-        if (!mounted) return;
+        //순서 정렬: totalTime
+
+
         setState(() {
           usageStats = result;
         });
@@ -72,8 +73,8 @@ class _ScreenTimeState extends State<ScreenTime> {
 
         child: Container(
           width: double.infinity, height: 800,
-          margin: const EdgeInsets.all(0),
-          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(7),
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
             color: MyColors.brightGreenBlue.withOpacity(0.3),
             borderRadius: BorderRadius.circular(10),
@@ -159,51 +160,21 @@ class _ScreenTimeState extends State<ScreenTime> {
                                             ),
                                             const SizedBox(width: 15,),
                                             Text(
-                                                '${usageStats[index]['appEntry']}',
+                                                '${usageStats[index]['packageName']}',
                                                 style: const TextStyle(
-                                                    fontSize: 11.0,
+                                                    fontSize: 7.0,
                                                     fontWeight: FontWeight
                                                         .w500,
                                                     color: Colors.white)
                                             ),
                                             const Spacer(),
                                             Text(
-                                                '${usageStats[index]['appTime']}',
+                                                '${usageStats[index]['totalTimeInForeground']}',
                                                 style: const TextStyle(
-                                                    fontSize: 15.0,
+                                                    fontSize: 16.0,
                                                     fontWeight: FontWeight
                                                         .w500,
                                                     color: Colors.white,
-                                                )
-                                            ),
-                                            const Text(
-                                                ' m',
-                                                style: TextStyle(
-                                                  fontSize: 9.0,
-                                                  fontWeight: FontWeight
-                                                      .w500,
-                                                  color: Colors.white,
-                                                )
-                                            ),
-                                            const SizedBox(width: 5,),
-                                            const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 15.0,),
-                                            const SizedBox(width: 5,),
-                                            Text(
-                                                '${usageStats[index]['appCarbon']}',
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
-                                                  fontWeight: FontWeight
-                                                      .w500,
-                                                  color: Colors.white,
-                                                )
-                                            ),
-                                            const Text(
-                                                ' g',
-                                                style: TextStyle(
-                                                  fontSize: 9.0,
-                                                  fontWeight: FontWeight
-                                                      .w500,
-                                                  color: Colors.white,
                                                 )
                                             ),
                                           ],

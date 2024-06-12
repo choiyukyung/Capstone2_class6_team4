@@ -11,18 +11,8 @@ import 'mycolor.dart';
 abstract class MyPieChart extends StatelessWidget {
   const MyPieChart({super.key});
 
-  static List<Color> chartColor = [
-    MyColors.brightGreenBlue,
-    Colors.lime,
-    MyColors.brightOrange,
-    Colors.green,
-    //MyColors.mint
-  ];
-
-  static List<PieChartSectionData> showingSections(List<dynamic> appCarbon, double shortestSide, int pieTouchedIndex) {
-    if (appCarbon.isEmpty) return [];
-
-    return List.generate(4, (i) { //appInfoYesterday: 데이터 정렬 필요?
+  static List<PieChartSectionData> showingSections(List<Map<String, dynamic>> appCarbon, double shortestSide, int pieTouchedIndex) {
+    return List.generate(appCarbon.length, (i) { //appInfoYesterday: 데이터 정렬 필요?
       final isTouched = i == pieTouchedIndex;
       final fontSize = isTouched ? 18.0 : 14.0;
       final radius = shortestSide / 2; //isTouched ? 65.0 : 60.0;
@@ -33,7 +23,7 @@ abstract class MyPieChart extends StatelessWidget {
       switch (i) {
         case 0:
           return PieChartSectionData(
-            color: chartColor[0],
+            color: MyColors.brightGreenBlue,
             value: appCarbon[i]["appCarbon"],
             title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
@@ -43,18 +33,16 @@ abstract class MyPieChart extends StatelessWidget {
               color: const Color(0xffffffff),
               //shadows: shadows,
             ),
-            /*
             badgeWidget: PieBadge(
               'assets/icons/instagram.jpeg', //수정 필요
               size: widgetSize,
               borderColor: Colors.transparent,
             ),
             badgePositionPercentageOffset: widgetOffset,
-            */
           );
         case 1:
           return PieChartSectionData(
-            color: chartColor[1],
+            color: Colors.lime,
             value: appCarbon[i]["appCarbon"],
             title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
@@ -64,19 +52,16 @@ abstract class MyPieChart extends StatelessWidget {
               color: const Color(0xffffffff),
               //shadows: shadows,
             ),
-            /*
             badgeWidget: PieBadge(
               'assets/icons/youtube.jpeg',
               size: widgetSize,
               borderColor: Colors.transparent,
             ),
             badgePositionPercentageOffset: widgetOffset,
-
-             */
           );
         case 2:
           return PieChartSectionData(
-            color: chartColor[2],
+            color: MyColors.brightOrange,
             value: appCarbon[i]["appCarbon"],
             title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
@@ -86,19 +71,16 @@ abstract class MyPieChart extends StatelessWidget {
               color: const Color(0xffffffff),
               //shadows: shadows,
             ),
-            /*
             badgeWidget: PieBadge(
               'assets/icons/gmail.jpeg',
               size: widgetSize,
               borderColor: Colors.transparent,
             ),
             badgePositionPercentageOffset: widgetOffset,
-
-             */
           );
         case 3:
           return PieChartSectionData(
-            color: chartColor[3],
+            color: Colors.green,
             value: appCarbon[i]["appCarbon"],
             title: '${appCarbon[i]["appCarbon"]}',
             radius: radius,
@@ -108,24 +90,12 @@ abstract class MyPieChart extends StatelessWidget {
               color: const Color(0xffffffff),
               //shadows: shadows,
             ),
-            /*
             badgeWidget: PieBadge(
               'assets/icons/discord.jpeg',
               size: widgetSize,
               borderColor: Colors.transparent,
             ),
             badgePositionPercentageOffset: widgetOffset,
-
-             */
-            /*
-            badgeWidget: PieBadge(
-              'assets/icons/discord.jpeg',
-              size: widgetSize,
-              borderColor: Colors.transparent,
-            ),
-            badgePositionPercentageOffset: widgetOffset,
-
-             */
           );
         default:
           throw Exception('Oh no');
@@ -189,7 +159,7 @@ abstract class MyBarChart extends StatelessWidget {
       double shadowOpacity,
       ) {
     final isTop = value1 > 0;
-    const isTouched = false;
+    final isTouched = barTouchedIndex == x;
     return BarChartGroupData(
       x: x,
       groupVertically: true,
@@ -262,25 +232,25 @@ class BarBottomTitles extends StatelessWidget {
     String text;
     switch (value.toInt()) { //수정 필요
       case 0:
-        text = '1';
+        text = 'Mon';
         break;
       case 1:
-        text = '2';
+        text = 'Tue';
         break;
       case 2:
-        text = '3';
+        text = 'Wed';
         break;
       case 3:
-        text = '4';
+        text = 'Thu';
         break;
       case 4:
-        text = '5';
+        text = 'Fri';
         break;
       case 5:
-        text = '6';
+        text = 'Sat';
         break;
       case 6:
-        text = '7';
+        text = 'Sun';
         break;
       default:
         text = '';
@@ -307,9 +277,9 @@ class BarLeftTitles extends StatelessWidget {
     const style = TextStyle(color: Colors.white, fontSize: 10);
     String text;
     if (value == 0) {
-      text = '0g';
+      text = '0';
     } else {
-      text = '${(value*10).toInt()}g';
+      text = '${value.toInt()}0k';
     }
     return SideTitleWidget(
       //angle: AppUtils().degreeToRadian(value < 0 ? -45 : 45),
@@ -348,103 +318,6 @@ class DotLineChart extends StatelessWidget {
 
 abstract class MyLineChart extends StatelessWidget {
   const MyLineChart({super.key});
-
-  static create (List<dynamic> carbonWeeklyStats, double carbonBaseValue, DateTime yesterday){
-    return LineChart(
-      LineChartData(
-        lineTouchData: const LineTouchData(
-          enabled: true,),
-        lineBarsData: [
-          LineChartBarData(
-            spots:
-            List.generate(
-                carbonWeeklyStats?.length ?? 0,
-                    (i) => FlSpot(i * 1.0, carbonWeeklyStats[i]["dayCarbonUsage"]! * 1.0)),
-
-            isCurved: true,
-            barWidth: 4,
-            gradient: const LinearGradient(
-              colors: [
-                Colors.lime,
-                Colors.yellowAccent,
-                Colors.redAccent
-              ],
-            ),
-            isStrokeCapRound: true,
-            belowBarData: BarAreaData(
-              show: true,
-              color: Colors.purpleAccent.withOpacity(0.7),
-              cutOffY: carbonBaseValue,
-              applyCutOffY: true,
-            ),
-            aboveBarData: BarAreaData(
-              show: true,
-              color: Colors.greenAccent.withOpacity(0.7),
-              cutOffY: carbonBaseValue,
-              applyCutOffY: true,
-            ),
-            dotData: const FlDotData(
-              show: false,
-            ),
-          ),
-        ],
-        minY: 250,
-        titlesData: FlTitlesData(
-          show: true,
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 18,
-              interval: 1,
-              getTitlesWidget: (meta, Title) {
-                return LineBottomTitles(
-                    meta, Title, yesterday);
-              },
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 18,
-              interval: 1,
-              getTitlesWidget: (meta, Title) {
-                return LineLeftTitles(
-                    meta, Title, carbonBaseValue);
-              },
-            ),
-          ),
-        ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(
-              color: MyColors.brightGreenBlue,
-              width: 2.0
-          ),
-        ),
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: true,
-          verticalInterval: 1,
-          horizontalInterval: 1,
-          getDrawingHorizontalLine: (double value) {
-            return const FlLine(
-                color: Colors.red,
-                strokeWidth: 2
-            );
-          },
-          checkToShowHorizontalLine: (double value) {
-            return value == carbonBaseValue;
-          },
-        ),
-      ),
-    );
-  }
 }
 
 class LineBottomTitles extends StatelessWidget {

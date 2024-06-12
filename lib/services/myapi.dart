@@ -14,7 +14,7 @@ class Service {
   User? user;
   Service({required this.user});
 
-  static const https = "https://fde2-219-255-207-138.ngrok-free.app";
+  static const https = "https://232e-219-255-207-131.ngrok-free.app";
   static const naverId = "apsz5g7nue";
   static const naverKey = "E4QCjVeH5c4MTYKUVIHM1QLK7Z96qyLzU2fB50my";
   static const openweatherKey = "a1348d850873d2c02fb6e5c160881ecf";
@@ -30,6 +30,7 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
         if (data["message"] == "success") {
           return true;
@@ -71,11 +72,9 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
-        if (data == "farTrail") {
-          print(data);
-          return data;
-        }
+        if (data == "farTrail") return data;
       }
 
       //Hiking
@@ -86,11 +85,9 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
-        if (data == "farHiking") {
-          print(data);
-          return data;
-        }
+        if (data == "farHiking") return data;
       }
 
       //Park
@@ -101,11 +98,9 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
-        if (data == "farPark") {
-          print(data);
-          return data;
-        }
+        if (data == "farPark") return data;
       }
     } catch (e) {
       print("queryNearCourse: Failed to get response: $e");
@@ -167,11 +162,6 @@ class Service {
         usageInfos.add(map);
       }
     }
-    /*
-    for (var info in usageInfos){
-      print("usageName: ${info["packageName"]}");
-    }
-    */
     return usageInfos;
   }
 
@@ -179,10 +169,10 @@ class Service {
     var usageInfos = await queryUsageStats(startDate, endDate);
     //var data = List.generate(usageInfos.length, generator)
     var body = jsonEncode(usageInfos);
-
+    Map<String, Object> d;
     try {
       final response = await http.post(
-        Uri.parse("$https/appInfo"),
+        Uri.parse("$https/usageStats"),
         headers: {"Content-Type": "application/json"}, // 필수
         body: body,
       );
@@ -263,7 +253,7 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('queryCarbonChange: $data');
+
         return data;
       } else {
         print("Failed to get carbon change data: ${response.statusCode}");
@@ -307,7 +297,6 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('queryCarbonWeeklyStats: $data');
         return data;
       } else {
         print("Failed to get carbon weekly stats: ${response.statusCode}");
@@ -329,7 +318,6 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('queryCarbonBaseValue: $data');
         return data;
       } else {
         print("Failed to get carbon base value: ${response.statusCode}");
@@ -351,7 +339,6 @@ class Service {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map;
-        print('queryCarbonInObj: $data');
         return data;
       } else {
         print("Failed to get carbon in objects: ${response.statusCode}");
@@ -395,21 +382,13 @@ class Service {
       if (response.statusCode != 200) {
         throw Exception("Failed to get walking info: ${response.statusCode}");
       } else {
-        if (response == null) {
-          return WalkingInfo(
-            name: "null",
-            time: "null",
-            distance: "null",
-            details: ["null"]
-          );
-        } else {
-
-        }
         final data = json.decode(utf8.decode(response.bodyBytes));
         final place = data["place"];
         String tag = place.keys.toList()[0];
-
+        print("tag: ${tag}");
         Map<String, dynamic> entity = place[tag]; //수정?
+        print("keys: ${entity.keys}");
+        print("values: ${entity.values}");
 
         /*
         VisitedTrailEntity:  ‘’’{"lnk_nam":"애국의숲길","cos_nam":"관악산둘레길","cos_num":"1코스","comment":"","len_tim":"←2시간30분 6.2Km→", "leng_lnk":"6729.79251047","cos_lvl":"","cat_nam":"둘레길링크"}’’’
@@ -418,7 +397,7 @@ class Service {
         */
 
         if (tag == "trail") {
-          List<String> parts = entity["lenTim"].split(" ");
+          List<String> parts = entity["lenTim"].split(" "); print(parts);
           String time; String distance;
           if (parts.length == 2){
             time = parts[0];
@@ -438,6 +417,7 @@ class Service {
               distance: distance,
             details: details
           );
+          print(temp);
           return temp;
         }
         if (tag == "hiking") {
@@ -449,6 +429,7 @@ class Service {
           distance: entity["secLen"],
             details: ["none"]//["난이도: ${entity["catNam"]}"]
           );
+          print(temp);
           return temp;
         }
         if (tag == "park") {
@@ -458,6 +439,7 @@ class Service {
             distance: "none",
             details: ["none"]
           );
+          print(temp);
           return temp;
         }
       }
