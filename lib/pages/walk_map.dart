@@ -30,6 +30,7 @@ class _WalkMapState extends State<WalkMap> {
   DateTime? finishTime;
   Service? service;
 
+
   @override
   void initState() {
     super.initState();
@@ -131,7 +132,7 @@ class _WalkMapState extends State<WalkMap> {
                             const Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                  'Location',
+                                  'Temperature',
                                   style: TextStyle(
                                       fontSize: 11.0,
                                       fontWeight: FontWeight
@@ -139,14 +140,27 @@ class _WalkMapState extends State<WalkMap> {
                                       color: Colors.white)
                               ),
                             ),
-                            const SizedBox(height: 15,),
-                            Text(
-                                '${weather?['name']}',
-                                style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight
-                                        .w500,
-                                    color: Colors.white)
+                            const SizedBox(height: 16,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    '${weather?['temp']} ',
+                                    style: const TextStyle(
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight
+                                            .w500,
+                                        color: Colors.white)
+                                ),
+                                const Text(
+                                    '°C',
+                                    style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight
+                                            .w500,
+                                        color: Colors.white)
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -194,7 +208,7 @@ class _WalkMapState extends State<WalkMap> {
                 const SizedBox(height: 10,),
                 Container(
                   width: double.infinity,
-                  height: 430,
+                  height: 420,
                   padding: const EdgeInsets.all(15),
                   margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
@@ -218,7 +232,7 @@ class _WalkMapState extends State<WalkMap> {
                       const Spacer(),
                       SafeArea(
                           child: SizedBox(
-                            height: 350,
+                            height: 340,
                               child: MapWebView(https: mapHttps, user: widget.user),
                           )
                       ),
@@ -234,69 +248,64 @@ class _WalkMapState extends State<WalkMap> {
                     borderSize: 0.5,
                     onTap: () async {
                       var startTimeStamp = DateTime.now();
-                      //var response = Service.queryNearCourse();
+                      WalkingInfo? data = await service?.getWalkingInfo(widget.user);
+                      var response = data?.name;
 
-                      if (true){ //response == "nearCourse"
-                        WalkingInfo? data = await service?.getWalkingInfo(widget.user);
-                        if (data?.name != "null") {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => WalkRecord(
-                                        user: widget.user,
-                                        startTimeStamp: startTimeStamp,
-                                        walkingInfo: data,
-                                      )));
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Container(
-                                  width: 200, height: 150,
-                                  padding: const EdgeInsets.all(15),
-                                  decoration: BoxDecoration(
-                                    color: MyColors.deepBlue,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const SizedBox(height: 10,),
-                                      const Text(
-                                        "Please select a near course.",
-                                        style: const TextStyle(color: Colors.white, fontSize: 14),
-                                      ),
-                                      const SizedBox(height: 30,),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(	//모서리를 둥글게
-                                                  borderRadius: BorderRadius.circular(20)),
-                                              backgroundColor: Colors.white,
-
-                                              //child 정렬 - 아래의 Text('$test')
-                                              alignment: Alignment.center,
-                                              textStyle: const TextStyle(fontSize: 15, color: MyColors.deepBlue)
-                                          ),
-
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('close'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
+                      if (response != "null") {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WalkRecord(
+                                  user: widget.user,
+                                  startTimeStamp: startTimeStamp,
+                                  walkingInfo: data,
+                                )));
                       } else {
-                        print("queryNearCourse response: None");
-                        //수정: popup
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              child: Container(
+                                width: 200, height: 150,
+                                padding: const EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  color: MyColors.deepBlue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10,),
+                                    const Text(
+                                      "Please select a near course.",
+                                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 30,),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(	//모서리를 둥글게
+                                                borderRadius: BorderRadius.circular(20)),
+                                            backgroundColor: Colors.white,
+
+                                            //child 정렬 - 아래의 Text('$test')
+                                            alignment: Alignment.center,
+                                            textStyle: const TextStyle(fontSize: 15, color: MyColors.deepBlue)
+                                        ),
+
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('close'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       }
                     },
                     child: const Icon(Icons.play_arrow_rounded, size: 28,)
@@ -385,15 +394,18 @@ class _WalkRecordState extends State<WalkRecord> {
     super.initState();
 
     service = Service(user: widget.user);
+    initWalkingRanking();
   }
 
   void initWalkingRanking() async {
     // 방법 1: 초기화를 통해 빈 리스트 할당
     walkingRanking = [];
-
+    if (!mounted) return;
     var response = await service?.getWalkingRanking();
     if (response!=null){
-      walkingRanking = response;
+      setState(() {
+        walkingRanking = response;
+      });
     }
   }
 
@@ -408,6 +420,7 @@ class _WalkRecordState extends State<WalkRecord> {
         key: Key("${widget.key}"),
 
         onForegroundLost: () {
+          if (!mounted) return;
           setState(() {
             distractionCount += 1;
           });
@@ -651,7 +664,7 @@ class _WalkRecordState extends State<WalkRecord> {
                                                   ),
                                                   const Spacer(),
                                                   Text(
-                                                      '${walkingRanking[index]["walkingTime"]}',
+                                                      walkingRanking[index]["walkingTime"].toStringAsFixed(1),
                                                       style: const TextStyle(
                                                         fontSize: 21.0,
                                                         fontWeight: FontWeight
@@ -972,7 +985,7 @@ class _WalkReportState extends State<WalkReport> {
                     var pageContents = [
                       ['your total time...', '${widget.time}', 'min'],
                       ['you reduced carbon \nas much as...', (widget.mileage.toStringAsFixed(2)), 'm',],
-                      ['you reduced carbon \nas much as...', (widget.tree.toStringAsFixed(2)), 'CO2/hour',],
+                      ['you reduced carbon \nas much as...', (widget.tree.toStringAsFixed(2)), 'g/hour',],
                       //['you unlocked...', '${widget.name}', '',],
                       ['your total distractions...', '${widget.distraction}', '',],
                       [],
@@ -991,7 +1004,7 @@ class _WalkReportState extends State<WalkReport> {
                             Container(
                               width: double.infinity, height: 800,
                               margin: const EdgeInsets.all(7),
-                              padding: const EdgeInsets.all(15),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 //color: MyColors.brightGreenBlue.withOpacity(0.3),
                                 borderRadius: BorderRadius.circular(10),
@@ -1005,29 +1018,56 @@ class _WalkReportState extends State<WalkReport> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text(
-                                            'Carbon Footprint Ranking',
+                                            'Ranking',
                                             textAlign: TextAlign.start,
                                             style: TextStyle(fontSize: 15.0,
                                                 fontWeight: FontWeight.w500,
                                                 color: Colors.white)
                                         ),
-                                        Text(
-                                            (rankingDiff < 0) ?
-                                            '${(rankingDiff)*-1} up'
-                                            : '$rankingDiff down',
-                                            textAlign: TextAlign.start,
-                                            style: const TextStyle(fontSize: 15.0,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white)
-                                        ),
+                                        (rankingDiff < 0) ?
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                '${(rankingDiff)*-1} ',
+                                                style: const TextStyle(fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.greenAccent)
+                                            ),
+                                            const Icon(Icons.arrow_circle_up_outlined, color: Colors.greenAccent,),
+                                          ],
+                                        )
+                                            : (rankingDiff == 0) ?
+                                        const Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                '0  -',
+                                                style: TextStyle(fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white38)
+                                            ),
+                                          ],
+                                        )
+                                        : Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                '$rankingDiff ',
+                                                style: const TextStyle(fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.redAccent)
+                                            ),
+                                            const Icon(Icons.arrow_downward, color: Colors.redAccent,),
+                                          ],
+                                        )
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 10,),
                                   Expanded(
                                     child: Container(
                                       width: double.infinity, height: 800,
-                                      margin: const EdgeInsets.all(7),
+                                      //margin: const EdgeInsets.all(3),
                                       //padding: const EdgeInsets.all(15),
                                       decoration: BoxDecoration(
                                         //color: MyColors.brightGreenBlue.withOpacity(0.3),
@@ -1048,7 +1088,7 @@ class _WalkReportState extends State<WalkReport> {
                                                 child: Container(
                                                   height: 70,
                                                   width: double.infinity,
-                                                  padding: const EdgeInsets.all(15),
+                                                  padding: const EdgeInsets.all(13),
                                                   //margin: const EdgeInsets.all(32),
                                                   decoration: BoxDecoration(
                                                       gradient: const LinearGradient(
@@ -1089,7 +1129,7 @@ class _WalkReportState extends State<WalkReport> {
                                                               Text(
                                                                 '${index + 1}',
                                                                 style: const TextStyle(
-                                                                  fontSize: 20.0,
+                                                                  fontSize: 17.0,
                                                                   fontWeight: FontWeight
                                                                       .w700,
                                                                   color: Colors.white,
@@ -1106,7 +1146,7 @@ class _WalkReportState extends State<WalkReport> {
                                                               Text(
                                                                   '${walkingRanking[index]["id"]}',
                                                                   style: const TextStyle(
-                                                                      fontSize: 16.0,
+                                                                      fontSize: 10.0,
                                                                       fontWeight: FontWeight
                                                                           .w500,
                                                                       color: Colors.white)
@@ -1115,7 +1155,7 @@ class _WalkReportState extends State<WalkReport> {
                                                               Text(
                                                                   '${walkingRanking[index]["walkingTime"]}',
                                                                   style: const TextStyle(
-                                                                    fontSize: 21.0,
+                                                                    fontSize: 13.5,
                                                                     fontWeight: FontWeight
                                                                         .w500,
                                                                     color: Colors.white,
