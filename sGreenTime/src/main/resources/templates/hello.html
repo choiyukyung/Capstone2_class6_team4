@@ -11,16 +11,6 @@
 
 <div id="userId" th:data-value="${userId}"></div>
 
-<!--myPlaceData-->
-<!-- 모델로부터 myPlaceEntityListSize 변수를 받아오는 코드 -->
-<div id="myPlaceEntityListSize" th:data-value="${myPlaceEntityListSize}"></div>
-<div th:with="myPlaceEntityListSize=${myPlaceEntityListSize}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(0, myPlaceEntityListSize - 1)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'myPlaceData' + ${index}" th:attr="data-value=${__${'myPlaceData' + index}__}"></div>
-</div>
-
 <!--visitedTrailLnkNamList-->
 <div id="visitedTrailLnkNamList" th:data-value="${visitedTrailLnkNamList}"></div>
 <!--visitedHikingMntnNmList-->
@@ -55,7 +45,6 @@
 
 <script>
 
-    var myPlaceSize = document.getElementById("myPlaceEntityListSize").getAttribute("data-value");
 
     var userId = document.getElementById("userId").getAttribute("data-value");
 
@@ -96,7 +85,7 @@
     //지도
     var container = document.getElementById('map');
     var options = {
-        center: new kakao.maps.LatLng(37.5031, 126.9569),
+        center: new kakao.maps.LatLng(nowLat, nowLng),
         //37°30'11"N 126°57'25"E
         level: 3
     };
@@ -116,7 +105,7 @@
 });
 
     var marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(37.5031, 126.9569)
+        position: new kakao.maps.LatLng(nowLat, nowLng)
     });
     marker.setMap(map);
 
@@ -157,74 +146,6 @@
     var nowTrail;
     var nowTrailLat;
     var nowTrailLng;
-
-    //내가 만든 산책로
-    for (let k = 0; k < myPlaceSize; k++) {
-        // 각 데이터 요소에 대한 id
-        let dataElementId = "myPlaceData" + k;
-
-        // 데이터 요소에서 데이터 가져오기
-        let myPlaceData = document.getElementById(dataElementId).getAttribute("data-value");
-
-        // 데이터 파싱
-        const obj = JSON.parse(myPlaceData);
-        //console.log(obj);
-        var lnkNam = obj.lnk_nam;
-
-
-        // 문자열을 배열로 변환
-        var arr = obj.coordinates.split("],[");
-
-        // 각 배열 요소를 좌표 배열로 변환하여 숫자 값으로 넣기
-        var coordinates = arr.map(function (item) {
-            var parts = item.replace("[", "").replace("]", "").split(",");
-            return [parseFloat(parts[0]), parseFloat(parts[1])];
-        });
-
-
-        let paths = [];
-
-        for (let j = 0; j < coordinates.length; j++) {
-            paths.push(new kakao.maps.LatLng(coordinates[j][0], coordinates[j][1]));
-        }
-
-        var polyline;
-        if (visitedTrailList.includes(lnkNam)) {
-            polyline = new kakao.maps.Polyline({
-                path: paths,
-                strokeWeight: 10,
-                strokeColor: '#79DF00',
-                strokeOpacity: 0.8,
-                strokeStyle: 'solid'
-            });
-        } else {
-            polyline = new kakao.maps.Polyline({
-                path: paths,
-                strokeWeight: 10,
-                strokeColor: '#424141',
-                strokeOpacity: 0.5,
-                strokeStyle: 'solid'
-            });
-        }
-        polyline.setMap(map);
-
-
-        kakao.maps.event.addListener(polyline, 'click', function (mouseEvent) {
-            var latlng = mouseEvent.latLng;
-            console.log(latlng.toString());
-            console.log(obj);
-            nowTrail = obj;
-            nowTrailLat = latlng.getLat();
-            nowTrailLng = latlng.getLng();
-            console.log(nowTrail);
-            // coordinates 값을 제거
-            const {coordinates, myPlaceId, ...newData} = nowTrail;
-            console.log(JSON.stringify(newData, null, 2));
-
-            visitTrail(newData, paths);
-        });
-
-    }
 
     //산책로 page 1~all
     //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
@@ -292,7 +213,7 @@
             path: [
                 new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -418,7 +339,7 @@
             path: [
                 new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -672,7 +593,7 @@
             path: [
                 new kakao.maps.LatLng(nowParkLat, nowParkLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
