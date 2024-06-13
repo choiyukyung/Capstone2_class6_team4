@@ -11,8 +11,6 @@
 
 <div id="userId" th:data-value="${userId}"></div>
 
-
-
 <!--visitedTrailLnkNamList-->
 <div id="visitedTrailLnkNamList" th:data-value="${visitedTrailLnkNamList}"></div>
 <!--visitedHikingMntnNmList-->
@@ -47,11 +45,10 @@
 
 <script>
 
-    //var myPlaceSize = document.getElementById("myPlaceEntityListSize").getAttribute("data-value");
-
     var userId = document.getElementById("userId").getAttribute("data-value");
 
     //현재 사용자 위치
+
     var nowLat = document.getElementById("nowLatitude").getAttribute("data-value");
     //console.log(nowLat);
     var nowLng = document.getElementById("nowLongitude").getAttribute("data-value");
@@ -94,7 +91,7 @@
     //지도
     var container = document.getElementById('map');
     var options = {
-        center: new kakao.maps.LatLng(37.5031, 126.9569),
+        center: new kakao.maps.LatLng(nowLat, nowLng),
         //37°30'11"N 126°57'25"E
         level: 3
     };
@@ -114,7 +111,7 @@
 });
 
     var marker = new kakao.maps.Marker({
-        position: new kakao.maps.LatLng(37.5031, 126.9569)
+        position: new kakao.maps.LatLng(nowLat, nowLng)
     });
     marker.setMap(map);
 
@@ -293,7 +290,7 @@
             path: [
                 new kakao.maps.LatLng(nowTrailLat, nowTrailLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -419,7 +416,7 @@
             path: [
                 new kakao.maps.LatLng(nowHikingLat, nowHikingLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
@@ -673,7 +670,7 @@
             path: [
                 new kakao.maps.LatLng(nowParkLat, nowParkLng),
                 //new kakao.maps.LatLng(nowLat, notLng)
-                new kakao.maps.LatLng(37.5031, 126.9569)
+                new kakao.maps.LatLng(nowLat, nowLng)
             ],
             strokeWeight: 2,
             strokeColor: '#FF00FF',
