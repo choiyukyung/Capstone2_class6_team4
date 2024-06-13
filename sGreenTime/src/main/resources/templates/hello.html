@@ -6,20 +6,12 @@
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey=47a1ad933f7654384770f45a4556436c"></script>
 </head>
-<body>
+<body>exe
 <div id="map" style="width:100%;height:100vh;"></div>
 
 <div id="userId" th:data-value="${userId}"></div>
 
-<!--myPlaceData-->
-<!-- 모델로부터 myPlaceEntityListSize 변수를 받아오는 코드 -->
-<div id="myPlaceEntityListSize" th:data-value="${myPlaceEntityListSize}"></div>
-<div th:with="myPlaceEntityListSize=${myPlaceEntityListSize}"></div>
-<!-- 반복문 시작 -->
-<div th:each="index : ${#numbers.sequence(0, myPlaceEntityListSize - 1)}">
-    <!-- 반복되는 요소에 대한 id 동적 생성 -->
-    <div th:id="'myPlaceData' + ${index}" th:attr="data-value=${__${'myPlaceData' + index}__}"></div>
-</div>
+
 
 <!--visitedTrailLnkNamList-->
 <div id="visitedTrailLnkNamList" th:data-value="${visitedTrailLnkNamList}"></div>
@@ -55,7 +47,7 @@
 
 <script>
 
-    var myPlaceSize = document.getElementById("myPlaceEntityListSize").getAttribute("data-value");
+    //var myPlaceSize = document.getElementById("myPlaceEntityListSize").getAttribute("data-value");
 
     var userId = document.getElementById("userId").getAttribute("data-value");
 
@@ -70,27 +62,33 @@
     var visitedTrailListElement = document.getElementById("visitedTrailLnkNamList").getAttribute("data-value");
 
     //문자열을 리스트로 변환
-    var visitedTrailList = visitedTrailListElement.replace('[', '').replace(']', '').split(', ');
+    if(visitedTrailListElement != null) {
+        var visitedTrailList = visitedTrailListElement.replace('[', '').replace(']', '').split(', ');
 
-    //각 요소의 양쪽 공백과 따옴표 제거
-    visitedTrailList = visitedTrailList.map(function (item) {
-        return item.trim().replace(/^"|"$/g, '');
-    });
+        //각 요소의 양쪽 공백과 따옴표 제거
+        visitedTrailList = visitedTrailList.map(function (item) {
+            return item.trim().replace(/^"|"$/g, '');
+        });
+    }
 
 
     //방문한 등산로 리스트 가져오기
     var visitedHikingListElement = document.getElementById("visitedHikingMntnNmList").getAttribute("data-value");
-    var visitedHikingList = visitedHikingListElement.replace('[', '').replace(']', '').split(', ');
-    visitedHikingList = visitedHikingList.map(function (item) {
-        return item.trim().replace(/^"|"$/g, '');
-    });
+    if(visitedHikingListElement != null) {
+        var visitedHikingList = visitedHikingListElement.replace('[', '').replace(']', '').split(', ');
+        visitedHikingList = visitedHikingList.map(function (item) {
+            return item.trim().replace(/^"|"$/g, '');
+        });
+    }
 
     //방문한 공원 리스트 가져오기
     var visitedParkListElement = document.getElementById("visitedParkNameList").getAttribute("data-value");
-    var visitedParkList = visitedParkListElement.replace('[', '').replace(']', '').split(', ');
-    visitedParkList = visitedParkList.map(function (item) {
-        return item.trim().replace(/^"|"$/g, '');
-    });
+    if(visitedParkListElement != null) {
+        var visitedParkList = visitedParkListElement.replace('[', '').replace(']', '').split(', ');
+        visitedParkList = visitedParkList.map(function (item) {
+            return item.trim().replace(/^"|"$/g, '');
+        });
+    }
 
 
     //지도
@@ -157,6 +155,7 @@
     var nowTrail;
     var nowTrailLat;
     var nowTrailLng;
+    /*
 
     //내가 만든 산책로
     for (let k = 0; k < myPlaceSize; k++) {
@@ -226,6 +225,8 @@
 
     }
 
+     */
+
     //산책로 page 1~all
     //그냥 j로 features 모두 for문 돌리면 다 paths안에 들어가서 그림이 엉망이 됨.
     //for (let k = 1; k <= trailTotalPagesNum; k++) {
@@ -253,7 +254,7 @@
         }
 
         var polyline;
-        if (visitedTrailList.includes(lnkNam)) {
+        if (visitedTrailList != null && visitedTrailList.includes(lnkNam)) {
             polyline = new kakao.maps.Polyline({
                 path: paths,
                 strokeWeight: 10,
@@ -378,7 +379,7 @@
         }
 
         var polyline;
-        if (visitedHikingList.includes(mntnNm)) {
+        if (visitedHikingList != null && visitedHikingList.includes(mntnNm)) {
             polyline = new kakao.maps.Polyline({
                 path: paths2,
                 strokeWeight: 10,
@@ -507,7 +508,7 @@
         }
 
         var polygon;
-        if (visitedParkList.includes(parkName)) {
+        if (visitedParkList != null && visitedParkList.includes(parkName)) {
             polygon = new kakao.maps.Polygon({
                 path: park1Paths, // 그려질 다각형의 좌표 배열입니다
                 strokeWeight: 3, // 선의 두께입니다
@@ -568,7 +569,7 @@
         }
 
         var polygon2;
-        if (visitedParkList.includes(parkName)) {
+        if (visitedParkList != null && visitedParkList.includes(parkName)) {
             polygon2 = new kakao.maps.Polygon({
                 path: park2Paths, // 그려질 다각형의 좌표 배열입니다
                 strokeWeight: 3, // 선의 두께입니다
@@ -629,7 +630,7 @@
         }
 
         var polygon3;
-        if (visitedParkList.includes(parkName)) {
+        if (visitedParkList != null && visitedParkList.includes(parkName)) {
             polygon3 = new kakao.maps.Polygon({
                 path: park3Paths, // 그려질 다각형의 좌표 배열입니다
                 strokeWeight: 3, // 선의 두께입니다
