@@ -34,7 +34,9 @@ public class UsageStatsController {
         }
 
         Collections.sort(entityList, (e1, e2) -> Integer.compare(Integer.parseInt(e2.getTotalTimeInForeground()), Integer.parseInt(e1.getTotalTimeInForeground())));
-
+        if (entityList.size() < 10) {
+            return entityList;
+        }
         return entityList.subList(0, 10);
     }
 
