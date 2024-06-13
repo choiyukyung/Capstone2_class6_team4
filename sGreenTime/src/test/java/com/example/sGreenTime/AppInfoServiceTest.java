@@ -1,6 +1,7 @@
 package com.example.sGreenTime;
 
 import com.example.sGreenTime.controller.AppInfoController;
+import com.example.sGreenTime.dto.MemberDTO;
 import com.example.sGreenTime.dto.UsageStatsDTO;
 import com.example.sGreenTime.entity.AppInfoEntity;
 import com.example.sGreenTime.entity.MemberEntity;
@@ -37,9 +38,9 @@ public class AppInfoServiceTest {
 
     @DisplayName("appTest")
     @Test
-    public void AppInfoTest(){
+    public void AppInfoTest(MemberDTO memberDTO){
         //given
-        List<AppInfoEntity> appInfoEntityList = appInfoController.sendChange();
+        List<AppInfoEntity> appInfoEntityList = appInfoController.sendChange(memberDTO);
         for(AppInfoEntity a : appInfoEntityList){
             System.out.println(a.getAppEntry());
             System.out.println(a.getAppCarbon());

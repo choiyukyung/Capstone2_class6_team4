@@ -107,9 +107,7 @@ public class AppInfoController {
     //[{"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"youtube","appIcon":null,"appTime":null,"appCarbon":11.5},{"screentimeId":0,"startDate":null,"endDate":null,"id":"33","appEntry":"kakaotalk","appIcon":null,"appTime":null,"appCarbon":11.5}]
     //여기서 appEntry와 appCarbon만 어제와 그제의 차이를 나타내는 유의미한 정보고(+id, appIcon) 나머지는 의미 없는 정보임.
     @PostMapping("/appInfoChange")
-    public List<AppInfoEntity> sendChange() {
-        MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setId("demo");
+    public List<AppInfoEntity> sendChange(@RequestBody MemberDTO memberDTO) {
 
         LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1);
         List<AppInfoEntity> appInfoEntityYesterday = appInfoService.findAppInfoOneDay(memberDTO, today);

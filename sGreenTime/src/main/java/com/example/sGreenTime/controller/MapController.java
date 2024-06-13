@@ -37,13 +37,15 @@ public class MapController {
         return "hello";
     }
 
-    @GetMapping("/vworldData/{id}")
-    public ModelAndView vworldData(@PathVariable("id") String id) throws JSONException, JsonProcessingException {
+    @GetMapping("/vworldData/{id}/{lat}/{lng}")
+    public ModelAndView vworldData(@PathVariable("id") String id, @PathVariable("lat") String lat,@PathVariable("lng") String lng) throws JSONException, JsonProcessingException {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
 
         modelAndView.addObject("userId", id);
+        modelAndView.addObject("nowLatitude", lat);
+        modelAndView.addObject("nowLongitude", lng);
 
         //visitedTrailLnkNamList MapController로 가져오기
         List<String> visitedTrailLnkNamList = visitedService.getVisitedTrailLnkNam(id);
