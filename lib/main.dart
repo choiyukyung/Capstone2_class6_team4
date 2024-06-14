@@ -28,8 +28,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        '/': (BuildContext context) => LogIn(),
-        '/carbonTest': (BuildContext context) => CarbonFootprint(user: User(id: "master", password: "master", name: "name", birthdate: "birthdate"),),
+        '/': (BuildContext context) => const LogIn(),
+        '/signup': (BuildContext context) => const SignUp(),
+        '/test': (BuildContext context) => CarbonFootprint(user: User(id: "master", password: "master", name: "name", birthdate: "birthdate"),),
         '/screenTimeTest': (BuildContext context) => ScreenTime(user: User(id: "sample", password: "sample", name: "name", birthdate: "birthdate"),),
 
         '/walkMapTest': (BuildContext context) => WalkMap(user: User(id: "sample", password: "sample", name: "name", birthdate: "birthdate"),),
@@ -90,8 +91,6 @@ class MyApp extends StatelessWidget {
               },
             ],
         ),
-        '/login': (BuildContext context) => const LogIn(),
-        '/signup': (BuildContext context) => const SignUp(),
       }
     );
   }

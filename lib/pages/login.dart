@@ -117,7 +117,15 @@ class _LoginFormState extends State<LoginForm> {
                     textStyle: const TextStyle(fontSize: 12)
                 ),
                 onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => Main(
+                    user: User(id: "id", password: "password", name: "name", birthdate: "birthdate"),
+                    )));
+                  return;
                   try{
+
                     final user = User(
                         id: id,
                         password: password,

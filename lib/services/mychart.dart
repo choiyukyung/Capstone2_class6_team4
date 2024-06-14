@@ -20,7 +20,11 @@ abstract class MyPieChart extends StatelessWidget {
   ];
 
   static List<PieChartSectionData> showingSections(List<dynamic> appCarbon, double shortestSide, int pieTouchedIndex) {
-    if (appCarbon.isEmpty) return [];
+    if (appCarbon==null) {
+      return [];
+    } else if (appCarbon.isEmpty) {
+      return [];
+    }
 
     return List.generate(4, (i) { //appInfoYesterday: 데이터 정렬 필요?
       final isTouched = i == pieTouchedIndex;
@@ -350,6 +354,12 @@ abstract class MyLineChart extends StatelessWidget {
   const MyLineChart({super.key});
 
   static create (List<dynamic> carbonWeeklyStats, double carbonBaseValue, DateTime yesterday){
+    if (carbonWeeklyStats==null) {
+      return Container();
+    }
+    else if (carbonWeeklyStats!.isEmpty) {
+      return Container();
+    }
     return LineChart(
       LineChartData(
         lineTouchData: const LineTouchData(

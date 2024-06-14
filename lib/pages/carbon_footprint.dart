@@ -57,26 +57,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
     {"id": "nickname6", "walkingTime" : 10},
   ];
   */
-  List<dynamic>? carbonYesterday = [
-    {
-      "appEntry":"youtube",
-      "appCarbon":20.5
-    },
-    {
-      "appEntry":"discord",
-      "appCarbon":7.5
-    },
-    {
-      "appEntry":"naver",
-      "appCarbon":11.5
-    },
-    {
-      "appEntry":"camera",
-      "appCarbon":1.5
-    },
-  ];
-
-  //Map<String, dynamic>? carbonDailyStats;
+  List<dynamic>? carbonYesterday = [];
   var carbonWeeklyStats = [];
   var carbonInObj = {};
   var walkingRanking = [];
@@ -214,6 +195,12 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                       width: 110, height: 110,
                       child: LayoutBuilder(
                           builder: (context, constraints) {
+                            if (carbonYesterday==null) {
+                              return Container();
+                            }
+                            else if (carbonYesterday!.isEmpty) {
+                              return Container();
+                            }
                             final shortestSide = constraints.biggest
                                 .shortestSide;
                             return PieChart(
@@ -252,44 +239,45 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                   ),
                   const SizedBox(height: 80,),
                   const SizedBox(width: 100,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: <Widget>[
-                          Indicator(
-                            color: MyPieChart.chartColor[0],
-                            text: '${carbonYesterday![0]["appEntry"]}',
-                            isSquare: true,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Indicator(
-                            color: MyPieChart.chartColor[1],
-                            text: '${carbonYesterday![1]["appEntry"]}',
-                            isSquare: true,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Indicator(
-                            color: MyPieChart.chartColor[2],
-                            text: '${carbonYesterday![2]["appEntry"]}',
-                            isSquare: true,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Indicator(
-                            color: MyPieChart.chartColor[3],
-                            text: '${carbonYesterday![3]["appEntry"]}',
-                            isSquare: true,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  if (carbonYesterday!.isNotEmpty)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            Indicator(
+                              color: MyPieChart.chartColor[0],
+                              text: '${carbonYesterday![0]["appEntry"]}',
+                              isSquare: true,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: MyPieChart.chartColor[1],
+                              text: '${carbonYesterday![1]["appEntry"]}',
+                              isSquare: true,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: MyPieChart.chartColor[2],
+                              text: '${carbonYesterday![2]["appEntry"]}',
+                              isSquare: true,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Indicator(
+                              color: MyPieChart.chartColor[3],
+                              text: '${carbonYesterday![3]["appEntry"]}',
+                              isSquare: true,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   const Spacer(),
                   //const SizedBox(height: 30,),
 
@@ -409,7 +397,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
                   const SizedBox(height: 60,),
                   Center(
                     child: Column(
-                      children: List.generate(7,
+                      children: List.generate((carbonChange!.isNotEmpty)? 7 : 0,
                             (i)=>Text(
                               '${i+1} ${carbonChange?[i]["appEntry"]}', //1부터시작하게
                               style: const TextStyle(

@@ -14,7 +14,7 @@ class Service {
   User? user;
   Service({required this.user});
 
-  static const https = "https://fde2-219-255-207-138.ngrok-free.app";
+  static const https = "https://port-0-sgreentime-server-deploy-1lxbhvsa5.sel5.cloudtype.app";
   static const naverId = "apsz5g7nue";
   static const naverKey = "E4QCjVeH5c4MTYKUVIHM1QLK7Z96qyLzU2fB50my";
   static const openweatherKey = "a1348d850873d2c02fb6e5c160881ecf";

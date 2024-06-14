@@ -29,7 +29,8 @@ class _WalkMapState extends State<WalkMap> {
   DateTime? startTime;
   DateTime? finishTime;
   Service? service;
-
+  String? latitude;
+  String? longitude;
 
   @override
   void initState() {
@@ -69,8 +70,9 @@ class _WalkMapState extends State<WalkMap> {
   }
 
   Future<Map> initWeatherData(var _locationData) async {
-    var latitude = _locationData.latitude?.toStringAsFixed(2);
-    var longitude = _locationData.longitude?.toStringAsFixed(2);
+    latitude = _locationData.latitude?.toStringAsFixed(2);
+    longitude = _locationData.longitude?.toStringAsFixed(2);
+    print("initWeather: $latitude, $longitude");
 
     try {
       String endpoint = "https://api.openweathermap.org/data/2.5/weather";
@@ -320,6 +322,7 @@ class _WalkMapState extends State<WalkMap> {
 class MapWebView extends StatefulWidget {
   final String https;
   User? user;
+
   MapWebView({super.key, required this.https, required this.user});
 
   @override
@@ -328,15 +331,52 @@ class MapWebView extends StatefulWidget {
 
 class _MapWebViewState extends State<MapWebView> {
   WebViewController? _webViewController;
+  String? lat;
+  String? lng;
+
+  Future<dynamic> initGeoData() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    return _locationData;
+  }
+
+  void initCoord(res){
+    lat = res.latitude?.toStringAsFixed(2);
+    lng = res.longitude?.toStringAsFixed(2);
+  }
 
   @override
   void initState() {
     super.initState();
 
+    initGeoData().then((res)=>{
+      initCoord(res)
+    });
 
     _webViewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse("${widget.https}/vworldData/${widget.user?.id}"));
+      ..loadRequest(Uri.parse("https://port-0-sgreentime-server-deploy-1lxbhvsa5.sel5.cloudtype.app/vworldData/${widget.user?.id}/$lat/${lng}")); //"${widget.https}/vworldData/${widget.user?.id}/${widget.lat}/${widget.lng}"
     //  **WebChromeClient 설정**: WebViewController에 WebChromeClient를 설정합니다.
     // WebChromeClient 설정
     //_webViewController?.setWebChromeClient(WebChromeClient());
