@@ -82,7 +82,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
   }
 
   Future<dynamic> initCarbonData() async {
-    //carbonYesterday = [];
+    carbonYesterday = [];
     dynamic response = await service?.queryCarbonYesterday();
     if (response!=null && response.isNotEmpty){
       carbonYesterday = response;
@@ -102,7 +102,7 @@ class _CarbonFootprintState extends State<CarbonFootprint> {
 */
     carbonBaseValue = 0;
     response = await service?.queryCarbonBaseValue();
-    if (response!=null && response!=0){
+    if (response!=null){
       carbonBaseValue = response;
     }
 
